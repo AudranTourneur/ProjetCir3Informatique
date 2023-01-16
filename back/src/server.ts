@@ -8,7 +8,7 @@ import * as account from './modules/account';
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors({origin: 'http://localhost:8100'}));
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use('/files', express.static('files'));
 
 if (app.get('env') === 'production') {
@@ -72,6 +72,13 @@ app.post('/checkResetPasswordToken', function (req, res) {
 app.post('/resetPassword', function (req, res) {
     // account.resetPassword(req.body.token, req.body.password, req.body.language, con, res);
 });
+
+
+let counter = 0
+app.get('/test', (req, res) => {
+    res.type('txt');
+    res.send(JSON.stringify({ a: counter++}));
+})
 
 if (app.listen(process.env.PORT || 8080)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');

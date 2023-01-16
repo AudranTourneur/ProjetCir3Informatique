@@ -47,6 +47,15 @@ $: {
 			console.log('change theme to', currentTheme);
 		}
 	}  
+
+	let res = -1
+function clickOnButton() {
+		fetch('http://localhost:8080/test')
+			.then((response) => response.json())
+			.then((data) => {
+				res = JSON.stringify(data)
+			})
+  }
 </script>
 
 <main>
@@ -65,6 +74,9 @@ $: {
   <h1>{$t("homepage.title")}!</h1>
   <p>{@html $t("homepage.welcome", { name: "Jane Doe" })}!</p>
   <p>{@html $t("homepage.time", { time })}!</p>
+
+
+  
 
 </main>
 
@@ -115,3 +127,6 @@ test
 
 		</div>
 	{/if}
+
+		<p>res = {res}</p>
+	<button class="btn btn-info" on:click={clickOnButton}>cliquez svp</button>
