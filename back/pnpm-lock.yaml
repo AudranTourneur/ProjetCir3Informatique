@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@trpc/server': ^10.9.0
   '@types/body-parser': ^1.19.2
   '@types/cors': ^2.8.13
   '@types/express': ^4.17.15
@@ -14,8 +15,10 @@ specifiers:
   nodemon: ^2.0.20
   tslib: ^2.4.1
   typescript: ^4.9.4
+  zod: ^3.20.2
 
 dependencies:
+  '@trpc/server': 10.9.0
   '@types/body-parser': 1.19.2
   '@types/cors': 2.8.13
   '@types/express': 4.17.15
@@ -26,6 +29,7 @@ dependencies:
   express: 4.18.2
   nodemailer: 6.9.0
   nodemon: 2.0.20
+  zod: 3.20.2
 
 devDependencies:
   '@types/node': 18.11.18
@@ -231,6 +235,10 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@trpc/server/10.9.0:
+    resolution: {integrity: sha512-5psyZgbvy29pJND32hwkWTMbv6s86IbsPOeDopsgNF0VegZT6Dsijmb7Ub/TDhuJVQVq5u4u5briMXi3SxmBkw==}
+    dev: false
 
   /@types/body-parser/1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
@@ -965,4 +973,8 @@ packages:
   /vary/1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /zod/3.20.2:
+    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
     dev: false
