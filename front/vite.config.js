@@ -4,7 +4,8 @@ import path from 'path';
 const config = {
 	resolve: {
 		alias: {
-			$style: path.resolve("src/style/")
+			$lib: path.resolve("src/lib/"),
+			$style: path.resolve("src/style/"),
 		}
 	},
 	plugins: [sveltekit()],
