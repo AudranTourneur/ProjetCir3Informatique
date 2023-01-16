@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4cf6c522-7bc3-490f-90d8-21c099c5950b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/back/tsconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/back/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/back/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/back/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back/src/modules/account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back/src/modules/account.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,12 +36,13 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Administrateur/Documents/GitHub/ProjetCir3Informatique",
+    "last_opened_file_path": "C:/wamp64/www/ProjetCir3Informatique",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "C:\\Users\\Administrateur\\Documents\\GitHub\\ProjetCir3Informatique\\back\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -80,6 +79,7 @@
       <updated>1673875902472</updated>
       <workItem from="1673875903760" duration="5514000" />
       <workItem from="1673881834432" duration="3697000" />
+      <workItem from="1673894983994" duration="523000" />
     </task>
     <servers />
   </component>
