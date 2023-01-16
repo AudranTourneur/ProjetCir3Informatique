@@ -1,8 +1,18 @@
+import * as dotenv from 'dotenv' 
+dotenv.config()
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      MONGODB_STRING: string;
+    }
+  }
+}
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-// @ts-ignore
 import * as account from './modules/account';
 
 const app = express();
@@ -89,6 +99,7 @@ app.get('/test', (req, res) => {
 import { z } from 'zod';
 import { inferAsyncReturnType, initTRPC } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
+import { initDb } from './db';
 
 // created for each request
 const createContext = ({
@@ -150,6 +161,8 @@ app.use('/trpc',
     createContext,
   }),
 )
+
+initDb()
 
 const port = process.env.PORT || 8080
 
