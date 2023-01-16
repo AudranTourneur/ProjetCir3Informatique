@@ -14,3 +14,12 @@ test
 <input type="text" class="input input-primary" bind:value={inputText}>
 
 <h1>valeur tapé : {inputText}</h1>
+
+
+<span>
+    <i class="fa-solid fa-caret-left"></i>
+</span>
+<span>
+    <i class="fa-solid fa-caret-right"></i>
+</span>
+
