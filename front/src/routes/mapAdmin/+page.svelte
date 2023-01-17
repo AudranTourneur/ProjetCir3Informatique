@@ -1,10 +1,14 @@
-<script>
-	import { Room } from '$lib/Room.ts';
+<script lang='ts'>
+    import { Floor } from '$lib/Floor';
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
 
+    let isAdding = false;
+	let el : HTMLDivElement;
+
+	onMount(() => {
 	
-    let points = [
+        let points = [
         [50, 50],
         [50, 150],
         [150, 150],
@@ -12,16 +16,26 @@
         [100, 100],
     ];
 
-    let tabPoints = [points];
+    let tabPoint : Number[][] = [];
 
-    let isAdding = false;
+    let data = {
+        points: points,
+        name: "nom1",
+        capacity: 10,
+        projecteur: true,
+    };
+
+    
+    let tabFloor : Floor[] = [];
+    
+    tabFloor = [new Floor([data],"bonjour")];    
     let numberOfPoint = 0;
-    let tabPolygon = new Array;
-    let idSelectedPolygon;
 
-	let el;
 
-	onMount(() => {
+    let idSelectedFloor = 0;
+
+
+
         let svg = d3.select(el)
                     .append("svg")
                     .attr("width", window.innerWidth)
@@ -37,10 +51,10 @@
                             if(numberOfPoint == 0) {
                                 numberOfPoint++;
                                 
-                                tabPoints.push([[pointer[0],pointer[1]]]);
+                                tabPoint.push([pointer[0],pointer[1]]);
 
                                 svg.append("polyline")
-                                .attr("points",tabPoints[tabPoints.length-1])
+                                .attr("points",tabPoint.toString())
                                 .style("stroke", "blue")      // set the line colour
                                 .style("fill", "none");      // set the fill colour
 
@@ -55,28 +69,20 @@
                                     numberOfPoint = 0;
                                     isAdding = false;
 
-                                    let polygon = svg.append("polygon")
-                                    .attr('points', tabPoints[tabPoints.length-1])
-                                    .attr('stroke', '#f00')
-                                    .attr('fill', 'red')
-                                    .style("fill-opacity", .2)
-                                    .on("click", () => {
-                                        tabPolygon.forEach(element => {
-                                            element.attr('stroke', '#f00')
-                                        });
-                                        polygon.attr('stroke', '#ff0');
-                                        idSelectedPolygon=tabPolygon.length;
-                                    });
-
-                                    tabPolygon.push(polygon);
-                                    console.log(tabPolygon);
+                                    let data = {
+                                        points: tabPoint,
+                                        name: "nom"+tabFloor[idSelectedFloor],
+                                        capacity: 10,
+                                        projecteur: true,
+                                    };
+                                    tabFloor[idSelectedFloor].newRoom(data);
 
                                     svg.selectAll("circle").remove()
                                     svg.selectAll("polyline").remove()
                                 })
                             } else {
                                 numberOfPoint++;
-                                tabPoints[tabPoints.length-1].push([pointer[0],pointer[1]]);
+                                tabPoint.push([pointer[0],pointer[1]]);
 
                                 svg.append("circle")
                                 .attr("cx", pointer[0])
@@ -86,7 +92,7 @@
                                 .style("fill", "red");      // set the fill colour
 
                                 svg.append("polyline")
-                                .attr("points",tabPoints[tabPoints.length-1])
+                                .attr("points",tabPoint.toString())
                                 .style("stroke", "blue")      // set the line colour
                                 .style("fill", "none");      // set the fill colour
                             }
@@ -98,21 +104,9 @@
                 .attr("width", window.innerWidth)
                 .attr("height", window.innerHeight)
 
-        let polygon = svg.append("polygon")
-            .attr('points', tabPoints[tabPoints.length-1])
-            .attr('stroke', '#f00')
-            .attr('fill', 'red')
-            .style("fill-opacity", .2)
-            .on("click", () => {
-                tabPolygon.forEach(element => {
-                    element.attr('stroke', '#f00')
-                });
-                polygon.attr('stroke', '#ff0');
-                idSelectedPolygon=tabPolygon.length;
-            });
-            
-        tabPolygon.push(polygon);
+        tabFloor[idSelectedFloor].draw();
 	});
+    */
 </script>
 
 <style>
@@ -127,4 +121,5 @@
 </style>
 
 <div bind:this={el} class="chart"></div>
+
 <button on:click={()=>{isAdding = !isAdding}}>isAdding = {isAdding}</button>
