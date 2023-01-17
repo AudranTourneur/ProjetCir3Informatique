@@ -45,12 +45,21 @@ export async function signIn(email:string,password:string,token:string){
 	const query = await Users.find({email:email})
 	let result=query[0].password
 	if(result==password){
-		await Users.findOneAndUpdate({email:email},{token:token})
+		await setToken(email,token)
 	}
 	else return false
 	return true	
 }
 
-export async function checkConnection(token:string){
-
+//Return true si le token en parametre est bien le meme en bdd, sinon false
+export async function checkConnection(email:string,token:string){
+	const result=await Users.find({email:email})
+	if(result[0])
+	return result[0].token==token ? true:false;
+	return false
 }
+
+export async function setToken(email:string,token:string){
+	const result = await Users.findOneAndUpdate({email:email},{token:token})
+}
+
