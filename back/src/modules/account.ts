@@ -8,10 +8,10 @@ const ash = (str) => crypto.createHash('sha256')
     .digest('hex');
 
 //queue for pending creation accounts
-const creatingAccountQueue = [];
+const creatingAccountQueue = new Array();
 
 //queue for reset password accounts
-const resetPasswordQueue = [];
+const resetPasswordQueue = new Array();
 
 //url to send by email, replace it by domain name
 const urlFront = 'http://localhost:8100/'; //URL DE DEV
@@ -36,7 +36,7 @@ const mailOptions = {
 
 //clears creatingAccount queue,
 //single line including token if token or each line including email if email
-export function clearCreatingAccountQueue(token, email='') {
+export function clearCreatingAccountQueue(token: string, email='') {
     for (let i = 0; i < creatingAccountQueue.length; i++) {
         if(!email) {
             if (creatingAccountQueue[i].token === token) {
@@ -52,7 +52,7 @@ export function clearCreatingAccountQueue(token, email='') {
 
 //clears resetPassword queue,
 //single line including token if token or each line including email if email
-export function clearResetPasswordQueue(token, email='') {
+export function clearResetPasswordQueue(token: string, email='') {
     for (let i = 0; i < resetPasswordQueue.length; i++) {
         if(!email) {
             if (resetPasswordQueue[i].token === token) {
@@ -67,16 +67,16 @@ export function clearResetPasswordQueue(token, email='') {
 }
 
 //asks if an account containing username or email is in db, priority to username
-export async function userExists(username, email, language, con, res) {
+export async function userExists(username: string, email: string, language: string, con: any, res: any) {
     const dictionary = await import('../files/json/translation/' + language + '.json', {assert: {type: 'json'}});
-    con.query('SELECT username FROM users WHERE username = ?', username, async (e, r) => {
+    con.query('SELECT username FROM users WHERE username = ?', username, async (e: any, r: string | any[]) => {
         if (e) {
             throw e;
         } else {
             if (r.length) {
                 await res.json({status: 0, message: dictionary.server[0].data});
             } else {
-                con.query('SELECT username FROM users WHERE email = ?', email, async (er, re) => {
+                con.query('SELECT username FROM users WHERE email = ?', email, async (er: any, re: string | any[]) => {
                     if (er) {
                         throw er;
                     } else {
@@ -92,50 +92,12 @@ export async function userExists(username, email, language, con, res) {
     });
 }
 
-//sends the creating account email, containing a unique token, effective for 5 minutes,
-// temporary saving datas in the signUp queue
-export async function mailCreateAccount(username, password, email, language, res) {
-    const dictionary = await import('../files/json/translation/' + language + '.json', {assert: {type: 'json'}});
-    const token = generateToken();
-    clearCreatingAccountQueue('', email);
-    creatingAccountQueue.push({token, username, password, email});
-    setTimeout(clearCreatingAccountQueue, 300000, token);
-
-    mailOptions.to = email;
-    mailOptions.subject = dictionary.mail[0].data;
-    mailOptions.text = dictionary.mail[1].data.replace('username', username)
-        + urlFront
-        + 'conf-account?token='
-        + token;
-
-    transporter.sendMail(mailOptions, async function (error) {
-        if (error) {
-            await res.json({status: 0, message: dictionary.mail[2].data});
-        } else {
-            await res.json({status: 1, message: dictionary.mail[3].data});
-        }
-    });
-}
-
-//asks if token is in the signUp queue
-export async function checkSignUpToken(token, language, res) {
-    const dictionary = await import('../files/json/translation/' + language + '.json', {assert: {type: 'json'}});
-    for (const line of creatingAccountQueue) {
-        if (line.token === token) {
-            await res.json({status: 1, message: dictionary.mail[4].data});
-            return 1;
-        }
-    }
-    await res.json({status: 0, message: dictionary.mail[5].data});
-    return 0;
-}
-
 //creates the account with datas in the queue linked to token
-export function createAccount(token, language, con, res){
+export function createAccount(token: string, language: string, con: any, res: any){
     for(const line of creatingAccountQueue){
         if(line.token===token){
             let token = generateToken();
-            con.query('INSERT INTO users (username, password, email, token) VALUES (?,?,?)', [line.username, ash(line.password), line.email, token], async (err) => {
+            con.query('INSERT INTO users (username, password, email, token) VALUES (?,?,?)', [line.username, line.password, line.email, token], async (err: any) => {
                 if(err){
                     throw err;
                 }else{
@@ -151,8 +113,8 @@ export function createAccount(token, language, con, res){
 }
 
 //signIn, identifier can be either username or email
-export function signIn(identifier, password, language, con, res) {
-    con.query('SELECT username FROM users WHERE (username = ? OR email = ?)', [identifier, identifier], async (e,r)=> {
+export function signIn(identifier: string, password: string, language: string, con: any, res: any) {
+    con.query('SELECT username FROM users WHERE (username = ? OR email = ?)', [identifier, identifier], async (e: any, r: string | any[])=> {
         if(e){
             throw e;
         }else{
@@ -160,13 +122,13 @@ export function signIn(identifier, password, language, con, res) {
             if(!r.length){
                 await res.json({status: 0, message: dictionary.mail[6].data});
             }else{
-                con.query('SELECT username FROM users WHERE (username = ? OR email = ?) AND password = ?', [identifier, identifier, ash(password)], async (er,re)=>{
+                con.query('SELECT username FROM users WHERE (username = ? OR email = ?) AND password = ?', [identifier, identifier, password], async (er: any, re: string | any[])=>{
                     if(er){
                         throw er;
                     }else{
                         if(re.length){
                             let token = generateToken();
-                            con.query('UPDATE users SET token = ? WHERE username = ?', [token, re[0].username], async (err, result)=>{
+                            con.query('UPDATE users SET token = ? WHERE username = ?', [token, re[0].username], async (err: any, result: any)=>{
                                 if(err){
                                     throw err;
                                 }else{
@@ -183,9 +145,9 @@ export function signIn(identifier, password, language, con, res) {
     });
 }
 
-export function getConnectionToken(username, con, res){
+export function getConnectionToken(username: string, con: any, res: any){
     let token = generateToken();
-    con.query('UPDATE users SET token = ? WHERE username = ?', [token, username], async (error)=>{
+    con.query('UPDATE users SET token = ? WHERE username = ?', [token, username], async (error: any)=>{
         if(error) {
             throw error;
         }else{
@@ -194,8 +156,8 @@ export function getConnectionToken(username, con, res){
     });
 }
 
-export function checkConnection(username, token, con, res){
-    con.query('SELECT username FROM users WHERE username = ? AND token = ?', [username, token], async (error, result)=>{
+export function checkConnection(username: string, token: string, con: any, res: any){
+    con.query('SELECT username FROM users WHERE username = ? AND token = ?', [username, token], async (error: any, result: string | any[])=>{
         if(error){
             throw error;
         }else{
@@ -210,8 +172,8 @@ export function checkConnection(username, token, con, res){
 
 //sends an email containing a unique token to reset the password, effective for 5 minutes
 //temporary linking the token and email in the resetPassword queue
-export function mailResetPassword(email, language, con, res){
-    con.query('SELECT email FROM users WHERE email = ?', email, async (e, r) => {
+export function mailResetPassword(email: string, language: string, con: any, res: any){
+    con.query('SELECT email FROM users WHERE email = ?', email, async (e: any, r: string | any[]) => {
         if(e){
             throw e;
         }else{
@@ -242,7 +204,7 @@ export function mailResetPassword(email, language, con, res){
 }
 
 //asks if token is in the resetPassword queue
-export async function checkResetPasswordToken(token, language, res) {
+export async function checkResetPasswordToken(token: string, language: string, res: any) {
     const dictionary = await import('../files/json/translation/' + language + '.json', {assert: {type: 'json'}});
     for (const line of resetPasswordQueue) {
         if (line.token === token) {
@@ -255,10 +217,10 @@ export async function checkResetPasswordToken(token, language, res) {
 }
 
 //resets the password of the account linked to the email, himself linked to the token
-export function resetPassword(token, password, language, con, res){
+export function resetPassword(token: string, password: string, language: string, con: any, res: any){
     for(const line of resetPasswordQueue) {
         if (line.token === token) {
-            con.query('UPDATE users SET password = ? WHERE email = ?', [ash(password), line.email], async (err) => {
+            con.query('UPDATE users SET password = ? WHERE email = ?', [password, line.email], async (err: any) => {
                 if (err) {
                     throw err;
                 } else {
