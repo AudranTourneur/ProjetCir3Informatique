@@ -1,8 +1,10 @@
-<script>
-	import { Room } from '$lib/Room.ts';
+<script lang="ts">
+    import { Floor } from '$lib/Floor';
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
 
+    let isAdding = false;
+    let el : HTMLDivElement;
 	
     let points = [
         [50, 50],
@@ -12,35 +14,45 @@
         [100, 100],
     ];
 
-    let tabPoints = [points];
+    let tabPoint : Number[][] = [];
 
-    let isAdding = false;
-    let numberOfPoint = 0;
-    let tabPolygon = new Array;
-    let idSelectedPolygon;
+    let data = {
+        points: points,
+        name: "nom1",
+        capacity: 10,
+        projecteur: true,
+    };
 
-	let el;
+    let idSelectedFloor = 0;
 
 	onMount(() => {
+        let numberOfPoint = 0;
+        
         let svg = d3.select(el)
                     .append("svg")
                     .attr("width", window.innerWidth)
                     .attr("height", window.innerHeight)
                     .style('background-color', 'lightgrey')
-                    .call(d3.zoom().on("zoom", (event) => {
+                    // @ts-ignore
+                    .call(d3.zoom()
+                    .on("zoom", (event) => {
                         svg.attr("transform", event.transform)
-                    }))
+                    })
+                    .scaleExtent([1,3.5])
+                    )
+
                     .append("g")
+                    .attr("id","main-svg")
                     .on("click", (event) => {
                         if(isAdding) {
                             let pointer = d3.pointer(event);
                             if(numberOfPoint == 0) {
                                 numberOfPoint++;
                                 
-                                tabPoints.push([[pointer[0],pointer[1]]]);
+                                tabPoint.push([pointer[0],pointer[1]]);
 
                                 svg.append("polyline")
-                                .attr("points",tabPoints[tabPoints.length-1])
+                                .attr("points",tabPoint.toString())
                                 .style("stroke", "blue")      // set the line colour
                                 .style("fill", "none");      // set the fill colour
 
@@ -55,28 +67,20 @@
                                     numberOfPoint = 0;
                                     isAdding = false;
 
-                                    let polygon = svg.append("polygon")
-                                    .attr('points', tabPoints[tabPoints.length-1])
-                                    .attr('stroke', '#f00')
-                                    .attr('fill', 'red')
-                                    .style("fill-opacity", .2)
-                                    .on("click", () => {
-                                        tabPolygon.forEach(element => {
-                                            element.attr('stroke', '#f00')
-                                        });
-                                        polygon.attr('stroke', '#ff0');
-                                        idSelectedPolygon=tabPolygon.length;
-                                    });
-
-                                    tabPolygon.push(polygon);
-                                    console.log(tabPolygon);
+                                    let data = {
+                                        points: tabPoint,
+                                        name: "nom"+tabFloor[idSelectedFloor],
+                                        capacity: 10,
+                                        projecteur: true,
+                                    };
+                                    tabFloor[idSelectedFloor].newRoom(data);
 
                                     svg.selectAll("circle").remove()
                                     svg.selectAll("polyline").remove()
                                 })
                             } else {
                                 numberOfPoint++;
-                                tabPoints[tabPoints.length-1].push([pointer[0],pointer[1]]);
+                                tabPoint.push([pointer[0],pointer[1]]);
 
                                 svg.append("circle")
                                 .attr("cx", pointer[0])
@@ -86,7 +90,7 @@
                                 .style("fill", "red");      // set the fill colour
 
                                 svg.append("polyline")
-                                .attr("points",tabPoints[tabPoints.length-1])
+                                .attr("points",tabPoint.toString())
                                 .style("stroke", "blue")      // set the line colour
                                 .style("fill", "none");      // set the fill colour
                             }
@@ -94,37 +98,19 @@
                     });
         
                 svg.append('image')
-                .attr('xlink:href', '/20200504-Plans-41BV.svg')
+                .attr('xlink:href', '/etage_2_clean_simple.svg')
                 .attr("width", window.innerWidth)
                 .attr("height", window.innerHeight)
 
-        let polygon = svg.append("polygon")
-            .attr('points', tabPoints[tabPoints.length-1])
-            .attr('stroke', '#f00')
-            .attr('fill', 'red')
-            .style("fill-opacity", .2)
-            .on("click", () => {
-                tabPolygon.forEach(element => {
-                    element.attr('stroke', '#f00')
-                });
-                polygon.attr('stroke', '#ff0');
-                idSelectedPolygon=tabPolygon.length;
-            });
-            
-        tabPolygon.push(polygon);
+        let tabFloor : Floor[] = [];
+    
+        tabFloor = [new Floor([data],"bonjour")];
+
+        tabFloor[idSelectedFloor].draw();
+        console.log(d3.select("svg"));
 	});
 </script>
 
-<style>
-	.chart :global(div) {
-		font: 10px sans-serif;
-		background-color: steelblue;
-		text-align: right;
-		padding: 3px;
-		margin: 1px;
-		color: white;
-	}
-</style>
-
-<div bind:this={el} class="chart"></div>
+<div bind:this={el}></div>
 <button on:click={()=>{isAdding = !isAdding}}>isAdding = {isAdding}</button>
+<button on:click={()=>{}}>Draw</button>
