@@ -6,16 +6,18 @@ import multer from 'multer'
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage, });
 
+const imageSchema = new Schema({
+    image: { data: String, contentType: String },
+    floor: Number,
+}, { timestamps: true });
+
+const ImageModel = model('images', imageSchema);
+
 export function initImagesApp(app: Application) {
     //const Image = mongoose.model('Image', { image: String, time: Number });
 
 
-    const imageSchema = new Schema({
-        image: { data: String, contentType: String },
-        floor: Number,
-    }, { timestamps: true });
 
-    const ImageModel = model('images', imageSchema);
 
     /*
     app.post('/upload', upload.single('image'), async (req, res) => {
@@ -42,11 +44,11 @@ export function initImagesApp(app: Application) {
 
 
         const id = 1
-        const doc = new ImageModel({image: {data: base64File, contentType: req.file?.mimetype ?? ''}, floor: id})
+        const doc = new ImageModel({ image: { data: base64File, contentType: req.file?.mimetype ?? '' }, floor: id })
         await doc.save()
         console.log('File saved with ID', id)
 
-        
+
         res.send("File uploaded and converted to base64");
     });
 
@@ -62,34 +64,17 @@ export function initImagesApp(app: Application) {
         if (!imageDoc || !imageDoc.image || !imageDoc.image.data) return res.send('Non existant image');
         const imageData = imageDoc.image.data
 
- const img = Buffer.from(imageData, 'base64');
-
-   res.writeHead(200, {
-     'Content-Type': 'image/png',
-     'Content-Length': img.length
-   });
-   res.end(img); 
-        return;
-
-/*
-        console.log(image.image.data)
-        const img = image.image.data
-        const imgStr = img.toString()
-
-        //res.contentType('image/png');
-        res.set('Content-Type', 'image/png');
-        res.send(img)
-        return;
-
-        res.write(img)
-        //const img = Buffer.from(image.image.data.replace(/"/g, ''), 'base64');
-        //console.log('buffer length', img)
+        const img = Buffer.from(imageData, 'base64');
 
         res.writeHead(200, {
             'Content-Type': 'image/png',
             'Content-Length': img.length
         });
         res.end(img);
-        */
+        return;
     });
+}
+
+export async function dbGetNumberOfFloors() {
+    return await ImageModel.countDocuments({});
 }
