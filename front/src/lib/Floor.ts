@@ -1,5 +1,5 @@
 import { Room } from "$lib/Room";
-import d3 from "d3";
+import * as d3 from 'd3';
 
 type RoomData = {
     points: Number[][],
@@ -25,7 +25,7 @@ export class Floor {
     }
 
     unDraw() {
-        d3.selectAll("svg > *").remove();
+        d3.selectAll("#main-svg > polygon").remove();
     }
 
     newRoom(data : RoomData) {      
