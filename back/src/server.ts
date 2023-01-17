@@ -100,6 +100,7 @@ import { z } from 'zod';
 import { inferAsyncReturnType, initTRPC } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { initDb } from './db';
+import { initImagesApp } from './images';
 
 // created for each request
 const createContext = ({
@@ -164,7 +165,9 @@ app.use('/trpc',
 
 initDb()
 
-const port = process.env.PORT || 8080
+initImagesApp(app)
+
+const port = process.env.PORT || 7801
 
 if (app.listen(port)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
