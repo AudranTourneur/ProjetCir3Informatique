@@ -2,8 +2,8 @@ import type { RequestHandler } from './$types';
 
 import { SVELTEKIT_HOST, API_HOST } from '$env/static/private'
 
-const sveltekitHost = SVELTEKIT_HOST ?? 'localhost:5173'
-const apiHost = API_HOST ?? 'localhost:8080'
+const sveltekitHost = SVELTEKIT_HOST ?? 'localhost:7800'
+const apiHost = API_HOST ?? 'localhost:7801'
 
 async function proxyRequest(request: Request): Promise<Response> {
   //console.log({SVELTEKIT_HOST, API_HOST })

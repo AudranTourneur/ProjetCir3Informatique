@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild ./src/server.ts --platform=node --bundle --outfile=dist/out.js"
+    "build": "esbuild ./src/server.ts --platform=node --bundle --outfile=dist/out.js",
+    "start": "npm run build && node dist/out.js"
   },
   "keywords": [],
   "test": "echo \"Error: no test specified\" && exit 1",

@@ -167,7 +167,7 @@ initDb()
 
 initImagesApp(app)
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 7801
 
 if (app.listen(port)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
