@@ -101,7 +101,7 @@ import { inferAsyncReturnType, initTRPC } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { createNewUser, initDb, queryEmailExists, signIn } from './db';
 import { sign } from 'crypto';
-import { initImagesApp } from './images';
+import { dbGetNumberOfFloors, initImagesApp } from './images';
 
 // created for each request
 const createContext = ({
@@ -153,6 +153,10 @@ const appRouter = router({
 
       return user;
     }),
+    getNumberOfFloors: publicProcedure
+      .query(async () => {
+        return await dbGetNumberOfFloors()
+      })
 });
 
 export type AppRouter = typeof appRouter;

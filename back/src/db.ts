@@ -43,6 +43,7 @@ export async function queryEmailExists(email:string){
 export async function signIn(email:string,password:string,token:string){
 	if(!queryEmailExists(email))return false
 	const query = await Users.find({email:email})
+	if (!query[0]) return false;
 	let result=query[0].password
 	if(result==password){
 		await Users.findOneAndUpdate({email:email},{token:token})
