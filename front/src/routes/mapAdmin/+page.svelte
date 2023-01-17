@@ -34,10 +34,12 @@
                     .attr("height", window.innerHeight)
                     .style('background-color', 'lightgrey')
                     // @ts-ignore
-                    .call(d3.zoom().on("zoom", (event) => {
-                        console.log(event)
+                    .call(d3.zoom()
+                    .on("zoom", (event) => {
                         svg.attr("transform", event.transform)
-                    }))
+                    })
+                    .scaleExtent([1,2])
+                    )
 
                     .append("g")
                     .attr("id","main-svg")
