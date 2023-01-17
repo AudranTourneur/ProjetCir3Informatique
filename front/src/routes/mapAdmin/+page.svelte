@@ -30,9 +30,8 @@
         
         let svg = d3.select(el)
                     .append("svg")
-                    .attr("width", window.innerWidth)
-                    .attr("height", window.innerHeight)
-                    .attr("viewBox", "0 0 "+ window.innerWidth + " " + window.innerHeight)
+                    .attr("width", 1000)
+                    .attr("height", 500)
                     .style('background-color', 'lightgrey')
                     // @ts-ignore
                     .call(d3.zoom()
@@ -100,8 +99,8 @@
         
                 svg.append('image')
                 .attr('xlink:href', '/etage_2_clean_simple.svg')
-                .attr("width", window.innerWidth)
-                .attr("height", window.innerHeight)
+                .attr("width", 1000)
+                .attr("height", 500)
 
         let tabFloor : Floor[] = [];
     
