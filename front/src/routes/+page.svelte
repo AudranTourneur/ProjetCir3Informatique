@@ -1,9 +1,6 @@
 <script lang="ts">
-	
-	import SignInOrSignUp from '$lib/SignInOrSignUp.svelte';
+	import LoginModal from '$lib/LoginModal.svelte';
 
-	let toggleDisplayModal = false;
-	let res = ''
 	function testBDD() {
 		// fetch('http://localhost:8080/testBDD')
 		// 	.then((response) => response.json())
@@ -12,21 +9,14 @@
 		// 	})
 		console.log('nop');
   }
+
+  let isModalOpen = false;
 </script>
 
 <main>
+	<button class="btn" on:click={testBDD}>test bdd</button>
 
-	<label for="my-modal-6" class="btn">open modal</label>
-
-	<input type="checkbox" id="my-modal-6" class="modal-toggle" />
-	<div class="modal modal-bottom sm:modal-middle">
-		<div class="modal-box">
-			<div class="modal-action" style="margin:0;">
-				<label for="my-modal-6" class="btn">
-					Close
-				</label>
-			</div>
-			<SignInOrSignUp/>
-		</div>
-	</div>
+	<button class="btn" on:click={()=>isModalOpen = true}>toggle modal</button>
 </main>
+
+<LoginModal bind:isActive={isModalOpen} />	
