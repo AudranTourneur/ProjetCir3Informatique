@@ -91,7 +91,7 @@ app.get('/test', (req, res) => {
 const createContext = ({
   req,
   res,
-}: trpcExpress.CreateExpressContextOptions) => ({}); // no context
+}: trpcExpress.CreateExpressContextOptions) => ({});
 type Context = inferAsyncReturnType<typeof createContext>;
 
 const t = initTRPC.context<Context>().create();
@@ -150,22 +150,22 @@ app.use('/trpc',
     router: appRouter,
     createContext,
   }),
-)
+);
 
-initDb()
+initDb();
 
-initImagesApp(app)
+initImagesApp(app);
 
-const port = process.env.PORT || 7801
+const port = process.env.PORT || 7801;
 
 if (app.listen(port)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
     console.log(`    =============   PORT: ${port}   =============`);
 }
-//createNewUser("John","1234","john@john.com","token1")
 
  
 async function run() {
+<<<<<<< HEAD
 console.log("test emailExists (true):", await emailExists("john@john.com"))
 console.log("test emailExists (false):", await emailExists("hgfhgdfbj"))
 console.log("test signin (success): ",await signIn("john@john.com","1234","token4"))
@@ -178,6 +178,10 @@ console.log("test setToken (false):",await setToken("vjvjhgjffb","testtoken"))
 console.log("test resetPassword (true):",await resetPassword("john@john.com","testPW123"))
 console.log("test resetPassword (false):",await resetPassword("vjvjhgjffb","testtoken"))
 await resetPassword("john@john.com","1234")
+=======
+console.log("REsultat:", await queryEmailExists("john@john.com"));
+console.log("test signin : ",await signIn("john@john.com","1234","token4"));
+>>>>>>> 75c29e1f2255664203b93b65e64e648fe8a6ac94
 }
 
 run()
