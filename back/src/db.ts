@@ -34,33 +34,40 @@ export function createNewUser(username:string,password:string,email:string,token
 }
 
 //Return true si l'email est utilise une seule fois false sinon
-export async function queryEmailExists(email:string){
+export async function emailExists(email:string){
 	const result= await Users.find({email:email})
+	if(!result)return false
 	return result.length==1 ? true :false;
 }
 
 //Return true si l'email existe et si le parametre password et le meme en bdd, ensuite met à jour le token, sinon renvoit false
 export async function signIn(email:string,password:string,token:string){
-	if(!queryEmailExists(email))return false
 	const query = await Users.find({email:email})
-	if (!query[0]) return false;
-	let result=query[0].password
-	if(result==password){
+	if(!query[0])return 'email'
+	if(query[0].password==password){
 		await setToken(email,token)
 	}
-	else return false
-	return true	
+	else return 'password'
+	return 'success'
 }
 
 //Return true si le token en parametre est bien le meme en bdd, sinon false
 export async function checkConnection(email:string,token:string){
 	const result=await Users.find({email:email})
-	if(result[0])
+	if(!result[0])return false
 	return result[0].token==token ? true:false;
-	return false
+	
 }
 
 export async function setToken(email:string,token:string){
-	const result = await Users.findOneAndUpdate({email:email},{token:token})
+	const result = await Users.findOneAndUpdate({email:email},{token:token},{new:true})
+	if(!result)return false
+	return result.token==token ? true : false
+}
+
+export async function resetPassword(email:string,password:string){
+	const result = await Users.findOneAndUpdate({email:email},{password:password},{new:true})
+	if(!result)return false
+	return result.password==password ? true : false
 }
 
