@@ -1,11 +1,13 @@
-import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-const SVELTEKIT_HOST = 'localhost:5173'
-const SERVER_HOST = 'localhost:8080'
+import { SVELTEKIT_HOST, API_HOST } from '$env/static/private'
+
+const sveltekitHost = SVELTEKIT_HOST ?? 'localhost:5173'
+const apiHost = API_HOST ?? 'localhost:8080'
 
 async function proxyRequest(request: Request): Promise<Response> {
-  const proxiedRequest = new Request(request.url.replace(SVELTEKIT_HOST, SERVER_HOST), request)
+  //console.log({SVELTEKIT_HOST, API_HOST })
+  const proxiedRequest = new Request(request.url.replace(sveltekitHost, apiHost), request)
   const apiRes = await fetch(proxiedRequest)
   return apiRes
 }
