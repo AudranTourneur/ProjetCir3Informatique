@@ -1,5 +1,5 @@
 <script>
-	import { Room } from '../lib/Room.ts';
+	import { Room } from '$lib/Room.ts';
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
 
