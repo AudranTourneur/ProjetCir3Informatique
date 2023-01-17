@@ -1,4 +1,15 @@
 import * as dotenv from 'dotenv' 
+import { z } from 'zod';
+import { inferAsyncReturnType, initTRPC } from '@trpc/server';
+import * as trpcExpress from '@trpc/server/adapters/express';
+import { checkConnection, createNewUser, initDb, emailExists, resetPassword, setToken, signIn } from './db';
+import { sign } from 'crypto';
+import { dbGetNumberOfFloors, initImagesApp } from './images';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+// import * as account from './modules/account';
+
 dotenv.config()
 
 declare global {
@@ -8,12 +19,6 @@ declare global {
     }
   }
 }
-
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-
-// import * as account from './modules/account';
 
 const app = express();
 
@@ -26,22 +31,7 @@ if (app.get('env') === 'production') {
 }
 
 
-// ********** DB Connection **********
 
-// const con = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: '',
-//     database: 'tikal'
-// });
-//
-// con.connect(err => {
-//     if (err) {
-//         console.log('Error when connecting to db:', err);
-//     } else {
-//         console.log('Connected to db for http requests');
-//     }
-// });
 
 app.post('/userExists', function (req, res) {
     // account.userExists(req.body.username, req.body.email, req.body.language, con, res);
@@ -96,12 +86,6 @@ app.get('/test', (req, res) => {
 
 
 
-import { z } from 'zod';
-import { inferAsyncReturnType, initTRPC } from '@trpc/server';
-import * as trpcExpress from '@trpc/server/adapters/express';
-import { createNewUser, initDb, queryEmailExists, signIn } from './db';
-import { sign } from 'crypto';
-import { dbGetNumberOfFloors, initImagesApp } from './images';
 
 // created for each request
 const createContext = ({
@@ -182,8 +166,18 @@ if (app.listen(port)) {
 
  
 async function run() {
-console.log("REsultat:", await queryEmailExists("john@john.com"))
-console.log("test signin : ",await signIn("john@john.com","1234","token4"))
+console.log("test emailExists (true):", await emailExists("john@john.com"))
+console.log("test emailExists (false):", await emailExists("hgfhgdfbj"))
+console.log("test signin (success): ",await signIn("john@john.com","1234","token4"))
+console.log("test signin (email): ",await signIn("hghdj","1234","token4"))
+console.log("test signin (password): ",await signIn("john@john.com","hgjfjfh","token4"))
+console.log("test checkconnection (true) :",await checkConnection("john@john.com","token4"))
+console.log("test checkconnection (false) :",await checkConnection("john@john.com","fhshfdvjfs"))
+console.log("test setToken (true):",await setToken("john@john.com","testtoken"))
+console.log("test setToken (false):",await setToken("vjvjhgjffb","testtoken"))
+console.log("test resetPassword (true):",await resetPassword("john@john.com","testPW123"))
+console.log("test resetPassword (false):",await resetPassword("vjvjhgjffb","testtoken"))
+await resetPassword("john@john.com","1234")
 }
 
 run()
