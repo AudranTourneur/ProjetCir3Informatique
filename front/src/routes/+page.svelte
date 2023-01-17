@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import { t, locale, locales } from "./../lib/lang/i18n";
+    import { t, locale, locales } from "$lib/lang/i18n";
     import {browser} from "$app/environment"
 	
 	// Create a locale specific timestamp

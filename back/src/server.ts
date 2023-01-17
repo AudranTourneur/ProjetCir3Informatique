@@ -13,7 +13,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import * as account from './modules/account';
+// import * as account from './modules/account';
 
 const app = express();
 
@@ -48,11 +48,11 @@ app.post('/userExists', function (req, res) {
 });
 
 app.post('/mailCreateAccount', function (req, res) {
-    account.mailCreateAccount(req.body.username, req.body.password, req.body.email, req.body.language, res);
+    // account.mailCreateAccount(req.body.username, req.body.password, req.body.email, req.body.language, res);
 });
 
 app.post('/checkSignUpToken', function (req, res) {
-    account.checkSignUpToken(req.body.token, req.body.language, res);
+    // account.checkSignUpToken(req.body.token, req.body.language, res);
 });
 
 app.post('/createAccount', function (req, res) {
@@ -76,7 +76,7 @@ app.post('/mailResetPassword', function (req, res) {
 });
 
 app.post('/checkResetPasswordToken', function (req, res) {
-    account.checkResetPasswordToken(req.body.token, req.body.language, res);
+    // account.checkResetPasswordToken(req.body.token, req.body.language, res);
 });
 
 app.post('/resetPassword', function (req, res) {
