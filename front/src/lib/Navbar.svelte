@@ -1,3 +1,7 @@
+<script>
+  
+</script>
+
 <div class="navbar bg-base-100">
   <div class="navbar-start">
     <div class="dropdown">
@@ -19,7 +23,7 @@
         <li><a>Item 3</a></li>
       </ul>
     </div>
-    <a class="btn btn-ghost normal-case text-xl">daisyUI</a>
+    <a class="btn btn-ghost normal-case text-xl">Admin page</a>
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
@@ -39,5 +43,12 @@
   </div>
   <div class="navbar-end">
     <a class="btn">Get started</a>
+
+    {#if loggedIn}
+      A 
+    {:else}
+      B
+    {/if}
+
   </div>
 </div>
