@@ -94,7 +94,7 @@
                     });
         
                 svg.append('image')
-                .attr('xlink:href', 'src/routes/20200504-Plans-41BV.svg')
+                .attr('xlink:href', '/20200504-Plans-41BV.svg')
                 .attr("width", window.innerWidth)
                 .attr("height", window.innerHeight)
 
