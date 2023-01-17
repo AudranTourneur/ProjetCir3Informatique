@@ -32,13 +32,14 @@
                     .append("svg")
                     .attr("width", window.innerWidth)
                     .attr("height", window.innerHeight)
+                    .attr("viewBox", "0 0 "+ window.innerWidth + " " + window.innerHeight)
                     .style('background-color', 'lightgrey')
                     // @ts-ignore
                     .call(d3.zoom()
                     .on("zoom", (event) => {
                         svg.attr("transform", event.transform)
                     })
-                    .scaleExtent([1,3.5])
+                    .scaleExtent([1,4.5])
                     )
 
                     .append("g")
