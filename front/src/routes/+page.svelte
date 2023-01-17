@@ -15,9 +15,6 @@
 </script>
 
 <main>
-	<button class="btn" on:click={testBDD()}>test bdd</button>
-
-	<button class="btn" on:click={()=>toggleDisplayModal = !toggleDisplayModal}>toggle modal</button>
 
 	<label for="my-modal-6" class="btn">open modal</label>
 
