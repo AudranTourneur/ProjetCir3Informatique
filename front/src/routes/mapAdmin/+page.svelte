@@ -1,14 +1,12 @@
-<script lang='ts'>
+<script lang="ts">
     import { Floor } from '$lib/Floor';
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
 
     let isAdding = false;
-	let el : HTMLDivElement;
-
-	onMount(() => {
+    let el : HTMLDivElement;
 	
-        let points = [
+    let points = [
         [50, 50],
         [50, 150],
         [150, 150],
@@ -25,26 +23,22 @@
         projecteur: true,
     };
 
-    
-    let tabFloor : Floor[] = [];
-    
-    tabFloor = [new Floor([data],"bonjour")];    
-    let numberOfPoint = 0;
-
-
     let idSelectedFloor = 0;
 
-
-
+	onMount(() => {
+        let numberOfPoint = 0;
+        
         let svg = d3.select(el)
                     .append("svg")
                     .attr("width", window.innerWidth)
                     .attr("height", window.innerHeight)
                     .style('background-color', 'lightgrey')
+                    // @ts-ignore
                     .call(d3.zoom().on("zoom", (event) => {
                         svg.attr("transform", event.transform)
                     }))
                     .append("g")
+                    .attr("id","main-svg")
                     .on("click", (event) => {
                         if(isAdding) {
                             let pointer = d3.pointer(event);
@@ -104,22 +98,15 @@
                 .attr("width", window.innerWidth)
                 .attr("height", window.innerHeight)
 
+        let tabFloor : Floor[] = [];
+    
+        tabFloor = [new Floor([data],"bonjour")];
+
         tabFloor[idSelectedFloor].draw();
+        console.log(d3.select("svg"));
 	});
-    */
 </script>
 
-<style>
-	.chart :global(div) {
-		font: 10px sans-serif;
-		background-color: steelblue;
-		text-align: right;
-		padding: 3px;
-		margin: 1px;
-		color: white;
-	}
-</style>
-
-<div bind:this={el} class="chart"></div>
-
+<div bind:this={el}></div>
 <button on:click={()=>{isAdding = !isAdding}}>isAdding = {isAdding}</button>
+<button on:click={()=>{}}>Draw</button>

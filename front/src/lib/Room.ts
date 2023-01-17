@@ -7,7 +7,7 @@ export class Room {
     }
 
     draw() {
-        let svg = d3.select("svg");
+        let svg = d3.select("#main-svg");
 
         this.polygon = svg.append("polygon")
         .attr('points', this.points.toString())
@@ -15,7 +15,7 @@ export class Room {
         .attr('fill', 'red')
         .style("fill-opacity", .2)
         .on("click", () => {
-            d3.selectAll("svg > *").remove();
+            d3.selectAll("#main-svg > polygon").remove();
             this.polygon!.attr('stroke', '#ff0');
         });
     }
