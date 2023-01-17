@@ -1,4 +1,11 @@
 import nodemailer from 'nodemailer';
+import * as crypto from 'crypto';
+import { generateToken } from './token';
+
+//ash function for passwords
+const ash = (str) => crypto.createHash('sha256')
+    .update(str, 'utf-8')
+    .digest('hex');
 
 //queue for pending creation accounts
 const creatingAccountQueue = new Array();
@@ -26,10 +33,6 @@ const mailOptions = {
     text: ''
 };
 
-//generates token by stringing a random number
-function generateToken() {
-    return (Math.random() + 1).toString(36).substring(2)+(Math.random() + 1).toString(36).substring(2);
-}
 
 //clears creatingAccount queue,
 //single line including token if token or each line including email if email
