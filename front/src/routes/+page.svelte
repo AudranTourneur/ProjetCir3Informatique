@@ -48,7 +48,7 @@ $: {
 		}
 	}  
 
-	let res = ""
+	let res = ''
 	function clickOnButton() {
 		fetch('http://localhost:8080/proxy')
 			.then((response) => response.json())
