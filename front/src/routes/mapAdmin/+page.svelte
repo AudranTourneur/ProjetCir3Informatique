@@ -38,7 +38,7 @@
                     .on("zoom", (event) => {
                         svg.attr("transform", event.transform)
                     })
-                    .scaleExtent([1,2])
+                    .scaleExtent([1,3.5])
                     )
 
                     .append("g")
