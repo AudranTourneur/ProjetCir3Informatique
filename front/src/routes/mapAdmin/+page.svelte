@@ -35,8 +35,10 @@
                     .style('background-color', 'lightgrey')
                     // @ts-ignore
                     .call(d3.zoom().on("zoom", (event) => {
+                        console.log(event)
                         svg.attr("transform", event.transform)
                     }))
+
                     .append("g")
                     .attr("id","main-svg")
                     .on("click", (event) => {
@@ -94,7 +96,7 @@
                     });
         
                 svg.append('image')
-                .attr('xlink:href', '/20200504-Plans-41BV.svg')
+                .attr('xlink:href', '/etage_2_clean_simple.svg')
                 .attr("width", window.innerWidth)
                 .attr("height", window.innerHeight)
 
