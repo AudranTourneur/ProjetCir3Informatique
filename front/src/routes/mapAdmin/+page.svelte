@@ -30,15 +30,15 @@
         
         let svg = d3.select(el)
                     .append("svg")
-                    .attr("width", window.innerWidth)
-                    .attr("height", window.innerHeight)
+                    .attr("width", innerWidth)
+                    .attr("height", innerHeight)
                     .style('background-color', 'lightgrey')
                     // @ts-ignore
                     .call(d3.zoom()
                     .on("zoom", (event) => {
                         svg.attr("transform", event.transform)
                     })
-                    .scaleExtent([1,3.5])
+                    .scaleExtent([1,4.5])
                     )
 
                     .append("g")
@@ -75,6 +75,7 @@
                                     };
                                     tabFloor[idSelectedFloor].newRoom(data);
 
+                                    tabPoint = [];
                                     svg.selectAll("circle").remove()
                                     svg.selectAll("polyline").remove()
                                 })
@@ -97,10 +98,12 @@
                         }
                     });
         
-                svg.append('image')
-                .attr('xlink:href', '/etage_2_clean_simple.svg')
-                .attr("width", window.innerWidth)
-                .attr("height", window.innerHeight)
+                let image = svg.append('image')
+                .attr('xlink:href', '/Etage_2_clean.png')
+                .attr("width", innerWidth)
+                .attr("height", innerHeight)
+
+                console.log(image);
 
         let tabFloor : Floor[] = [];
     

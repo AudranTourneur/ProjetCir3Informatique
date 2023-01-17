@@ -15,7 +15,7 @@ export class Room {
         .attr('fill', 'red')
         .style("fill-opacity", .2)
         .on("click", () => {
-            d3.selectAll("#main-svg > polygon").remove();
+            d3.selectAll("#main-svg > polygon").attr('stroke', '#f00');
             this.polygon!.attr('stroke', '#ff0');
         });
     }
