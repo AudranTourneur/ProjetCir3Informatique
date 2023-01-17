@@ -99,7 +99,8 @@ app.get('/test', (req, res) => {
 import { z } from 'zod';
 import { inferAsyncReturnType, initTRPC } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { initDb } from './db';
+import { createNewUser, initDb, queryEmailExists, signIn } from './db';
+import { sign } from 'crypto';
 
 // created for each request
 const createContext = ({
@@ -170,3 +171,12 @@ if (app.listen(port)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
     console.log(`    =============   PORT: ${port}   =============`);
 }
+//createNewUser("John","1234","john@john.com","token1")
+
+ 
+async function run() {
+console.log("REsultat:", await queryEmailExists("john@john.com"))
+console.log("test signin : ",await signIn("john@john.com","1234","token4"))
+}
+
+run()
