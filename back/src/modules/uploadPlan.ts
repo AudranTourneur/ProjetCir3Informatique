@@ -1,6 +1,7 @@
 import { Application } from "express";
 import { Schema, model } from 'mongoose'
 import multer from 'multer'
+import * as Jimp from 'jimp'
 
 import { imageSchema } from "../schemas/ImageSchem";
 import * as db from './db'
@@ -37,6 +38,10 @@ export function initImagesApp(app: Application) {
         const imageData = imageDoc.image.data;
 
         const img = Buffer.from(imageData, 'base64');
+        if(req.query.miniature){
+            const image = await Jimp.read(img);
+            image.resize(300,300);
+        }
 
         res.writeHead(200, {
             'Content-Type': 'image/png',

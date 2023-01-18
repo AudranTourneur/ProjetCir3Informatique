@@ -1,6 +1,6 @@
-import * as dotenv from 'dotenv' 
-import { z } from 'zod';
-import { inferAsyncReturnType, initTRPC } from '@trpc/server';
+import * as dotenv from 'dotenv'
+import {z} from 'zod';
+import {inferAsyncReturnType, initTRPC} from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -8,7 +8,6 @@ import cors from 'cors';
 import {getImagesList, initDb, isAdmin} from './modules/db';
 
 import * as account from './modules/account';
-import {exitUserExists} from './modules/account';
 import * as uploadPlan from './modules/uploadPlan';
 
 // *******************************************************************************
@@ -108,9 +107,7 @@ const appRouter = router({
     })
     .query((req) => {
       const input = req.input;
-      const user = userList.find((it) => it.id === input);
-
-      return user;
+        return userList.find((it) => it.id === input);
     }),
   userCreate: publicProcedure
     .input(z.object({ name: z.string() }))
