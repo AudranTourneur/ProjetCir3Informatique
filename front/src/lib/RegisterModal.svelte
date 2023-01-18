@@ -61,8 +61,8 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-test {email}
-test {password}
+<!--test {email}
+test {password}-->
 
 {#if isActive}
     <div
