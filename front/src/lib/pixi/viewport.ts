@@ -2,6 +2,7 @@
 
 import { stars } from './stars'
 import * as target from './target'
+import * as PIXI from 'pixi.js'
 
 const WORLD_WIDTH = 2000
 const WORLD_HEIGHT = 2000

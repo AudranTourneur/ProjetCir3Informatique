@@ -1,4 +1,5 @@
 import * as random from './random'
+import * as PIXI from 'pixi.js'
 
 function overlap(x, y, viewport, starSize) {
     const size = starSize
