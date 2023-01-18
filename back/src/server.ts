@@ -34,7 +34,8 @@ if (app.get('env') === 'production') {
 
 
 app.post('/userExists', async function (req, res) {
-    await account.userExists(req.body.email, res);
+  console.log(req.body.email);  
+  await account.userExists(req.body.email, res);
 });
 
 app.post('/createAccount', async function (req, res) {
@@ -147,7 +148,7 @@ const port = process.env.PORT || 7801;
 const IPv4 ='10.224.2.237';
 const test=3001 //pour lancer le serveur sur le reseau yncrea_lab
 
-if (app.listen(port)) {
+if (app.listen(test)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
-    console.log(`    =============   PORT: ${port}   =============`);
+    console.log(`    =============   PORT: ${test}   =============`);
 }

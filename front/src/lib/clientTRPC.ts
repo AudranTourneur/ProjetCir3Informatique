@@ -6,6 +6,7 @@ export function getTRPCClient() {
 		links: [
 			httpBatchLink({
 				//url: 'http://localhost:8080/trpc',
+				//url: 'http://10.224.2.237:3001',
 				url: 'http://localhost:5173/trpc',
 			}),
 		],

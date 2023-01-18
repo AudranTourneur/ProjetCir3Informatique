@@ -61,7 +61,7 @@ export async function userExists(email: string, res: any) {
 
 //creates the account with datas in the queue linked to token
 export async function createAccount(email: string, password: string, res: any) {
-    if(!await userExists(email, res)) {
+    if(!Object(await userExists(email, res)).status) {
         let token = generateToken();
         await db.createNewUser(ash(password), email, token)
         await res.json({status: 1, token});
