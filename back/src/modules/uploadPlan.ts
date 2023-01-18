@@ -1,6 +1,7 @@
 import { Application } from "express";
 import { Schema, model } from 'mongoose'
 import multer from 'multer'
+import * as db from './db'
 
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage, });
@@ -54,3 +55,7 @@ export function uploadPlanData(data: any, res: any) {
 
     res.json({status: 1});
 };
+
+export async function getImagesList(res: any) {
+    res.json({status: 1, data: await db.getImagesList()});
+}

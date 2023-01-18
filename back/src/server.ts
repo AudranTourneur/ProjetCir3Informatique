@@ -71,6 +71,10 @@ app.post('/uploadPlanData', async function (req, res) {
    await uploadPlan.uploadPlanData(req.body, res);
 });
 
+app.get('/getImagesList', async function (req, res) {
+    await uploadPlan.getImagesList(res);
+});
+
 app.post('/', async function (req, res) {
     await res.send('Hello World!');
 });
