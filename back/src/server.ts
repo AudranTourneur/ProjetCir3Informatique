@@ -36,17 +36,14 @@ if (app.get('env') === 'production') {
 }
 
 app.post('/userExists', async function (req, res) {
-  console.log("USER EXISTS :",req.body);
   await account.exitUserExists(req.body.email, res);
 });
 
 app.post('/createAccount', async function (req, res) {
-  console.log("CREATE ACCOUNT :",req.body);
     await account.createAccount(req.body.email, req.body.password, res);
 });
 
 app.post('/signIn', async function (req, res) {
-  console.log("SIGN IN :",req.body);
     await account.signIn(req.body.email, req.body.password, res);
 });
 
@@ -72,6 +69,10 @@ app.post('/resetPassword', async function (req, res) {
 
 app.post('/uploadPlanData', async function (req, res) {
    await uploadPlan.uploadPlanData(req.body, res);
+});
+
+app.post('/', async function (req, res) {
+    await res.send('Hello World!');
 });
 
 // created for each request
@@ -136,12 +137,11 @@ app.use('/trpc',
   }),
 );
 
-initDb();
+initDb().then(r => console.log('balec frr'));
 
 uploadPlan.initImagesApp(app);
 
 const port = process.env.PORT || 7801;
-const IPv4 ='10.224.2.237';
 const test=3001 //pour lancer le serveur sur le reseau yncrea_lab
 
 if (app.listen(test)) {
@@ -149,7 +149,7 @@ if (app.listen(test)) {
     console.log(`    =============   PORT: ${test}   =============`);
 }
 
-async function runtest(){
+async function runTest(){
   console.log(await isAdmin("lucas@lucas.com"))
 }
-runtest().then(r => console.log('balec frr'));
+runTest().then(r => console.log('balec frr'));
