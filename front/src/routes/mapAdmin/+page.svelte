@@ -113,5 +113,11 @@
 	});
 </script>
 
-<div bind:this={el}></div>
+<div class="overflow-hidden" bind:this={el}></div>
 <button on:click={()=>{isAdding = !isAdding}}>isAdding = {isAdding}</button>
+<button on:click={()=>{}}>Draw</button>
+<style>
+    :global(html, body) {
+        overflow: hidden;
+    }
+    </style>
