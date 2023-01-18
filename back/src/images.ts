@@ -1,4 +1,4 @@
-import { Application } from "express";
+import type { Application } from "express";
 
 import { Schema, model } from 'mongoose'
 import multer from 'multer'
@@ -14,23 +14,6 @@ const imageSchema = new Schema({
 const ImageModel = model('images', imageSchema);
 
 export function initImagesApp(app: Application) {
-    //const Image = mongoose.model('Image', { image: String, time: Number });
-
-
-
-
-    /*
-    app.post('/upload', upload.single('image'), async (req, res) => {
-        if (!req.file || !req.file.buffer) return console.log('no file')
-        console.log(req.file.buffer)
-        console.log(req.file.buffer.toString().substring(0, 100))
-        const image = { data: Buffer.from(req.file.buffer), contentType: req.file.mimetype };
-        const savedImage = await ImageModel.create({ image, floor: 42 });
-        console.log('savedImage', savedImage)
-        res.send(savedImage);
-    });
-    */
-
     app.post('/upload', upload.single('image'), async (req, res) => {
         const file = req.file;
         if (!file) return;
@@ -43,10 +26,9 @@ export function initImagesApp(app: Application) {
         console.log(base64File);
 
 
-        const id = 1
         const doc = new ImageModel({ image: { data: base64File, contentType: req.file?.mimetype ?? '' }, floor: id })
         await doc.save()
-        console.log('File saved with ID', id)
+        console.log('File saved with ID', doc._id)
 
 
         res.send("File uploaded and converted to base64");
