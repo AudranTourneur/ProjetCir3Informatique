@@ -1,6 +1,7 @@
 <script lang="ts">
 	import LoginModal from '$lib/LoginModal.svelte';
 	import RegisterModal from '$lib/RegisterModal.svelte';
+	import FilterBar from '$lib/FilterBar.svelte';
 
 	function testBDD() {
 		// fetch('http://localhost:8080/testBDD')
@@ -23,7 +24,7 @@
 	<div class="sideBtn__container">
 		<div class="border">
 			<div class="accountBtn">
-				<i class='bx bxs-user'></i>
+				<i class='bx bxs-user' on:click={() => isLoginModalOpen = true}></i>
 			</div>
 			<hr>
 			<div class="modeBtn">
@@ -31,6 +32,9 @@
 			</div>
 		</div>
 	</div>
+
+	<FilterBar>
+	</FilterBar>
 
 </main>
 
@@ -51,6 +55,10 @@
 		--fs-ss: 0.85rem;
 	}
 
+	main {
+		min-height: 100vh;
+	}
+
 	.sideBtn__container {
 		position: absolute;
 		right: 0;
@@ -60,18 +68,18 @@
 			display: flex;
 			flex-direction: column;
 			gap: 5px;
-			border: solid 3px white;
+			border: solid 3px #212629;
 			border-radius: 5px;
-			background-color: white;
+			background-color: #212629;
 			padding: 2px;
 
 			hr {
-				border: 2px solid black;
+				border: 1px solid #666b6e;
 			}
 		}
 
 		i {
-			color: black;
+			color: #666b6e;
 			font-size: var(--fs-l);
 			&:hover {
 				cursor: pointer;

@@ -26,13 +26,11 @@
 	
 </script>
 
-<div id="app">
+<div class="flex flex-col justify-center items-center">
 	<h1>Upload Image</h1>
   
         {#if avatar}
-        <img class="avatar" src="{avatar}" alt="d" />
-        {:else}
-        <img class="avatar" src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="" /> 
+            <img class="avatar" src="{avatar}" alt="d" />
         {/if}
 				<img class="upload" src="https://static.thenounproject.com/png/625182-200.png" alt="" on:click={()=>{fileinput.click();}} />
         <div class="chan" on:click={()=>{fileinput.click();}}>Choose Image</div>
@@ -43,13 +41,6 @@
 
 
 <style>
-	#app{
-	display:flex;
-		align-items:center;
-		justify-content:center;
-		flex-flow:column;
-}
- 
 	.upload{
 		display:flex;
 	height:50px;
