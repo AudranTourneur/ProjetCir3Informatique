@@ -51,7 +51,7 @@ export function clearResetPasswordQueue(token: string, email = '') {
 //asks if an account containing username or email is in db, priority to username
 async function userExists(email: string) {
     if(email) {
-        return !await db.emailExists(email);
+        return Number(!await db.emailExists(email));
     }else{
         return 2;
     }
