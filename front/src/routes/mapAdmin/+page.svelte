@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
 	import { writable, type Writable } from 'svelte/store';
-	import { fly, slide } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 
 
 
@@ -173,9 +173,13 @@
         </div> 
     {:else}
         <div class="flex justify-center  bg-black bg-opacity-50 p-2 h-[300px]" transition:slide>
-            <span>oui {$currentlySelectedRoom.name}</span>
-            <button class="btn" on:click={unselect}>Dé-selectionner</button>  
-            <button class="btn btn-info" on:click={edit}>Modifer</button>  
+            <div class="flex flex-col"> 
+                <div>nom : {$currentlySelectedRoom.name}</div>
+                <div>capacité : {$currentlySelectedRoom.capacity}</div>
+                <div>projecteur : {#if $currentlySelectedRoom.projecteur} oui {:else} non {/if}</div>
+                <button class="btn" on:click={unselect}>Dé-selectionner</button>  
+                <button class="btn btn-info" on:click={edit}>Modifer</button>  
+            </div>
         </div> 
     {/if}
   </div>
