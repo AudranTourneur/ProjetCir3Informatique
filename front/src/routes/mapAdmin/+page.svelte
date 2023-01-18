@@ -36,10 +36,10 @@
 
         // @ts-ignore
         .call(d3.zoom()
-        .on("zoom", (event) => {
-            svg.attr("transform", event.transform)
-        })
-        .scaleExtent([innerWidth/4000,4.5])
+            .on("zoom", (event) => {
+                svg.attr("transform", event.transform)
+            })
+            .scaleExtent([innerWidth/4000,4.5])
         )
 
         .append("g")

@@ -11,7 +11,7 @@ type RoomData = {
 export class Floor {
     private rooms: Array<Room> = [];
 
-    constructor(data : [RoomData], public name : String) {       
+    constructor(public data : [RoomData], public name : String) {       
         data.forEach(element => {
             let tmp = new Room(element.points,element.name,element.capacity,element.projecteur)
             this.rooms.push(tmp);
