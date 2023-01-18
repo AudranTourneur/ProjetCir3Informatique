@@ -22,7 +22,6 @@
 </svelte:head>
 
 <Navbar></Navbar>
-
 <div class="bg-base-100">
   <slot />
 </div>

@@ -19,6 +19,7 @@ specifiers:
   eslint: ^8.28.0
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^4.0.0
+  konva: ^8.4.0
   pixi-viewport: ^4.38.0
   pixi.js: ^7.1.0
   postcss: ^8.4.21
@@ -42,6 +43,7 @@ dependencies:
   '@trpc/server': 10.9.0
   '@types/d3': 7.4.0
   d3: 7.8.1
+  konva: 8.4.0
   pixi-viewport: 4.38.0_sq27ns3gwcwhowtlmminmcdmfa
   pixi.js: 7.1.0
   svelte-i18n: 3.6.0_svelte@3.55.1
@@ -1990,6 +1992,10 @@ packages:
   /kleur/4.1.5:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
+
+  /konva/8.4.0:
+    resolution: {integrity: sha512-o38I9j1Gr5CprnBwPI9dCSzb4cvN/8pnjuFHtKrGcNBfKmaLvYfcIakTEDm6xLt17O+S/6nXhLdXa5wqiHHS9Q==}
+    dev: false
 
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
