@@ -5,10 +5,11 @@
 	import ModalPlanCreate from "./ModalPlanCreate.svelte";
     import type {Plan} from '../../../../../back/src/types'
 
+ export let data
+
+   const images = data.images
+
     let plans = [
-        {id: 1, name: 'Plan 1', description: 'Description du plan 1'},
-        {id: 1, name: 'Plan 1', description: 'Description du plan 1'},
-        {id: 1, name: 'Plan 1', description: 'Description du plan 1'},
         {id: 1, name: 'Plan 1', description: 'Description du plan 1'},
     ]
 
@@ -26,6 +27,16 @@
 		    description: '',
 		    isPublic: false,
 	    }
+
+        
+
+        fetch('http://localhost:3000/plans', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(planInCreation)
+        })
     }
 </script>
 
@@ -55,5 +66,5 @@
 {/if}
 
 {#if planInCreation}
-    <ModalPlanCreate bind:toCreate={planInCreation}></ModalPlanCreate>
+    <ModalPlanCreate bind:toCreate={planInCreation} {images}></ModalPlanCreate>
 {/if}

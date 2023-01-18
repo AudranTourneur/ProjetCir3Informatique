@@ -56,9 +56,23 @@ export async function dbGetNumberOfFloors() {
     return ImageModel.countDocuments({});
 }
 
-export function uploadPlanData(data: any, res: any) {
+import {z} from 'zod'
 
-    res.json({status: 1});
+const planCreationRequestSchema = z.object({
+    name: z.string(),
+    imageId: z.string()
+})
+
+export async function uploadPlanData(data: any): Promise<string> {
+    const planCreationRequest = planCreationRequestSchema.parse(data)
+
+    const plan = {
+        name: planCreationRequest.name,
+        imageId: planCreationRequest.imageId,
+    }
+
+    const planId = await db.createNewPlan(plan.imageId, plan.name, '');
+    return planId;
 };
 
 export async function getImagesList(res: any) {

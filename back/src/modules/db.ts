@@ -94,7 +94,7 @@ export async function isAdmin(email:string){
 //}
 
 
-export function createNewPlan(imageId:String,name:String,description:String){
+export async function createNewPlan(imageId:String,name:String,description:String): Promise<string> {
 	let plans=new Plans({
 		name:name,
 		imageId:imageId,
@@ -102,7 +102,8 @@ export function createNewPlan(imageId:String,name:String,description:String){
 		rooms:[],
 		description:description
 	})
-	plans.save();
+	const dbResponse = await plans.save();
+	return dbResponse._id;
 }
 
 export async function updatePlan(planSchema:Plan){

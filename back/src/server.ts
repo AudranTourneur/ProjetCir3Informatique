@@ -66,10 +66,6 @@ app.post('/resetPassword', async function (req, res) {
     await account.resetPassword(req.body.token, req.body.password, res);
 });
 
-app.post('/uploadPlanData', async function (req, res) {
-   await uploadPlan.uploadPlanData(req.body, res);
-});
-
 app.get('/getImagesList', async function (req, res) {
     await uploadPlan.getImagesList(res);
 });
@@ -141,6 +137,12 @@ app.use('/trpc',
 initDb();
 
 uploadPlan.initImagesApp(app);
+
+app.post('/createPlan', async (req, res) => {
+  console.log(req.body)
+  const dbResponse = await uploadPlan.uploadPlanData(req.body);
+  return res.send({id: dbResponse})
+})
 
 const port = process.env.PORT || 7801;
 const test=3001 //pour lancer le serveur sur le reseau yncrea_lab

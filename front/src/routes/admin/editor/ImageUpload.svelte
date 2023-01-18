@@ -41,8 +41,6 @@
 				<img class="upload" src="https://static.thenounproject.com/png/625182-200.png" alt="" on:click={()=>{fileinput.click();}} />
         <div class="chan" on:click={()=>{fileinput.click();}}>Choose Image</div>
         <input style="display:none" type="file" accept=".png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
-
-    <button class="btn btn-success" on:click={upload}>Save to server</button>
 </div>
 
 

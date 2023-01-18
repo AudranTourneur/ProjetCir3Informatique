@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_API_HOST } from "$env/static/public";
 	import type { Plan } from "$lib/types";
 	import Modal from "$lib/ui/Modal.svelte";
     import ImageUpload from "./ImageUpload.svelte";
@@ -11,6 +12,9 @@
     function create() {
         toCreate= null
     }
+
+   export let images;
+  
 </script>
 
 <Modal bind:isActive>
@@ -26,7 +30,13 @@
         <div class="flex flex-col w-full lg:flex-row">
             <ImageUpload />
             <div class="divider lg:divider-horizontal">OU</div> 
-            <div class="grid flex-grow h-32 card bg-base-300 rounded-box place-items-center">Sélectionner une image</div>
+            <div class="flex flex-col overflow-y-scroll h-[40vh]">
+                {#each images as image}
+                    <div class="flex flex-grow h-32 rounded-box place-items-center">
+                        <img src="{PUBLIC_API_HOST}/images/{image}" alt="" width="300" height="300">
+                    </div>
+                {/each}
+            </div>
         </div>
     </div>
     <div slot="buttons">
