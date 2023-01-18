@@ -1,4 +1,5 @@
 <script>
+	import { PUBLIC_API_HOST } from "$env/static/public";
 	import "$style/app.css"
 	import Navbar from "../lib/Navbar.svelte";
 </script>
@@ -19,15 +20,64 @@
 			//$userTheme = mode;
 		}
 
-		async function requestData() {
-			let url = "http://10.224.2.237:3001"
+		async function registerData() {
+			let url = `${API_HOST}/userExists`
+			let user = {
+				email: "lucas@lucas.com",
+				password: "LUCAS"
+			}
 			await fetch(url, {
 				method: "POST",
 				mode: 'cors',
-				cache: 'no-cache'
-			}).then((res) => console.log(res))
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(user)
+			}).then((response) => response.json())
+					.then(async (data) => {
+						console.log(data)
+						if (data.status === 0) {
+							console.log("l'utilisateur n'existe pas!")
+							url = `${API_HOST}/createAccount`
+							
+							await fetch(url, {
+								method: "POST",
+								mode: "cors",
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify(user)
+							}).then((response) => response.json())
+									.then((data) => {
+										console.log(data);
+									})
+						} else {
+							console.log("status != 0")
+						}
+					});
 
 		}
+
+		async function loginData(){
+
+			let url = `${API_HOST}/createAccount`
+			let user = {
+				email: "lucas@ldqsucas.com",
+				password: "LUCAS"
+			}
+			await fetch(url, {
+				method: "POST",
+				mode: 'cors',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(user)
+			}).then((response) => response.json())
+					.then(async (data) => {
+						console.log(data)
+					});
+		}
+
 	</script>
 </svelte:head>
 

@@ -1,15 +1,18 @@
-import * as dotenv from 'dotenv' 
-import { z } from 'zod';
-import { inferAsyncReturnType, initTRPC } from '@trpc/server';
+import * as dotenv from 'dotenv'
+import {z} from 'zod';
+import {inferAsyncReturnType, initTRPC} from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { dbGetNumberOfFloors, initImagesApp } from './images';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import {getImagesList, initDb, isAdmin} from './modules/db';
 
-import {initDb} from './modules/db';
 import * as account from './modules/account';
-import {exitUserExists} from './modules/account';
+import * as uploadPlan from './modules/uploadPlan';
+
+// *******************************************************************************
+//                          TODO CHANGE URLFRONT IN ACCOUNT.JS
+// *******************************************************************************
 
 dotenv.config()
 
@@ -31,23 +34,15 @@ if (app.get('env') === 'production') {
     app.set('trust proxy', 1);
 }
 
-
-app.post('/isAdmin', async function (req, res) {
-    await account.isAdmin(req.body.email, req.body.token, res);
-});
-
 app.post('/userExists', async function (req, res) {
-  console.log("USER EXISTS :",req.body);
   await account.exitUserExists(req.body.email, res);
 });
 
 app.post('/createAccount', async function (req, res) {
-  console.log("CREATE ACCOUNT :",req.body);
     await account.createAccount(req.body.email, req.body.password, res);
 });
 
 app.post('/signIn', async function (req, res) {
-  console.log("SIGN IN :",req.body);
     await account.signIn(req.body.email, req.body.password, res);
 });
 
@@ -71,20 +66,16 @@ app.post('/resetPassword', async function (req, res) {
     await account.resetPassword(req.body.token, req.body.password, res);
 });
 
-app.get('/', (req, res) => {
-    res.send('Up and running!')
+app.get('/getImagesList', async function (req, res) {
+    await uploadPlan.getImagesList(res);
 });
 
-app.get('/ping', (req, res) => {
-  console.log('PING')
-  res.send('pong')
+app.post('/', async function (req, res) {
+    await res.send('Hello World!');
 });
 
 // created for each request
-const createContext = ({
-  req,
-  res,
-}: trpcExpress.CreateExpressContextOptions) => ({});
+const createContext = ({req, res,}: trpcExpress.CreateExpressContextOptions) => ({});
 type Context = inferAsyncReturnType<typeof createContext>;
 
 const t = initTRPC.context<Context>().create();
@@ -112,9 +103,7 @@ const appRouter = router({
     })
     .query((req) => {
       const input = req.input;
-      const user = userList.find((it) => it.id === input);
-
-      return user;
+        return userList.find((it) => it.id === input);
     }),
   userCreate: publicProcedure
     .input(z.object({ name: z.string() }))
@@ -132,7 +121,7 @@ const appRouter = router({
     }),
     getNumberOfFloors: publicProcedure
       .query(async () => {
-        return await dbGetNumberOfFloors()
+        return await uploadPlan.dbGetNumberOfFloors();
       })
 });
 
@@ -147,13 +136,24 @@ app.use('/trpc',
 
 initDb();
 
-initImagesApp(app);
+uploadPlan.initImagesApp(app);
+
+app.post('/createPlan', async (req, res) => {
+  console.log(req.body)
+  const dbResponse = await uploadPlan.uploadPlanData(req.body);
+  return res.send({id: dbResponse})
+})
 
 const port = process.env.PORT || 7801;
-const IPv4 ='10.224.2.237';
 const test=3001 //pour lancer le serveur sur le reseau yncrea_lab
 
 if (app.listen(test)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
     console.log(`    =============   PORT: ${test}   =============`);
 }
+
+async function runTest(){
+  console.log(await isAdmin("lucas@lucas.com"));
+  
+}
+runTest()

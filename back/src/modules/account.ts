@@ -13,7 +13,6 @@ const resetPasswordQueue = new Array();
 
 //url to send by email, replace it by domain name
 const urlFront = 'http://localhost:8100/'; //URL DE DEV
-//TODO change urlfornt to correct url of server
 
 //init of the mail sender
 const transporter = nodemailer.createTransport({
@@ -124,11 +123,8 @@ export async function mailResetPassword(email: string, language: string, res: an
         mailOptions.to = email;
         //mailOptions.subject = dictionary.mail[8].data;
         //mailOptions.text = dictionary.mail[9].data
-        mailOptions.text="Tough luck";
+        mailOptions.text="Tough luck\n" + urlFront + 'reset-password?token=' + token;
         mailOptions.subject ="Mr Beast winner !";
-            + urlFront
-            + 'reset-password?token='
-            + token;
         transporter.sendMail(mailOptions, async function (error) {
             if (error) {
                 await res.json({status: 0});
@@ -172,12 +168,10 @@ export async function resetPassword(token: string, password: string, res: any) {
     }
 }
 
-export async function isAdmin(email: string, token: string, res: any) {
-    if (await db.isAdmin(email, token)) {
-        await res.json({status: 1});
+async function isAdmin(email: string) {
+    if (await db.isAdmin(email)) {
         return 1;
     } else {
-        await res.json({status: 0});
         return 0;
     }
 }
