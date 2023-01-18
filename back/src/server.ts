@@ -2,12 +2,12 @@ import * as dotenv from 'dotenv'
 import { z } from 'zod';
 import { inferAsyncReturnType, initTRPC } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { checkConnection, createNewUser, initDb, emailExists, resetPassword, setToken, signIn } from './modules/db';
 import { dbGetNumberOfFloors, initImagesApp } from './images';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
+import {initDb} from './modules/db';
 import * as account from './modules/account';
 
 dotenv.config()
@@ -33,44 +33,36 @@ if (app.get('env') === 'production') {
 
 
 
-app.post('/userExists', function (req, res) {
-    account.userExists(req.body.username, req.body.email, req.body.language, con, res);
+app.post('/userExists', async function (req, res) {
+    await account.userExists(req.body.email, res);
 });
 
-app.post('/mailCreateAccount', function (req, res) {
-    // account.mailCreateAccount(req.body.username, req.body.password, req.body.email, req.body.language, res);
+app.post('/createAccount', async function (req, res) {
+    await account.createAccount(req.body.email, req.body.password, res);
 });
 
-app.post('/checkSignUpToken', function (req, res) {
-    // account.checkSignUpToken(req.body.token, req.body.language, res);
+app.post('/signIn', async function (req, res) {
+    await account.signIn(req.body.email, req.body.password, res);
 });
 
-app.post('/createAccount', function (req, res) {
-    // account.createAccount(req.body.token, req.body.language, con, res);
+app.post('/checkConnection', async function (req, res) {
+    await account.checkConnection(req.body.email, req.body.token, res);
 });
 
-app.post('/signIn', function (req, res) {
-    // account.signIn(req.body.identifier, req.body.password, req.body.language, con, res);
+app.post('/setToken', async function (req, res) {
+    await account.setToken(req.body.email, res);
 });
 
-app.post('/checkConnection', (req, res) => {
-    // account.checkConnection(req.body.username, req.body.token, con, res);
+app.post('/mailResetPassword', async function (req, res) {
+    await account.mailResetPassword(req.body.email, req.body.language, res);
 });
 
-app.post('/getConnectionToken', (req, res) => {
-    // account.getConnectionToken(req.body.username, con, res);
+app.post('/checkResetPasswordToken', async function (req, res) {
+    await account.checkResetPasswordToken(req.body.token, res);
 });
 
-app.post('/mailResetPassword', function (req, res) {
-    // account.mailResetPassword(req.body.email, req.body.language, con, res);
-});
-
-app.post('/checkResetPasswordToken', function (req, res) {
-    // account.checkResetPasswordToken(req.body.token, req.body.language, res);
-});
-
-app.post('/resetPassword', function (req, res) {
-    // account.resetPassword(req.body.token, req.body.password, req.body.language, con, res);
+app.post('/resetPassword', async function (req, res) {
+    await account.resetPassword(req.body.token, req.body.password, res);
 });
 
 app.get('/', (req, res) => {
@@ -169,21 +161,3 @@ if (app.listen(port)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
     console.log(`    =============   PORT: ${port}   =============`);
 }
-
- 
-async function run() {
-console.log("test emailExists (true):", await emailExists("john@john.com"))
-console.log("test emailExists (false):", await emailExists("hgfhgdfbj"))
-console.log("test signin (success): ",await signIn("john@john.com","1234","token4"))
-console.log("test signin (email): ",await signIn("hghdj","1234","token4"))
-console.log("test signin (password): ",await signIn("john@john.com","hgjfjfh","token4"))
-console.log("test checkconnection (true) :",await checkConnection("john@john.com","token4"))
-console.log("test checkconnection (false) :",await checkConnection("john@john.com","fhshfdvjfs"))
-console.log("test setToken (true):",await setToken("john@john.com","testtoken"))
-console.log("test setToken (false):",await setToken("vjvjhgjffb","testtoken"))
-console.log("test resetPassword (true):",await resetPassword("john@john.com","testPW123"))
-console.log("test resetPassword (false):",await resetPassword("vjvjhgjffb","testtoken"))
-await resetPassword("john@john.com","1234")
-}
-
-run()
