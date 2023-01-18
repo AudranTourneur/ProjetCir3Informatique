@@ -23,7 +23,7 @@ declare global {
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: '*' }));
 app.use('/files', express.static('files'));
 
 if (app.get('env') === 'production') {
@@ -67,22 +67,12 @@ app.post('/resetPassword', async function (req, res) {
 
 app.get('/', (req, res) => {
     res.send('Up and running!')
-})
+});
 
 app.get('/ping', (req, res) => {
   console.log('PING')
   res.send('pong')
-})
-
-
-let counter = 0
-app.get('/BLABLA', (req, res) => {
-    res.type('txt');
-    res.send(JSON.stringify({ a: counter++}));
-})
-
-
-
+});
 
 // created for each request
 const createContext = ({
