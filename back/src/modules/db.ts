@@ -2,17 +2,26 @@ import mongoose from 'mongoose'
 import { boolean } from 'zod';
 import {generateToken} from './token'
 import { UserSchema } from '../schemas/UserSchema';
+import { PlanSchema } from '../schemas/PlanSchema';
+import { reservationSchema } from '../schemas/ReservationsSchema';
+import { imageSchema } from '../schemas/ImageSchem';
+import { Plan } from '../types';
+
 
 
 const Users=mongoose.model('user',UserSchema);
+const Plans=mongoose.model('plan',PlanSchema);
+const Reservations=mongoose.model('reservations',reservationSchema);
+const Images=mongoose.model('images',imageSchema)
 
 mongoose.connection.on('connected',()=>console.log("connected to the mongo server"));
 mongoose.connection.on('error', (error)=> console.log("Error:",error));
 
 //Pour enlever un warning de deprecation
 mongoose.set('strictQuery',true);
-export async function initDb(){
-	await mongoose.connect('mongodb://Admin:Admin123@10.224.1.172:27017/?authMechanism=DEFAULT',{dbName:'app'});
+export function initDb(){
+	mongoose.connect(process.env.MONGODB_STRING,{dbName:'app'})
+	
 }
 
 export async function createNewUser(password:string,email:string,token:string){
@@ -80,6 +89,31 @@ export async function isAdmin(email:string){
 	}
 	return result.admin;
 }
+//export function async getImageId(name:String){
+//	const result =await Image.find({createdAt:},)
+//}
+
+
+export function createNewPlan(imageId:String,name:String,description:String){
+	let plans=new Plans({
+		name:name,
+		imageId:imageId,
+		isPublic:false,
+		rooms:[],
+		description:description
+	})
+	plans.save();
+}
+
+export async function updatePlan(planSchema:Plan){
+	const result=await Plans.findByIdAndUpdate(planSchema.id,{name:planSchema.name},{new:true});
+	if(!result){
+		return false;
+	}
+	//Faut quand meme faire un check que les varaibles du type sont les meme du schema
+	return true;
+}
+
 
 //attention mdp admin :1234
 //email admin : Admin@chehpaul
