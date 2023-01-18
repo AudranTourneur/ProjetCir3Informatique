@@ -1,12 +1,17 @@
 <script lang="ts">
     import { Floor } from '$lib/Floor';
+    import type { Room } from '$lib/Room'
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
+	import { writable, type Writable } from 'svelte/store';
+	import { fly, slide } from 'svelte/transition';
 
 
 
     let isAdding = false;
     let el : HTMLDivElement;
+
+    let currentlySelectedRoom: Writable<Room | null> = writable(null)
 	
     //let points = [
     //    [50, 50],
@@ -31,11 +36,6 @@
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-
-
-
-
-
         
         let svg = d3.select(el)
         .append("svg")
@@ -127,7 +127,7 @@
                 projecteur: true,
             };
 
-            tabFloor = [new Floor([roomData],"bonjour")];
+            tabFloor = [new Floor([roomData],"bonjour", currentlySelectedRoom)];
             tabFloor[idSelectedFloor].draw()
         }, 1000)
         //.attr("height", height)
@@ -146,6 +146,15 @@
     function startDraw() {
       isAdding = true
     }
+
+    function unselect() {
+        d3.selectAll("#main-svg > polygon").attr('stroke', '#f00');
+        $currentlySelectedRoom = null
+    }
+
+    function edit() {
+
+    }
 </script>
 
 <div class="absolute overflow-hidden" bind:this={el}></div>
@@ -154,14 +163,21 @@
 <!-- Span bottom edge -->
 <div class="absolute left-0 bottom-0 w-full">
   <div class="absolute inset-x-0 bottom-0">
-    <div class="flex justify-center  bg-black bg-opacity-50 p-2">
-
-        {#if !isAdding}
-            <button class="btn btn-primary" on:click={startDraw}>Draw room borders</button>
-        {:else}
-            <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
-        {/if}
-    </div> 
+    {#if !$currentlySelectedRoom}
+        <div class="flex justify-center  bg-black bg-opacity-50 p-2" transition:slide>
+            {#if !isAdding}
+                <button class="btn btn-primary" on:click={startDraw}>Draw room borders</button>
+            {:else}
+                <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
+            {/if}
+        </div> 
+    {:else}
+        <div class="flex justify-center  bg-black bg-opacity-50 p-2 h-[300px]" transition:slide>
+            <span>oui {$currentlySelectedRoom.name}</span>
+            <button class="btn" on:click={unselect}>Dé-selectionner</button>  
+            <button class="btn btn-info" on:click={edit}>Modifer</button>  
+        </div> 
+    {/if}
   </div>
 </div>
 
