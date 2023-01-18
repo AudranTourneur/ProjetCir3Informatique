@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { boolean } from 'zod';
-import {generateToken} from './modules/token'
+import {generateToken} from './token'
 
 const  UserSchema= new mongoose.Schema ({
 	username:String,

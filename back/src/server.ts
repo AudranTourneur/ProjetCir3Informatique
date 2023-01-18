@@ -2,13 +2,13 @@ import * as dotenv from 'dotenv'
 import { z } from 'zod';
 import { inferAsyncReturnType, initTRPC } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { checkConnection, createNewUser, initDb, emailExists, resetPassword, setToken, signIn } from './db';
-import { sign } from 'crypto';
+import { checkConnection, createNewUser, initDb, emailExists, resetPassword, setToken, signIn } from './modules/db';
 import { dbGetNumberOfFloors, initImagesApp } from './images';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-// import * as account from './modules/account';
+
+import * as account from './modules/account';
 
 dotenv.config()
 
@@ -34,7 +34,7 @@ if (app.get('env') === 'production') {
 
 
 app.post('/userExists', function (req, res) {
-    // account.userExists(req.body.username, req.body.email, req.body.language, con, res);
+    account.userExists(req.body.username, req.body.email, req.body.language, con, res);
 });
 
 app.post('/mailCreateAccount', function (req, res) {
