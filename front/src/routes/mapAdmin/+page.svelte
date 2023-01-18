@@ -184,6 +184,16 @@
             inputProjecteur = $currentlySelectedRoom!.projecteur;
         }
     }
+
+    function del() {
+        if (!$currentlySelectedRoom) return;
+        //$currentlySelectedRoom.delete();
+        unselect();
+    }
+
+    function finishEdition() {
+        console.log('ok!')
+    }
 </script>
 
 <div class="absolute overflow-hidden" bind:this={el}></div>
@@ -193,28 +203,41 @@
 <div class="absolute left-0 bottom-0 w-full">
   <div class="absolute inset-x-0 bottom-0">
     {#if !$currentlySelectedRoom}
-        <div class="flex justify-center  bg-black bg-opacity-50 p-2" transition:slide>
+        <div class="flex justify-center  bg-black bg-opacity-50 p-2 gap-2" transition:slide>
             {#if !isAdding}
-                <button class="btn btn-primary" on:click={startDraw}>Draw room borders</button>
+                <button class="btn btn-primary" on:click={startDraw}>Dessiner des salles</button>
+                <button class="btn btn-success" on:click={finishEdition}>Terminer l'édition</button>
             {:else}
                 <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
             {/if}
         </div> 
     {:else}
-        <div class="flex justify-center  bg-black bg-opacity-50 p-2 h-[300px]" transition:slide>
-            <div class="flex flex-col"> 
-                <div>nom : <input bind:value={inputName}></div>
-                <div>capacité : <input bind:value={inputCapacity}></div>
-                <div>projecteur :
-                    <input class="toggle" type="checkbox" bind:checked={inputProjecteur}/>
-                    {inputProjecteur}
+        <div class="flex justify-center  bg-black bg-opacity-70 p-2 h-[500px]" transition:slide>
+            <div class="flex flex-col gap-2"> 
+                <div class="form-control w-full max-w-xs">
+                  <label for="input-nom" class="label">
+                    <span class="label-text text-white">Nom de la salle</span>
+                  </label>
+                  <input id="input-nom" bind:value={inputName} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
+                </div>
+
+                <div class="form-control w-full max-w-xs">
+                  <label for="input-capacite" class="label">
+                    <span class="label-text text-white">Capacité de la salle</span>
+                  </label>
+                  <input id="input-capacite" bind:value={inputCapacity} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
+                </div>
+
+                <div class="text-white">Projecteur :
+                    <input class="toggle toggle-info" type="checkbox" bind:checked={inputProjecteur}/>
                 </div>
                 <div>
-                    <button class="btn" on:click={saveInput}>Sauvegarder</button>
-                    <button class="btn" on:click={cancelInput}>Annuler</button>
+                    <button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
+                    <button class="btn btn-success" on:click={saveInput}>Sauvegarder</button>
                 </div>
-                <button class="btn" on:click={unselect}>Dé-selectionner</button>
                 <button class="btn btn-info" on:click={edit}>Modifer</button>
+                <button class="btn btn-error" on:click={del}>Supprimer</button>
+                <button class="btn btn-primary" on:click={unselect}>OK</button>
             </div>
         </div>
     {/if}
