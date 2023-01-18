@@ -5,7 +5,7 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import {getImageIdList, initDb, isAdmin} from './modules/db';
+import {getImagesList, initDb, isAdmin} from './modules/db';
 
 import * as account from './modules/account';
 import {exitUserExists} from './modules/account';
@@ -71,7 +71,11 @@ app.post('/uploadPlanData', async function (req, res) {
    await uploadPlan.uploadPlanData(req.body, res);
 });
 
-app.get('/', async function (req, res) {
+app.get('/getImagesList', async function (req, res) {
+    await uploadPlan.getImagesList(res);
+});
+
+app.post('/', async function (req, res) {
     await res.send('Hello World!');
 });
 

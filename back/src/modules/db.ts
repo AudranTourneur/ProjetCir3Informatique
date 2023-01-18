@@ -114,7 +114,7 @@ export async function updatePlan(planSchema:Plan){
 	return true;
 }
 
-export async function getImageIdList(){
+export async function getImagesList(){
 	const result = await Images.find({},'_id');
 	console.log(result);
 	return result;
