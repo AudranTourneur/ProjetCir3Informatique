@@ -70,3 +70,4 @@ export async function resetPassword(email:string,password:string){
 	return result.password==password ? true : false
 }
 
+//export async function 

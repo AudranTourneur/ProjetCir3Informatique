@@ -109,14 +109,16 @@ export async function checkConnection(email: string, token: string, res: any) {
 //temporary linking the token and email in the resetPassword queue
 export async function mailResetPassword(email: string, language: string, res: any) {
     if (await db.emailExists(email)) {
-        const dictionary = await import('../files/json/translation/' + language + '.json', {assert: {type: 'json'}});
+        //const dictionary = await import('../files/json/translation/' + language + '.json', {assert: {type: 'json'}});
         const token = generateToken();
         clearResetPasswordQueue('', email);
         resetPasswordQueue.push({token, email});
         setTimeout(clearResetPasswordQueue, 300000, token);
         mailOptions.to = email;
-        mailOptions.subject = dictionary.mail[8].data;
-        mailOptions.text = dictionary.mail[9].data
+        //mailOptions.subject = dictionary.mail[8].data;
+        //mailOptions.text = dictionary.mail[9].data
+        mailOptions.text="Tough luck";
+        mailOptions.subject ="Mr Beast winner !";
             + urlFront
             + 'reset-password?token='
             + token;
