@@ -1,5 +1,4 @@
-import type { Application } from "express";
-
+import { Application } from "express";
 import { Schema, model } from 'mongoose'
 import multer from 'multer'
 

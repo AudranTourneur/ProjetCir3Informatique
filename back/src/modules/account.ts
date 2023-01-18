@@ -14,7 +14,6 @@ const resetPasswordQueue = new Array();
 //url to send by email, replace it by domain name
 const urlFront = 'http://localhost:8100/'; //URL DE DEV
 
-
 //init of the mail sender
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -169,7 +168,7 @@ export async function resetPassword(token: string, password: string, res: any) {
     }
 }
 
-export async function isAdmin(email: string) {
+async function isAdmin(email: string) {
     if (await db.isAdmin(email)) {
         return 1;
     } else {
