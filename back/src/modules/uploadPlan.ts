@@ -33,22 +33,32 @@ export function initImagesApp(app: Application) {
         const planId = req.params.image.split('.')[0];
         if (!planId) return res.send('Non existant image');
 
-        const imageDoc = await ImageModel.findOne({ _id: Number(planId) }).lean().exec();
+        const imageDoc = await ImageModel.findOne({ _id: planId }).lean().exec();
         if (!imageDoc || !imageDoc.image || !imageDoc.image.data) return res.send('Non existant image');
         const imageData = imageDoc.image.data;
-
+       
         const img = Buffer.from(imageData, 'base64');
+      
         if(req.query.miniature){
+            console.log('bonjour miniature')
             const image = await Jimp.read(img);
             image.resize(300,300);
-        }
 
-        res.writeHead(200, {
-            'Content-Type': 'image/png',
-            'Content-Length': img.length
-        });
-        res.end(img);
-        return;
+            image.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+                res.writeHead(200, {
+                    'Content-Type': 'image/png',
+                    'Content-Length': buffer.length
+                });
+                res.end(buffer)
+            })
+        }
+        else {
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Content-Length': img.length
+            });
+            res.end(img);
+        }
     });
 }
 
@@ -64,6 +74,7 @@ const planCreationRequestSchema = z.object({
 })
 
 export async function uploadPlanData(data: any): Promise<string> {
+    console.log('body=', data)
     const planCreationRequest = planCreationRequestSchema.parse(data)
 
     const plan = {
@@ -72,6 +83,7 @@ export async function uploadPlanData(data: any): Promise<string> {
     }
 
     const planId = await db.createNewPlan(plan.imageId, plan.name, '');
+    console.log('Uploaded plan ID', planId)
     return planId;
 };
 
