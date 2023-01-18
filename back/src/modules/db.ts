@@ -1,13 +1,8 @@
 import mongoose from 'mongoose'
 import { boolean } from 'zod';
 import {generateToken} from './token'
+import { UserSchema } from '../schemas/UserSchema';
 
-const  UserSchema= new mongoose.Schema ({
-	password:String,
-	email:String,
-	token:String,
-	admin:Boolean
-},{collection:"user"});
 
 const Users=mongoose.model('user',UserSchema);
 
@@ -78,3 +73,4 @@ export async function isAdmin(email:string){
 
 //attention mdp admin :1234
 //email admin : Admin@chehpaul
+//pour mettre en admin un utilisateur faire la commande db.user.findOneAndUpdate({email:"lucas@lucas.com"},{$set:{admin:true}}) dans mongosh
