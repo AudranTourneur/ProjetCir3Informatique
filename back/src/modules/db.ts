@@ -18,7 +18,7 @@ mongoose.connection.on('error', (error)=> console.log("Error:",error))
 //Pour enlever un warning de deprecation
 mongoose.set('strictQuery',true);
 export function initDb(){
-	mongoose.connect(process.env.MONGODB_STRING,{dbName:'app'})
+	mongoose.connect('mongodb://Admin:Admin123@10.224.1.172:27017/?authMechanism=DEFAULT',{dbName:'app'})
 	
 }
 

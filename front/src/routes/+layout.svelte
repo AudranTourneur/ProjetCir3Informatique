@@ -1,5 +1,5 @@
 <script>
-  import "$style/app.css"
+	import "$style/app.css"
 	import Navbar from "../lib/Navbar.svelte";
 </script>
 
@@ -18,16 +18,42 @@
 			console.log('mode=', mode);
 			//$userTheme = mode;
 		}
+
+		async function requestData() {
+			let url = "http://10.224.2.237:3001"
+			await fetch(url, {
+				method: "POST",
+				mode: 'cors',
+				cache: 'no-cache'
+			}).then((res) => console.log(res))
+
+		}
 	</script>
 </svelte:head>
 
-<Navbar></Navbar>
-<div class="bg-base-100">
+<!--<Navbar></Navbar>-->
+<slot />
+<!--<div class="bg-base-100">
   <slot />
-</div>
+</div>-->
 
-<style>
-  :global(body, html) {
-    height: 100vh;
-  }
+<style lang="scss">
+	:global(body, html) {
+		min-height: 100vh;
+		background-color: grey;
+	}
+
+	:root {
+		/* Responsive Elements */
+		--fs-error: 10rem;
+		--fs-3xl: 5rem;
+		--fs-xxl: 3rem;
+		--fs-xl: 2.5rem;
+		--fs-l: 2rem;
+		--fs-m: 1.5rem;
+		--fs-sm: 1.25rem;
+		--fs-s: 1rem;
+		--fs-ss: 0.85rem;
+	}
 </style>
+
