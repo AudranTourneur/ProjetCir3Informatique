@@ -7,7 +7,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import {initDb} from './modules/db';
+import {initDb, isAdmin} from './modules/db';
 import * as account from './modules/account';
 import {exitUserExists} from './modules/account';
 
@@ -157,3 +157,8 @@ if (app.listen(test)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');
     console.log(`    =============   PORT: ${test}   =============`);
 }
+
+async function runtest(){
+  console.log(await isAdmin("lucas@lucas.com"))
+}
+runtest();

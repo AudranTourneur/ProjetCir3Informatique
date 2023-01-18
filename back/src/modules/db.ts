@@ -25,7 +25,8 @@ export function createNewUser(password:string,email:string,token:string){
 	let user = new Users({
 		password:password,
 		email:email,
-		token:token
+		token:token,
+		admin:false
 	})
 	user.save()
 	console.log("New user added",user)
@@ -70,10 +71,9 @@ export async function resetPassword(email:string,password:string){
 }
 
 export async function isAdmin(email:string){
-	const result=await Users.find({email:email});
+	const result=await Users.findOne({email:email});
 	if(!result)return 'email not found';
 	return result.admin;
-	
 }
 
 //attention mdp admin :1234
