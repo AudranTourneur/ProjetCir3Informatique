@@ -114,6 +114,11 @@ export async function updatePlan(planSchema:Plan){
 	return true;
 }
 
+export async function getImageIdList(){
+	const result = await Images.find({},'_id');
+	console.log(result);
+	return result;
+}
 
 //attention mdp admin :1234
 //email admin : Admin@chehpaul

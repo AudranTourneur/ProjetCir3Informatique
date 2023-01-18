@@ -5,7 +5,7 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import {initDb, isAdmin} from './modules/db';
+import {getImageIdList, initDb, isAdmin} from './modules/db';
 
 import * as account from './modules/account';
 import {exitUserExists} from './modules/account';
@@ -71,7 +71,7 @@ app.post('/uploadPlanData', async function (req, res) {
    await uploadPlan.uploadPlanData(req.body, res);
 });
 
-app.post('/', async function (req, res) {
+app.get('/', async function (req, res) {
     await res.send('Hello World!');
 });
 
@@ -137,7 +137,7 @@ app.use('/trpc',
   }),
 );
 
-initDb().then(r => console.log('balec frr'));
+initDb();
 
 uploadPlan.initImagesApp(app);
 
@@ -150,6 +150,7 @@ if (app.listen(test)) {
 }
 
 async function runTest(){
-  console.log(await isAdmin("lucas@lucas.com"))
+  console.log(await isAdmin("lucas@lucas.com"));
+  
 }
-runTest().then(r => console.log('balec frr'));
+runTest()
