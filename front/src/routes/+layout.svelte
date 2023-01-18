@@ -40,7 +40,6 @@
 <style lang="scss">
 	:global(body, html) {
 		min-height: 100vh;
-		background-color: grey;
 	}
 
 	:root {
