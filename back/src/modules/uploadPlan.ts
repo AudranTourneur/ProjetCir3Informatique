@@ -57,5 +57,5 @@ export function uploadPlanData(data: any, res: any) {
 };
 
 export async function getImagesList(res: any) {
-    res.json({status: 1, data: await db.getImagesList()});
+    res.json((await db.getImagesList()).map(x => x._id));
 }
