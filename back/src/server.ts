@@ -2,14 +2,14 @@ import * as dotenv from 'dotenv'
 import { z } from 'zod';
 import { inferAsyncReturnType, initTRPC } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { dbGetNumberOfFloors, initImagesApp } from './images';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-
 import {initDb, isAdmin} from './modules/db';
+
 import * as account from './modules/account';
 import {exitUserExists} from './modules/account';
+import * as uploadPlan from './modules/uploadPlan';
 
 // *******************************************************************************
 //                          TODO CHANGE URLFRONT IN ACCOUNT.JS
@@ -70,20 +70,12 @@ app.post('/resetPassword', async function (req, res) {
     await account.resetPassword(req.body.token, req.body.password, res);
 });
 
-app.get('/', (req, res) => {
-    res.send('Up and running!')
-});
-
-app.get('/ping', (req, res) => {
-  console.log('PING')
-  res.send('pong')
+app.post('/uploadPlanData', async function (req, res) {
+   await uploadPlan.uploadPlanData(req.body, res);
 });
 
 // created for each request
-const createContext = ({
-  req,
-  res,
-}: trpcExpress.CreateExpressContextOptions) => ({});
+const createContext = ({req, res,}: trpcExpress.CreateExpressContextOptions) => ({});
 type Context = inferAsyncReturnType<typeof createContext>;
 
 const t = initTRPC.context<Context>().create();
@@ -131,7 +123,7 @@ const appRouter = router({
     }),
     getNumberOfFloors: publicProcedure
       .query(async () => {
-        return await dbGetNumberOfFloors()
+        return await uploadPlan.dbGetNumberOfFloors();
       })
 });
 
@@ -146,7 +138,7 @@ app.use('/trpc',
 
 initDb();
 
-initImagesApp(app);
+uploadPlan.initImagesApp(app);
 
 const port = process.env.PORT || 7801;
 const IPv4 ='10.224.2.237';
@@ -160,4 +152,4 @@ if (app.listen(test)) {
 async function runtest(){
   console.log(await isAdmin("lucas@lucas.com"))
 }
-runtest();
+runtest().then(r => console.log('balec frr'));
