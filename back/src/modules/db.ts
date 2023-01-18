@@ -3,7 +3,6 @@ import { boolean } from 'zod';
 import {generateToken} from './token'
 
 const  UserSchema= new mongoose.Schema ({
-	username:String,
 	password:String,
 	email:String,
 	token:String,
@@ -70,4 +69,12 @@ export async function resetPassword(email:string,password:string){
 	return result.password==password ? true : false
 }
 
-//export async function 
+export async function isAdmin(email:string){
+	const result=await Users.find({email:email});
+	if(!result)return 'email not found';
+	return result.admin;
+	
+}
+
+//attention mdp admin :1234
+//email admin : Admin@chehpaul

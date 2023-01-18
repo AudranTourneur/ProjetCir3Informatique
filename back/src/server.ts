@@ -35,15 +35,17 @@ if (app.get('env') === 'production') {
 
 
 app.post('/userExists', async function (req, res) {
+  console.log("USER EXISTS :",req.body);
   await account.exitUserExists(req.body.email, res);
 });
 
 app.post('/createAccount', async function (req, res) {
-  console.log(req.body);
+  console.log("CREATE ACCOUNT :",req.body);
     await account.createAccount(req.body.email, req.body.password, res);
 });
 
 app.post('/signIn', async function (req, res) {
+  console.log("SIGN IN :",req.body);
     await account.signIn(req.body.email, req.body.password, res);
 });
 

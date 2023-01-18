@@ -4,7 +4,7 @@ import {generateToken} from './token';
 import * as db from './db';
 
 //ash function for passwords
-const ash = (str: string) => crypto.createHash('sha256')
+export const ash = (str: string) => crypto.createHash('sha256')
     .update(str, 'utf-8')
     .digest('hex');
 
@@ -51,7 +51,7 @@ export function clearResetPasswordQueue(token: string, email = '') {
 //asks if an account containing username or email is in db, priority to username
 async function userExists(email: string) {
     if(email) {
-        return Number(!await db.emailExists(email));
+        return Number(await db.emailExists(email));
     }else{
         return 2;
     }
@@ -85,7 +85,7 @@ export async function signIn(email: string, password: string, res: any) {
         await res.json({status: 2});
         return 2;
     } else if (result === 'email') { //EMAIL ERROR
-        await res.json({status: 3});
+        await res.json({status: 0});
         return 3;
     }
     return 1;
