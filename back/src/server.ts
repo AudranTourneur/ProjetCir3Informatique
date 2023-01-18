@@ -77,9 +77,14 @@ app.get('/', (req, res) => {
     res.send('Up and running!')
 })
 
+app.get('/ping', (req, res) => {
+  console.log('PING')
+  res.send('pong')
+})
+
 
 let counter = 0
-app.get('/test', (req, res) => {
+app.get('/BLABLA', (req, res) => {
     res.type('txt');
     res.send(JSON.stringify({ a: counter++}));
 })
@@ -157,6 +162,8 @@ initDb();
 initImagesApp(app);
 
 const port = process.env.PORT || 7801;
+const IPv4 ='10.224.2.237';
+const test=3001 //pour lancer le serveur sur le reseau yncrea_lab
 
 if (app.listen(port)) {
     console.log('=========== SERVER STARTED FOR HTTP RQ ===========');

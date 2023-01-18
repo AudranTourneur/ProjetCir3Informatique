@@ -22,9 +22,8 @@ export function initDb(){
 	
 }
 
-export function createNewUser(username:string,password:string,email:string,token:string){
+export function createNewUser(password:string,email:string,token:string){
 	let user = new Users({
-		username:username,
 		password:password,
 		email:email,
 		token:token
