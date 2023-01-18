@@ -171,3 +171,13 @@ export async function resetPassword(token: string, password: string, res: any) {
         }
     }
 }
+
+export async function isAdmin(email: string, token: string, res: any) {
+    if (await db.isAdmin(email, token)) {
+        await res.json({status: 1});
+        return 1;
+    } else {
+        await res.json({status: 0});
+        return 0;
+    }
+}

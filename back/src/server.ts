@@ -32,7 +32,9 @@ if (app.get('env') === 'production') {
 }
 
 
-
+app.post('/isAdmin', async function (req, res) {
+    await account.isAdmin(req.body.email, req.body.token, res);
+});
 
 app.post('/userExists', async function (req, res) {
   console.log("USER EXISTS :",req.body);
