@@ -48,13 +48,11 @@ export function clearResetPasswordQueue(token: string, email = '') {
 }
 
 //asks if an account containing username or email is in db, priority to username
-export async function userExists(email: string, res: any) {
+async function userExists(email: string) {
     if(email) {
         if (await db.emailExists(email)) {
-            await res.json({status: 1});
             return 1;
         } else {
-            await res.json({status: 0});
             return 0;
         }
     }else{
@@ -62,9 +60,13 @@ export async function userExists(email: string, res: any) {
     }
 }
 
+export async function exitUserExists(email: string, res: any) {
+    await res.json({status: await userExists(email)});
+}
+
 //creates the account with datas in the queue linked to token
 export async function createAccount(email: string, password: string, res: any) {
-    if(!await userExists(email, res)) {
+    if(!await userExists(email)) {
         let token = generateToken();
         await db.createNewUser(ash(password), email, token)
         await res.json({status: 1, token});

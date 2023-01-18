@@ -9,6 +9,7 @@ import cors from 'cors';
 
 import {initDb} from './modules/db';
 import * as account from './modules/account';
+import {exitUserExists} from './modules/account';
 
 dotenv.config()
 
@@ -34,7 +35,7 @@ if (app.get('env') === 'production') {
 
 
 app.post('/userExists', async function (req, res) {
-    await account.userExists(req.body.email, res);
+    await account.exitUserExists(req.body.email, res);
 });
 
 app.post('/createAccount', async function (req, res) {
