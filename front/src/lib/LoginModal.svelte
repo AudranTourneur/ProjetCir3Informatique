@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_API_HOST } from '$env/static/public';
     import {createEventDispatcher, onDestroy} from 'svelte';
     import {fade, fly} from 'svelte/transition';
 
@@ -62,7 +63,7 @@
 		console.log(user);
 		if(!isRegisterModal){
 			console.log("PROCESSING LOGIN")
-			url = "http://10.224.2.237:3001/signIn";
+			url = PUBLIC_API_HOST + "/signIn";
 			await fetch(url, {
 				method: "POST",
 				mode: "cors",
@@ -97,7 +98,7 @@
 		} else {
 			// register
 			console.log("register")
-			url = "http://10.224.2.237:3001/userExists"
+			url = `${PUBLIC_API_HOST}/userExists`
 			await fetch(url, {
 				method: "POST",
 				mode: 'cors',
@@ -111,7 +112,8 @@
 						switch(data.status){
 							case 0:
 								console.info("user does not exist!")
-								url = "http://10.224.2.237:3001/createAccount"
+								url = `${PUBLIC_API_HOST}/createAccount`
+
 								await fetch(url, {
 									method: "POST",
 									mode: "cors",

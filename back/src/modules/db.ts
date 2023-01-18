@@ -14,8 +14,8 @@ const Plans=mongoose.model('plan',PlanSchema);
 const Reservations=mongoose.model('reservations',reservationSchema);
 const Images=mongoose.model('images',imageSchema)
 
-mongoose.connection.on('connected',()=>console.log("connected to the mongo server"))
-mongoose.connection.on('error', (error)=> console.log("Error:",error))
+mongoose.connection.on('connected',()=>console.log("connected to the mongo server"));
+mongoose.connection.on('error', (error)=> console.log("Error:",error));
 
 //Pour enlever un warning de deprecation
 mongoose.set('strictQuery',true);
@@ -24,58 +24,69 @@ export function initDb(){
 	
 }
 
-export function createNewUser(password:string,email:string,token:string){
+export async function createNewUser(password:string,email:string,token:string){
 	let user = new Users({
 		password:password,
 		email:email,
 		token:token,
 		admin:false
-	})
-	user.save()
-	console.log("New user added",user)
+	});
+	await user.save();
+	console.log("New user added",user);
 }
 
 //Return true si l'email est utilise une seule fois false sinon
 export async function emailExists(email:string){
-	const result= await Users.find({email:email})
-	if(!result)return false
-	return result.length==1 ? true :false;
+	const result= await Users.find({email:email});
+	if(!result){
+		return false;
+	}
+	return result.length == 1;
 }
 
 //Return true si l'email existe et si le parametre password et le meme en bdd, ensuite met à jour le token, sinon renvoit false
 export async function signIn(email:string,password:string,token:string){
-	const query = await Users.find({email:email})
-	if(!query[0])return 'email'
-	if(query[0].password==password){
-		await setToken(email,token)
+	const query = await Users.find({email:email});
+	if(!query[0]){
+		return 'email';
+	}else if(query[0].password==password){
+		await setToken(email,token);
+	} else {
+		return 'password';
 	}
-	else return 'password'
-	return 'success'
+	return 'success';
 }
 
 //Return true si le token en parametre est bien le meme en bdd, sinon false
 export async function checkConnection(email:string,token:string){
-	const result=await Users.find({email:email})
-	if(!result[0])return false
-	return result[0].token==token ? true:false;
-	
+	const result=await Users.find({email:email});
+	if(!result[0]){
+		return false;
+	}
+	return result[0].token == token;
 }
 
 export async function setToken(email:string,token:string){
-	const result = await Users.findOneAndUpdate({email:email},{token:token},{new:true})
-	if(!result)return false
-	return result.token==token ? true : false
+	const result = await Users.findOneAndUpdate({email:email},{token:token},{new:true});
+	if(!result){
+		return false;
+	}
+	return result.token == token;
 }
 
 export async function resetPassword(email:string,password:string){
-	const result = await Users.findOneAndUpdate({email:email},{password:password},{new:true})
-	if(!result)return false
-	return result.password==password ? true : false
+	const result = await Users.findOneAndUpdate({email:email},{password:password},{new:true});
+	if(!result){
+		return false;
+	}
+	return result.password == password;
 }
 
 export async function isAdmin(email:string){
 	const result=await Users.findOne({email:email});
-	if(!result)return 'email not found';
+	if(!result){
+		return 'email not found';
+	}
 	return result.admin;
 }
 //export function async getImageId(name:String){

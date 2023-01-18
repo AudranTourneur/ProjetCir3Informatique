@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Plan } from "$lib/types";
     import AdminNavbar from "../AdminNavbar.svelte";
 	import ModalPlanDelete from "./ModalPlanDelete.svelte";
 	import PreviewPlan from "./PreviewPlan.svelte";
 	import ModalPlanCreate from "./ModalPlanCreate.svelte";
+    import type {Plan} from '../../../../../back/src/types'
 
     let plans = [
         {id: 1, name: 'Plan 1', description: 'Description du plan 1'},
@@ -18,7 +18,14 @@
 
     function createNewPlan() {
         console.log('create new plan');
-        planInCreation = {id: -1, name: '', description: 'Description du plan 1'}
+        planInCreation = {
+		    id: '',
+		    name: 'Plan 1',
+		    imageId: '',
+		    rooms: [],
+		    description: '',
+		    isPublic: false,
+	    }
     }
 </script>
 
