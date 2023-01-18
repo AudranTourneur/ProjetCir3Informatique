@@ -52,4 +52,5 @@ export async function dbGetNumberOfFloors() {
 
 export function uploadPlanData(data: any, res: any) {
 
+    res.json({status: 1});
 };
