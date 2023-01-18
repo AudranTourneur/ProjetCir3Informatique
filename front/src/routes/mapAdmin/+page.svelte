@@ -25,19 +25,15 @@
     let tabPoint : Number[][] = [];
     let idSelectedFloor = 0;
 
-        let numberOfPoint = 0;
+    let numberOfPoint = 0;
+
 	onMount(() => {
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
 
-    let roomData = {
-        points: points.map(p => [p[0] * width, p[1] * height]),
-        name: "nom1",
-        capacity: 10,
-        projecteur: true,
-    };
+
 
 
         
@@ -112,24 +108,29 @@
                 }
             }
         })
-        .attr("transforme","scale:"+innerWidth/4000);
 
         let image = svg.append('image')
         .attr('xlink:href', '/Etage_2_clean.png')
         .attr("width", width)
 
-        setTimeout(() => {
-
-        console.log('image', image, image.node()?.getBBox())
-        }, 1)
-        //.attr("height", height)
-
         let tabFloor : Floor[] = [];
 
-        tabFloor = [new Floor([roomData],"bonjour")];
+        setTimeout(() => {
+            height = image.node()?.getBBox().height!;
+            console.log(height);
+            svg.attr("height", height)
 
-        tabFloor[idSelectedFloor].draw()
-        console.log(d3.select("svg"));
+            let roomData = {
+                points: points.map(p => [p[0] * width, p[1] * height]),
+                name: "nom1",
+                capacity: 10,
+                projecteur: true,
+            };
+
+            tabFloor = [new Floor([roomData],"bonjour")];
+            tabFloor[idSelectedFloor].draw()
+        }, 1000)
+        //.attr("height", height)
 	});
 
     function cancelSelection() {
@@ -139,7 +140,7 @@
         const svg = d3.select('#main-svg')
         svg.selectAll("circle").remove()
         svg.selectAll("polyline").remove()
-        numberOfPoints = 0
+        numberOfPoint = 0
     }
 
     function startDraw() {
