@@ -21,7 +21,7 @@
         console.log('create new plan');
         planInCreation = {
 		    id: '',
-		    name: 'Plan 1',
+		    name: 'Plan sans nom',
 		    imageId: '',
 		    rooms: [],
 		    description: '',
