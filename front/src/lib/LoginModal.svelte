@@ -46,6 +46,8 @@
 
 	//export let transition
 	let isLoading = false
+
+	let email = ''
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -76,7 +78,7 @@
   			<label class="label">
   			  <span class="label-text"><span> <i class="fa-solid fa-envelope"></i> </span>Email</span>
   			</label>
-			  <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+			  <input  type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
 			</div>
 
 
