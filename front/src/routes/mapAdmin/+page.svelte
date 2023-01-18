@@ -60,7 +60,7 @@
                     svg.append("circle")
                     .attr("cx", pointer[0])
                     .attr("cy", pointer[1])
-                    .attr("r", 3)               // set the radius
+                    .attr("r", 10)               // set the radius
                     .style("stroke", "yellow")      // set the line colour
                     .style("fill", "yellow")      // set the fill colour
                     .on("click", () => {
@@ -111,13 +111,40 @@
         tabFloor[idSelectedFloor].draw()
         console.log(d3.select("svg"));
 	});
+
+    function cancelSelection() {
+        console.log('cancel')
+        isAdding = false;
+        tabPoint = [];
+        const svg = d3.select('#main-svg')
+        svg.selectAll("circle").remove()
+        svg.selectAll("polyline").remove()
+    }
+
+    function startDraw() {
+      isAdding = true
+    }
 </script>
 
-<div class="overflow-hidden" bind:this={el}></div>
-<button on:click={()=>{isAdding = !isAdding}}>isAdding = {isAdding}</button>
-<button on:click={()=>{}}>Draw</button>
+<div class="absolute overflow-hidden" bind:this={el}></div>
+
+
+<!-- Span bottom edge -->
+<div class="absolute left-0 bottom-0 w-full">
+  <div class="absolute inset-x-0 bottom-0">
+    <div class="flex justify-center  bg-black bg-opacity-50 p-2">
+
+        {#if !isAdding}
+            <button class="btn btn-primary" on:click={startDraw}>Draw room borders</button>
+        {:else}
+            <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
+        {/if}
+    </div> 
+  </div>
+</div>
+
 <style>
     :global(html, body) {
         overflow: hidden;
     }
-    </style>
+</style>
