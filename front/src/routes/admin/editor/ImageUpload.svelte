@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { PUBLIC_API_HOST } from "$env/static/public";
+
+
 	let  avatar: string = ""; 
     let fileinput: HTMLInputElement;
     let image;
@@ -14,9 +17,12 @@
 
     function upload() {
         let formData = new FormData();
+        console.log('image ', image)
         console.log(image)
         formData.append('image', image);
-        fetch('http://localhost:8080/upload', {
+        const url = `${PUBLIC_API_HOST}/upload`
+        console.log('url', url)
+        fetch(url, {
             method: 'POST',
             body: formData
         }).then(res => res.json())
@@ -34,7 +40,7 @@
         {/if}
 				<img class="upload" src="https://static.thenounproject.com/png/625182-200.png" alt="" on:click={()=>{fileinput.click();}} />
         <div class="chan" on:click={()=>{fileinput.click();}}>Choose Image</div>
-        <input style="display:none" type="file" accept=".jpg, .jpeg, .png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
+        <input style="display:none" type="file" accept=".png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
 
     <button class="btn btn-success" on:click={upload}>Save to server</button>
 </div>
