@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import type { Writable } from "svelte/store";
 
 type RoomData = {
-    points: Number[][],
+    points: number[][],
     name: string,
     capacity: number,
     projecteur: boolean,
@@ -12,7 +12,7 @@ type RoomData = {
 export class Floor {
     private rooms: Array<Room> = [];
 
-    constructor(data : [RoomData], public name : String, private globalStore: Writable<Room | null>) {  
+    constructor(data : [RoomData], public name : string, private globalStore: Writable<Room | null>) {  
         data.forEach(element => {
             let tmp = new Room(element.points,element.name,element.capacity,element.projecteur, globalStore)
             this.rooms.push(tmp);

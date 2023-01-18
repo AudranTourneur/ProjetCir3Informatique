@@ -27,7 +27,11 @@
         [0, 1]
     ]
 
-    let tabPoint : Number[][] = [];
+    let inputName : string = '';
+    let inputCapacity : number;
+    let inputProjecteur : boolean;
+
+    let tabPoint : number[][] = [];
     let idSelectedFloor = 0;
 
     let numberOfPoint = 0;
@@ -149,11 +153,36 @@
 
     function unselect() {
         d3.selectAll("#main-svg > polygon").attr('stroke', '#f00');
+        firstTime = false;
         $currentlySelectedRoom = null
+    }
+
+
+    function saveInput() {
+        $currentlySelectedRoom!.name = inputName;
+        $currentlySelectedRoom!.capacity = inputCapacity;
+        $currentlySelectedRoom!.projecteur = inputProjecteur;
+    }
+    function cancelInput() {
+        inputName = $currentlySelectedRoom!.name;
+        inputCapacity = $currentlySelectedRoom!.capacity;
+        inputProjecteur = $currentlySelectedRoom!.projecteur;
     }
 
     function edit() {
 
+    }
+
+    let firstTime = false;
+
+    $: {
+        if ($currentlySelectedRoom && !firstTime) {
+            firstTime = true;
+
+            inputName = $currentlySelectedRoom!.name;
+            inputCapacity = $currentlySelectedRoom!.capacity;
+            inputProjecteur = $currentlySelectedRoom!.projecteur;
+        }
     }
 </script>
 
@@ -174,13 +203,20 @@
     {:else}
         <div class="flex justify-center  bg-black bg-opacity-50 p-2 h-[300px]" transition:slide>
             <div class="flex flex-col"> 
-                <div>nom : {$currentlySelectedRoom.name}</div>
-                <div>capacité : {$currentlySelectedRoom.capacity}</div>
-                <div>projecteur : {#if $currentlySelectedRoom.projecteur} oui {:else} non {/if}</div>
-                <button class="btn" on:click={unselect}>Dé-selectionner</button>  
-                <button class="btn btn-info" on:click={edit}>Modifer</button>  
+                <div>nom : <input bind:value={inputName}></div>
+                <div>capacité : <input bind:value={inputCapacity}></div>
+                <div>projecteur :
+                    <input class="toggle" type="checkbox" bind:checked={inputProjecteur}/>
+                    {inputProjecteur}
+                </div>
+                <div>
+                    <button class="btn" on:click={saveInput}>Sauvegarder</button>
+                    <button class="btn" on:click={cancelInput}>Annuler</button>
+                </div>
+                <button class="btn" on:click={unselect}>Dé-selectionner</button>
+                <button class="btn btn-info" on:click={edit}>Modifer</button>
             </div>
-        </div> 
+        </div>
     {/if}
   </div>
 </div>
