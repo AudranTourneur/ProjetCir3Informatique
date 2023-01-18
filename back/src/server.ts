@@ -34,11 +34,11 @@ if (app.get('env') === 'production') {
 
 
 app.post('/userExists', async function (req, res) {
-  console.log(req.body.email);  
   await account.userExists(req.body.email, res);
 });
 
 app.post('/createAccount', async function (req, res) {
+  console.log(req.body);
     await account.createAccount(req.body.email, req.body.password, res);
 });
 

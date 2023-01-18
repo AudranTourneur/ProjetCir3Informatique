@@ -59,6 +59,7 @@ export async function userExists(email: string, res: any) {
             return 0;
         }
     }else{
+        await res.json({status: 2});
         return 2;
     }
 }
