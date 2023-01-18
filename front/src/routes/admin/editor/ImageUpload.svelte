@@ -26,7 +26,7 @@
 	
 </script>
 
-<div id="app">
+<div class="flex flex-col justify-center items-center">
 	<h1>Upload Image</h1>
   
         {#if avatar}
@@ -43,13 +43,6 @@
 
 
 <style>
-	#app{
-	display:flex;
-		align-items:center;
-		justify-content:center;
-		flex-flow:column;
-}
- 
 	.upload{
 		display:flex;
 	height:50px;
