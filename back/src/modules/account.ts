@@ -13,6 +13,7 @@ const resetPasswordQueue = new Array();
 
 //url to send by email, replace it by domain name
 const urlFront = 'http://localhost:8100/'; //URL DE DEV
+//TODO change urlfornt to correct url of server
 
 //init of the mail sender
 const transporter = nodemailer.createTransport({
