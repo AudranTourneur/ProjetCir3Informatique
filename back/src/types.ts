@@ -10,13 +10,14 @@ export type Room ={
     points: Array<Point>
     capacity: NumberExpression,
     hasProjector: boolean,
-    whiteboard: boolean,
-    blackboard: boolean,
+    hasWhiteboard: boolean,
+    hasBlackboard: boolean,
     description: string,
 }
 
 export type Plan = {
-    id: number,
+    id: string,
+    imageId:string,
     name: string,
     description: string,
     rooms: Array<Room>,

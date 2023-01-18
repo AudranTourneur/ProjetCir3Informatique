@@ -1,14 +1,11 @@
 import { Application } from "express";
 import { Schema, model } from 'mongoose'
 import multer from 'multer'
+import { imageSchema } from "../schemas/ImageSchem";
 
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage, });
 
-const imageSchema = new Schema({
-    image: { data: String, contentType: String },
-    floor: Number,
-}, { timestamps: true });
 
 const ImageModel = model('images', imageSchema);
 
