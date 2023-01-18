@@ -1,4 +1,5 @@
 <script>
+	import { PUBLIC_API_HOST } from "$env/static/public";
 	import "$style/app.css"
 	import Navbar from "../lib/Navbar.svelte";
 </script>
@@ -20,7 +21,7 @@
 		}
 
 		async function registerData() {
-			let url = "http://10.224.2.237:3001/userExists"
+			let url = `${API_HOST}/userExists`
 			let user = {
 				email: "lucas@lucas.com",
 				password: "LUCAS"
@@ -37,7 +38,8 @@
 						console.log(data)
 						if (data.status === 0) {
 							console.log("l'utilisateur n'existe pas!")
-							url = "http://10.224.2.237:3001/createAccount"
+							url = `${API_HOST}/createAccount`
+							
 							await fetch(url, {
 								method: "POST",
 								mode: "cors",
@@ -58,7 +60,7 @@
 
 		async function loginData(){
 
-			let url = "http://10.224.2.237:3001/signIn"
+			let url = `${API_HOST}/createAccount`
 			let user = {
 				email: "lucas@ldqsucas.com",
 				password: "LUCAS"

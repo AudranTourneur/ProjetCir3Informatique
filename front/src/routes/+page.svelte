@@ -1,6 +1,5 @@
 <script lang="ts">
 	import LoginModal from '$lib/LoginModal.svelte';
-	import RegisterModal from '$lib/RegisterModal.svelte';
 	import FilterBar from '$lib/FilterBar.svelte';
 
 	function testBDD() {
@@ -12,14 +11,12 @@
 		console.log('nop');
 	}
 
-	let isRegisterModalOpen = false;
 	let isLoginModalOpen = false;
 </script>
 
 <main>
 	<button class="btn" on:click={testBDD}>test bdd</button>
 	<button class="btn" on:click={()=>isLoginModalOpen = true}>toggle modal</button>
-	<button class="btn" on:click={()=>isRegisterModalOpen = true}>toggle modal</button>
 
 	<div class="sideBtn__container">
 		<div class="border">
@@ -39,7 +36,6 @@
 </main>
 
 <LoginModal bind:isActive={isLoginModalOpen} />
-<RegisterModal bind:isActive={isRegisterModalOpen} />
 
 <style lang="scss">
 	:root {

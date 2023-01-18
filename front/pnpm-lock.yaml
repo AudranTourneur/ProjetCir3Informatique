@@ -19,6 +19,7 @@ specifiers:
   prettier-plugin-svelte: ^2.8.1
   sass: ^1.57.1
   svelte: ^3.54.0
+  svelte-calendar: ^3.1.6
   svelte-i18n: ^3.6.0
   svelte-preprocess: ^5.0.0
   tailwindcss: ^3.2.4
@@ -47,6 +48,7 @@ devDependencies:
   prettier: 2.8.3
   prettier-plugin-svelte: 2.9.0_kdmmghgdi3ngrsq6otxkjilbry
   svelte: 3.55.1
+  svelte-calendar: 3.1.6
   tailwindcss: 3.2.4_postcss@8.4.21
   vite: 4.0.4_sass@1.57.1
 
@@ -1194,6 +1196,10 @@ packages:
       - ts-node
     dev: true
 
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: true
+
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
@@ -1767,6 +1773,10 @@ packages:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
     dev: true
 
+  /just-throttle/2.3.1:
+    resolution: {integrity: sha512-0H4miIAWZYpnpg7oD/Y/PBb77ISSHAETif5xK9EnwIgYCO6oC8ErkJxDumMUTR44shSOwptRIArRuvNuvN/hOw==}
+    dev: true
+
   /kleur/4.1.5:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
@@ -2261,6 +2271,13 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /svelte-calendar/3.1.6:
+    resolution: {integrity: sha512-jOHiPlxBAa1LGVFQZoczdAGnCSI2RKcuQQHj32TjLbXO/P2Povx4JphPEcP7XjKj/s/jimBC6xQyFhyjD0vxbg==}
+    dependencies:
+      dayjs: 1.11.7
+      just-throttle: 2.3.1
+    dev: true
 
   /svelte-hmr/0.15.1_svelte@3.55.1:
     resolution: {integrity: sha512-BiKB4RZ8YSwRKCNVdNxK/GfY+r4Kjgp9jCLEy0DuqAKfmQtpL38cQK3afdpjw4sqSs4PLi3jIPJIFp259NkZtA==}
