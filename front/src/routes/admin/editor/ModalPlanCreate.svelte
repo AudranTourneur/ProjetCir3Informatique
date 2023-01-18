@@ -9,11 +9,63 @@
     let isActive = false;
     $: isActive = !!toCreate;
 
-    function create() {
+    
+    let lastImageId = null;
+
+   export let images;
+
+   let lastUploadedImage: any | null = null;
+
+    async function upload(): Promise<string> {
+        const image = lastUploadedImage
+        if (!image) return '';
+        let formData = new FormData();
+        formData.append('image', image);
+
+        const url = `${PUBLIC_API_HOST}/upload`
+        const serverRes = await fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+        const res = await serverRes.json()
+        if (res.id)
+            lastImageId = res.id
+
+        console.log('server responded with', res)
+        return res.id
+    }
+
+    async function create() {
+        if (!lastUploadedImage) return;
+        const imageId = await upload();
+        if (!imageId) return;
+
+        fetch(`${PUBLIC_API_HOST}/createPlan`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: 'Plan 1',
+                imageId,
+                rooms: [],
+                description: '',
+                isPublic: false,
+            })
+        }
+
+
         toCreate= null
     }
 
-   export let images;
+    let isButtonDisabled = true;
+
+    $: {
+        if (!lastUploadedImage) 
+            isButtonDisabled = true
+        else
+            isButtonDisabled = false
+    }
   
 </script>
 
@@ -28,7 +80,7 @@
     </div>
 
         <div class="flex flex-col w-full lg:flex-row">
-            <ImageUpload />
+            <ImageUpload bind:lastUploadedImage />
             <div class="divider lg:divider-horizontal">OU</div> 
             <div class="flex flex-col overflow-y-scroll h-[40vh]">
                 {#each images as image}
@@ -41,6 +93,6 @@
     </div>
     <div slot="buttons">
         <button class="btn" on:click={()=> toCreate = null}>Annuler</button>
-        <button class="btn btn-success" on:click={create}>Créer</button>
+        <button class="btn btn-success" on:click={create} disabled={isButtonDisabled}>Créer</button>
     </div>
 </Modal>
