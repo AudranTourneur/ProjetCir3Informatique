@@ -21,10 +21,44 @@ export class Room {
             this.globalStore.set(this)
         });
     }
-    
-    printRoom() {
-        console.log(this.points);
+
+    undraw() {
+        this.polygon?.remove();
     }
 
+    editPolygon() {
+        let svg = d3.select("#main-svg");
 
+        this.points.forEach(element => {
+            let circle = svg.append("circle")
+            .attr('points', this.points.toString())
+            .attr('stroke', '#f00')
+            .attr('fill', 'red')
+            .attr("cx", element[0])
+            .attr("cy", element[1])
+            .attr("r", 3)
+            // @ts-ignore
+            .call(d3.drag()
+                .on("start", ()=>{
+                    d3.selectAll(circle).attr("stroke", "black");
+                })
+                .on("drag", (event)=>{
+                    d3.selectAll(circle).attr("cx", event.x).attr("cy", event.y);
+
+                    element[0]=event.x
+                    element[1]=event.y
+
+                    this.polygon?.attr("points",this.points.toString())
+                })
+                .on("end", ()=>{
+                    d3.selectAll(circle).attr("stroke", "red");
+                })
+            )
+
+        });
+    }
+
+    stopEditPolygon() {
+        d3.selectAll("#main-svg > circle").remove();
+    }
 }

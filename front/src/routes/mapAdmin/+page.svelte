@@ -9,17 +9,10 @@
 
 
     let isAdding = false;
+    let isModifying = false;
     let el : HTMLDivElement;
 
     let currentlySelectedRoom: Writable<Room | null> = writable(null)
-	
-    //let points = [
-    //    [50, 50],
-    //    [50, 150],
-    //    [150, 150],
-    //    [150, 50],
-    //    [100, 100],
-    //].map((p) => [p[0] + 100, p[1] + 300])
 
     let points = [
         [0, 0],
@@ -27,14 +20,15 @@
         [0, 1]
     ]
 
-    let inputName : string = '';
+    let inputName : string;
     let inputCapacity : number;
     let inputProjecteur : boolean;
 
     let tabPoint : number[][] = [];
+
     let idSelectedFloor = 0;
 
-    let numberOfPoint = 0;
+    let tabFloor : Floor[] = [];
 
 	onMount(() => {
 
@@ -52,7 +46,7 @@
         .on("zoom", (event) => {
             svg.attr("transform", event.transform)
         })
-        .scaleExtent([innerWidth/width,4.5])
+        .scaleExtent([(innerWidth/width)-0.4,4.5])
         )
 
         .append("g")
@@ -60,9 +54,7 @@
         .on("click", (event) => {
             if(isAdding) {
                 let pointer = d3.pointer(event);
-                if(numberOfPoint == 0) {
-                    numberOfPoint++;
-                    
+                if(tabPoint.length == 0) {
                     tabPoint.push([pointer[0],pointer[1]]);
 
                     svg.append("polyline")
@@ -77,7 +69,6 @@
                     .style("stroke", "yellow")      // set the line colour
                     .style("fill", "yellow")      // set the fill colour
                     .on("click", () => {
-                        numberOfPoint = 0;
                         isAdding = false;
 
                         let data = {
@@ -95,7 +86,6 @@
                         svg.selectAll("polyline").remove()
                     })
                 } else {
-                    numberOfPoint++;
                     tabPoint.push([pointer[0],pointer[1]]);
 
                     svg.append("circle")
@@ -117,11 +107,8 @@
         .attr('xlink:href', '/Etage_2_clean.png')
         .attr("width", width)
 
-        let tabFloor : Floor[] = [];
-
         setTimeout(() => {
             height = image.node()?.getBBox().height!;
-            console.log(height);
             svg.attr("height", height)
 
             let roomData = {
@@ -130,21 +117,17 @@
                 capacity: 10,
                 projecteur: true,
             };
-
-            tabFloor = [new Floor([roomData],"bonjour", currentlySelectedRoom)];
-            tabFloor[idSelectedFloor].draw()
+            tabFloor.push(new Floor([roomData],"bonjour", currentlySelectedRoom));
+            tabFloor[idSelectedFloor].update()
         }, 1000)
-        //.attr("height", height)
 	});
 
     function cancelSelection() {
-        console.log('cancel')
         isAdding = false;
         tabPoint = [];
         const svg = d3.select('#main-svg')
         svg.selectAll("circle").remove()
         svg.selectAll("polyline").remove()
-        numberOfPoint = 0
     }
 
     function startDraw() {
@@ -170,7 +153,9 @@
     }
 
     function edit() {
-
+        if (!$currentlySelectedRoom) return;
+        isModifying = true;
+        $currentlySelectedRoom.editPolygon()
     }
 
     let firstTime = false;
@@ -187,12 +172,16 @@
 
     function del() {
         if (!$currentlySelectedRoom) return;
-        //$currentlySelectedRoom.delete();
+        tabFloor[idSelectedFloor].delete($currentlySelectedRoom);
+        tabFloor[idSelectedFloor].update()
         unselect();
     }
 
     function finishEdition() {
-        console.log('ok!')
+        isAdding = false;
+        isModifying = false;
+        if (!$currentlySelectedRoom) return;
+        $currentlySelectedRoom.stopEditPolygon();
     }
 </script>
 
@@ -210,36 +199,42 @@
             {:else}
                 <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
             {/if}
-        </div> 
-    {:else}
-        <div class="flex justify-center  bg-black bg-opacity-70 p-2 h-[500px]" transition:slide>
-            <div class="flex flex-col gap-2"> 
-                <div class="form-control w-full max-w-xs">
-                  <label for="input-nom" class="label">
-                    <span class="label-text text-white">Nom de la salle</span>
-                  </label>
-                  <input id="input-nom" bind:value={inputName} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
-                </div>
-
-                <div class="form-control w-full max-w-xs">
-                  <label for="input-capacite" class="label">
-                    <span class="label-text text-white">Capacité de la salle</span>
-                  </label>
-                  <input id="input-capacite" bind:value={inputCapacity} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
-                </div>
-
-                <div class="text-white">Projecteur :
-                    <input class="toggle toggle-info" type="checkbox" bind:checked={inputProjecteur}/>
-                </div>
-                <div>
-                    <button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
-                    <button class="btn btn-success" on:click={saveInput}>Sauvegarder</button>
-                </div>
-                <button class="btn btn-info" on:click={edit}>Modifer</button>
-                <button class="btn btn-error" on:click={del}>Supprimer</button>
-                <button class="btn btn-primary" on:click={unselect}>OK</button>
-            </div>
         </div>
+    {:else}
+        {#if !isModifying}
+            <div class="flex justify-center  bg-black bg-opacity-70 p-2 h-[500px]" transition:slide>
+                <div class="flex flex-col gap-2"> 
+                    <div class="form-control w-full max-w-xs">
+                    <label for="input-nom" class="label">
+                        <span class="label-text text-white">Nom de la salle</span>
+                    </label>
+                    <input id="input-nom" bind:value={inputName} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
+                    </div>
+
+                    <div class="form-control w-full max-w-xs">
+                    <label for="input-capacite" class="label">
+                        <span class="label-text text-white">Capacité de la salle</span>
+                    </label>
+                    <input id="input-capacite" bind:value={inputCapacity} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
+                    </div>
+
+                    <div class="text-white">Projecteur :
+                        <input class="toggle toggle-info" type="checkbox" bind:checked={inputProjecteur}/>
+                    </div>
+                    <div>
+                        <button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
+                        <button class="btn btn-success" on:click={saveInput}>Sauvegarder</button>
+                    </div>
+                    <button class="btn btn-info" on:click={edit}>Modifer</button>
+                    <button class="btn btn-error" on:click={del}>Supprimer</button>
+                    <button class="btn btn-primary" on:click={unselect}>OK</button>
+                </div>
+            </div>
+        {:else}
+            <div class="flex justify-center  bg-black bg-opacity-70 p-2" transition:slide>
+                <button class="btn btn-primary" on:click={finishEdition}>Terminer l'édition</button>
+            </div>
+        {/if}
     {/if}
   </div>
 </div>

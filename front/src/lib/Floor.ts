@@ -17,9 +17,11 @@ export class Floor {
             let tmp = new Room(element.points,element.name,element.capacity,element.projecteur, globalStore)
             this.rooms.push(tmp);
         });
+        console.log(this.rooms);
     }
 
-    draw() {
+    update() {
+        d3.selectAll("#main-svg > polygon").remove();
         this.rooms.forEach(element => {         
             element.draw();
         });
@@ -29,11 +31,19 @@ export class Floor {
         d3.selectAll("#main-svg > polygon").remove();
     }
 
-    newRoom(data : RoomData) {      
+    newRoom(data : RoomData) {
         this.rooms.push(new Room(data.points,data.name,data.capacity,data.projecteur, this.globalStore));
         this.unDraw();
-        this.draw();
+        this.update();
     }
+
+    delete(room : Room) {
+        room.undraw()
+        let foundRoomIndex = this.rooms.findIndex((element) => {element == room});
+        this.rooms.splice(foundRoomIndex,1);
+        this.update();
+    }
+
     reInitialyse() {
         this.rooms.forEach(element => {
             element.polygon!.attr('stroke', '#ff0');
