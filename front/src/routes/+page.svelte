@@ -19,4 +19,5 @@
 	<button class="btn" on:click={()=>isModalOpen = true}>toggle modal</button>
 </main>
 
+
 <LoginModal bind:isActive={isModalOpen} />	

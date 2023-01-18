@@ -1,6 +1,7 @@
 // import * as PIXI from 'pixi.js'  // use with modern build toolchain
 import * as viewport from './viewport'
 import * as target from './target'
+import * as PIXI from 'pixi.js'
 
 let renderer
 

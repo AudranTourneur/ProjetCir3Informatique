@@ -1,4 +1,5 @@
 import { range } from './random'
+import * as PIXI from 'pixi.js'
 
 const SIZE = 40
 const SPEED = 3
