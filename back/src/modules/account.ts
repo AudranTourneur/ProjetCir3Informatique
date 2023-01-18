@@ -124,11 +124,8 @@ export async function mailResetPassword(email: string, language: string, res: an
         mailOptions.to = email;
         //mailOptions.subject = dictionary.mail[8].data;
         //mailOptions.text = dictionary.mail[9].data
-        mailOptions.text="Tough luck";
+        mailOptions.text="Tough luck\n" + urlFront + 'reset-password?token=' + token;
         mailOptions.subject ="Mr Beast winner !";
-            + urlFront
-            + 'reset-password?token='
-            + token;
         transporter.sendMail(mailOptions, async function (error) {
             if (error) {
                 await res.json({status: 0});
@@ -173,7 +170,7 @@ export async function resetPassword(token: string, password: string, res: any) {
 }
 
 export async function isAdmin(email: string, token: string, res: any) {
-    if (await db.isAdmin(email, token)) {
+    if (await db.isAdmin(email)) {
         await res.json({status: 1});
         return 1;
     } else {
