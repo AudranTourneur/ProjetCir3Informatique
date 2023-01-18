@@ -13,7 +13,7 @@ const resetPasswordQueue = new Array();
 
 //url to send by email, replace it by domain name
 const urlFront = 'http://localhost:8100/'; //URL DE DEV
-//TODO change urlfornt to correct url of server
+&s
 
 //init of the mail sender
 const transporter = nodemailer.createTransport({
@@ -169,12 +169,10 @@ export async function resetPassword(token: string, password: string, res: any) {
     }
 }
 
-export async function isAdmin(email: string, token: string, res: any) {
+export async function isAdmin(email: string) {
     if (await db.isAdmin(email)) {
-        await res.json({status: 1});
         return 1;
     } else {
-        await res.json({status: 0});
         return 0;
     }
 }

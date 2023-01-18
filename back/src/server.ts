@@ -11,6 +11,10 @@ import {initDb, isAdmin} from './modules/db';
 import * as account from './modules/account';
 import {exitUserExists} from './modules/account';
 
+// *******************************************************************************
+//                          TODO CHANGE URLFRONT IN ACCOUNT.JS
+// *******************************************************************************
+
 dotenv.config()
 
 declare global {
