@@ -1,12 +1,17 @@
 <script lang="ts">
     import { Floor } from '$lib/Floor';
+    import type { Room } from '$lib/Room'
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
+	import { writable, type Writable } from 'svelte/store';
+	import { fly, slide } from 'svelte/transition';
 
 
 
     let isAdding = false;
     let el : HTMLDivElement;
+
+    let currentlySelectedRoom: Writable<Room | null> = writable(null)
 	
     //let points = [
     //    [50, 50],
@@ -25,21 +30,12 @@
     let tabPoint : Number[][] = [];
     let idSelectedFloor = 0;
 
-        let numberOfPoint = 0;
+    let numberOfPoint = 0;
+
 	onMount(() => {
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-
-    let roomData = {
-        points: points.map(p => [p[0] * width, p[1] * height]),
-        name: "nom1",
-        capacity: 10,
-        projecteur: true,
-    };
-
-
+    let width = window.innerWidth;
+    let height = window.innerHeight;
         
         let svg = d3.select(el)
         .append("svg")
@@ -112,24 +108,29 @@
                 }
             }
         })
-        .attr("transforme","scale:"+innerWidth/4000);
 
         let image = svg.append('image')
         .attr('xlink:href', '/Etage_2_clean.png')
         .attr("width", width)
 
-        setTimeout(() => {
-
-        console.log('image', image, image.node()?.getBBox())
-        }, 1)
-        //.attr("height", height)
-
         let tabFloor : Floor[] = [];
 
-        tabFloor = [new Floor([roomData],"bonjour")];
+        setTimeout(() => {
+            height = image.node()?.getBBox().height!;
+            console.log(height);
+            svg.attr("height", height)
 
-        tabFloor[idSelectedFloor].draw()
-        console.log(d3.select("svg"));
+            let roomData = {
+                points: points.map(p => [p[0] * width, p[1] * height]),
+                name: "nom1",
+                capacity: 10,
+                projecteur: true,
+            };
+
+            tabFloor = [new Floor([roomData],"bonjour", currentlySelectedRoom)];
+            tabFloor[idSelectedFloor].draw()
+        }, 1000)
+        //.attr("height", height)
 	});
 
     function cancelSelection() {
@@ -139,11 +140,20 @@
         const svg = d3.select('#main-svg')
         svg.selectAll("circle").remove()
         svg.selectAll("polyline").remove()
-        numberOfPoints = 0
+        numberOfPoint = 0
     }
 
     function startDraw() {
       isAdding = true
+    }
+
+    function unselect() {
+        d3.selectAll("#main-svg > polygon").attr('stroke', '#f00');
+        $currentlySelectedRoom = null
+    }
+
+    function edit() {
+
     }
 </script>
 
@@ -153,14 +163,21 @@
 <!-- Span bottom edge -->
 <div class="absolute left-0 bottom-0 w-full">
   <div class="absolute inset-x-0 bottom-0">
-    <div class="flex justify-center  bg-black bg-opacity-50 p-2">
-
-        {#if !isAdding}
-            <button class="btn btn-primary" on:click={startDraw}>Draw room borders</button>
-        {:else}
-            <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
-        {/if}
-    </div> 
+    {#if !$currentlySelectedRoom}
+        <div class="flex justify-center  bg-black bg-opacity-50 p-2" transition:slide>
+            {#if !isAdding}
+                <button class="btn btn-primary" on:click={startDraw}>Draw room borders</button>
+            {:else}
+                <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
+            {/if}
+        </div> 
+    {:else}
+        <div class="flex justify-center  bg-black bg-opacity-50 p-2 h-[300px]" transition:slide>
+            <span>oui {$currentlySelectedRoom.name}</span>
+            <button class="btn" on:click={unselect}>Dé-selectionner</button>  
+            <button class="btn btn-info" on:click={edit}>Modifer</button>  
+        </div> 
+    {/if}
   </div>
 </div>
 
