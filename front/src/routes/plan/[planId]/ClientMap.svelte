@@ -135,9 +135,9 @@
         let url = PUBLIC_API_HOST + "/bookRoom";
         let displayedDate = {
             email: localStorage.getItem('email'),
-            date: infoModal1,
-            startTime: infoModal1,
-            endTime: infoModal2,
+            date: infoModal1.getTime(),
+            startTime: infoModal1.getTime(),
+            endTime: infoModal2.getTime(),
             roomName: $currentlySelectedRoom?.name,
             planId: plan._id,
             token: localStorage.getItem('token'),
@@ -296,7 +296,7 @@
 					</div>
 					<button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
 					<div class="absolute bottom-2 left-0">
-						<TimePlan bind:infoDate bind:infoModal1={infoModal1} bind:infoModal2={infoModal2}/>
+						<TimePlan bind:dataDay bind:infoDate bind:infoModal1={infoModal1} bind:infoModal2={infoModal2}/>
 					</div>
 				</div>
 			</div>
