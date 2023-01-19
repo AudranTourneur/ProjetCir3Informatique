@@ -57,17 +57,23 @@
 
 	async function getReservations() {
 		if (!$dateStore || !$dateStore.selected) return;
+		console
+		const displayedDate =  $dateStore.selected.toISOString().split('T')[0];
+
+		console.log('sending', plan._id, displayedDate)
+
 		const res = await fetch(`${PUBLIC_API_HOST}/getAllReservationsForPlanByDate/${plan._id}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				displayedDate: $dateStore.selected.getTime(),
+				displayedDate,
+				test: 'bonjour',
 			})
 		})
 		const data = await res.json()
-		console.log('reservations', data)	
+		console.log('reservations ICI !!!!!', data.data)	
 		
 	}
 
@@ -209,6 +215,18 @@
 			initDay();
 		}
 	}
+
+	/*
+	let fakeDatas = [
+		{
+			reservedBy:String,
+		    date:Number,
+		    startTime:Number,
+		    endTime:Number,
+		    roomName:String,
+		}
+	]
+	*/
 
 	function reloadPage() {
 		setTimeout(() => {
