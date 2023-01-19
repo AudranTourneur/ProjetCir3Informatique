@@ -117,9 +117,12 @@ export async function updatePlan(planSchema:Plan){
 }
 
 export async function getImagesList(){
-	const result = await Images.find({},'_id');
-	console.log(result);
-	return result;
+	return await Images.find({},'_id');
+	
+}
+
+export async function getAllplans(){
+	return await Plans.find({});
 }
 
 //attention mdp admin :1234
