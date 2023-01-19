@@ -146,7 +146,7 @@ export async function getAllReservationsByEmail(email:String){
 }
 
 
-export async function getAllReservationsForPlanByDate(planId:String,date:Number){
+export async function getAllReservationsForPlanByDate(planId:String,date:String){
 	const result = await Reservations.find({planId:planId,date:date});
 	if(!result)return [];
 	return result;
@@ -171,7 +171,7 @@ export async function deletePlan(_id:String){
 }
 
 //Ajoute une nouvelle reservation dans la bdd tg paul, renvoit l'_id du nouveau objet ajoute
-export async function bookRoom(reservedBy:String,date:Number,planId:String,roomName:String,startTime:Number,endTime:Number){
+export async function bookRoom(reservedBy:String,date:String,planId:String,roomName:String,startTime:Number,endTime:Number){
 	let reservation = new Reservations({
 		reservedBy:reservedBy,
 		date:date,
