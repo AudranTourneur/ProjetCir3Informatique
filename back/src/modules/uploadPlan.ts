@@ -125,7 +125,7 @@ export async function isAdmin(email: string, token: string, res: Response) {
 }
 
 export async function getAllReservationsForPlanByDate(planId: string, displayedDate: number, res: Response) {
-    await res.json({data: await db.getAllReservationsForPlanByDate(planId, displayedDate)});
+    res.json({data: await db.getAllReservationsForPlanByDate(planId, displayedDate)});
 }
 
 function getColorByCoeff(coeff: number){
@@ -138,13 +138,35 @@ function getColorByCoeff(coeff: number){
     }
 }
  export async function getCoeffSupperpositionByRoomByHour(planId: string, startTime: number, endTime: number, res: Response) {
-    let searchingDay = {day: new Date(startTime).getDate(), month: new Date(startTime).getMonth()+1, year: new Date(startTime).getFullYear()};
-    // let reservations = await db.getAllReservationsForPlanByDate(planId, searchingDay);
-    //delete reservations that are not in the time interval
-    // @ts-ignore
-    //  reservations = reservations.filter(reservation => reservation.startTime < endTime && reservation.endTime > startTime);
-     // console.log('reservations', reservations);
+    let searchingDay = new Date(startTime).getTime();
+    let reservations = await db.getAllReservationsForPlanByDate(planId, searchingDay);
+     // @ts-ignore
+     reservations = reservations.filter(reservation => reservation.startTime < endTime && reservation.endTime > startTime);
+
      res.send('ok');
+}
+
+async function canBookRoom(planId: string, startTime: number, date: number, endTime: number) {
+    let reservations = await db.getAllReservationsForPlanByDate(planId, date);
+    let canBook = true;
+    for (let i = 0; i < reservations.length; i++) {//Inshallah ça marche mashallah
+        // @ts-ignore
+        let case1 = reservations[i].endTime>startTime && reservations[i].endTime<endTime;
+        // @ts-ignore
+        let case2 = reservations[i].startTime>startTime && reservations[i].startTime<endTime;
+        // @ts-ignore
+        if(case1 && !case2){
+            // @ts-ignore
+            canBook = false;
+        }else if (!case1 && case2){
+            // @ts-ignore
+            canBook = false;
+        }else if (case1 && case2){
+            // @ts-ignore
+            canBook = false;
+        }
+    }
+    return canBook;
 }
 
 export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number,date: number, email: string, token: string, res: Response) {
@@ -154,9 +176,13 @@ export async function bookRoom(planId: string, roomName: string, startTime: numb
             startTime = endTime;
             endTime = tmp;
         }
-        await res.json({status: await db.bookRoom(email, date,  planId, roomName, startTime, endTime)});
+        if(await canBookRoom(planId, startTime, date, endTime)) {
+            res.json({status: await db.bookRoom(email, date, planId, roomName, startTime, endTime)});
+        }else{
+            res.json({status: 0});
+        }
     } else {
-        await res.json({status: 666});
+        res.json({status: 666});
     }
 }
 
