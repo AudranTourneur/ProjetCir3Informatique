@@ -55,6 +55,22 @@
     
 	let floor: null | Floor = null;
 
+	async function getReservations() {
+		if (!$dateStore || !$dateStore.selected) return;
+		const res = await fetch(`${PUBLIC_API_HOST}/getAllReservationsForPlanByDate/${plan._id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				displayedDate: $dateStore.selected.getTime(),
+			})
+		})
+		const data = await res.json()
+		console.log('reservations', data)	
+		
+	}
+
 	onMount(() => {
 		let width = window.innerWidth;
 		let height = window.innerHeight;
@@ -106,6 +122,8 @@
 		};
 
 		setTimeout(updateHeight, 1);
+
+		getReservations()
 	});
 
 	function unselect() {
@@ -135,7 +153,7 @@
         let displayedDate = {
             planId: plan._id,
             email: localStorage.getItem('email'),
-            date: infoModal1.getTime(),
+            date: (new Date().toISOString().split('T')[0]),
             startTime: infoModal1.getTime(),
             endTime: infoModal2.getTime(),
             roomName: $currentlySelectedRoom?.name,
@@ -197,6 +215,8 @@
 			location.reload()
 		}, 500)
 	}
+
+
 </script>
 
 <div class="absolute overflow-hidden" bind:this={el} />
