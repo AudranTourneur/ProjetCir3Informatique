@@ -36,7 +36,7 @@ export class Room {
             .attr('fill', 'red')
             .attr("cx", element[0])
             .attr("cy", element[1])
-            .attr("r", 3)
+            .attr("r", 5)
             // @ts-ignore
             .call(d3.drag()
                 .on("start", ()=>{

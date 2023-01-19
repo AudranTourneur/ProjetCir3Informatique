@@ -6,8 +6,10 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
 	import { PUBLIC_API_HOST } from '$env/static/public';
+	import type { Plan } from '../../../../../../back/src/types';
+	import { goto } from '$app/navigation';
 
-	export let plan;
+	export let plan: Plan;
 
 	console.log('init data with', plan);
 
@@ -43,6 +45,19 @@
 		'receiving',
 		internalRooms.map((r) => r.points)
 	);
+
+	function getUnusedRoomName(): string {
+		const allRoomNames: string[] = plan.rooms.map((room) => room.name);
+		console.log('All names', allRoomNames)
+		let nameCandidate = 'Unnamed room'
+
+		let i = 1
+		while (allRoomNames.includes(nameCandidate)) {
+			nameCandidate = nameCandidate + ` (${i++})`;
+		}
+
+		return nameCandidate;
+	}
 
 	let width = 0;
 	let height = 0;
@@ -94,7 +109,7 @@
 
 								let data = {
 									points: tabPoint,
-									name: 'nom' + floor.name,
+									name: getUnusedRoomName(),
 									capacity: 10,
 									projecteur: true
 								};
@@ -172,6 +187,14 @@
 		isAdding = true;
 	}
 
+	function updateInputs() {
+		if (!$currentlySelectedRoom) return;
+
+		inputName = $currentlySelectedRoom.name;
+		inputCapacity = $currentlySelectedRoom.capacity;
+		inputProjecteur = $currentlySelectedRoom.projecteur;
+	}
+
 	function unselect() {
 		d3.selectAll('#main-svg > polygon').attr('stroke', '#f00');
 		firstTime = false;
@@ -179,15 +202,15 @@
 	}
 
 	function saveInput() {
-		$currentlySelectedRoom!.name = inputName;
-		$currentlySelectedRoom!.capacity = inputCapacity;
-		$currentlySelectedRoom!.projecteur = inputProjecteur;
+		if (!$currentlySelectedRoom) return;
+		updateInputs()
 		unselect();
 	}
 	function cancelInput() {
-		inputName = $currentlySelectedRoom!.name;
-		inputCapacity = $currentlySelectedRoom!.capacity;
-		inputProjecteur = $currentlySelectedRoom!.projecteur;
+		if (!$currentlySelectedRoom) return;
+		inputName = $currentlySelectedRoom.name;
+		inputCapacity = $currentlySelectedRoom.capacity;
+		inputProjecteur = $currentlySelectedRoom.projecteur;
 	}
 
 	function edit() {
@@ -209,13 +232,13 @@
 	}
 
 	function del() {
-		if (!$currentlySelectedRoom) return;
+		if (!$currentlySelectedRoom || !floor) return;
 		floor.delete($currentlySelectedRoom);
 		floor.update();
 		unselect();
 	}
 
-	function finishEdition() {
+	async function finishEdition() {
 		isAdding = false;
 		isModifying = false;
 		if ($currentlySelectedRoom) {
@@ -246,7 +269,7 @@
 
 		console.log('body', body);
 
-		fetch(`${PUBLIC_API_HOST}/updatePlan`, {
+		await fetch(`${PUBLIC_API_HOST}/updatePlan`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -258,6 +281,19 @@
 			'sending',
 			body.plan.rooms.map((r) => r.points)
 		);
+
+		setTimeout(() => {
+			goto('/admin')
+		})
+	}
+
+	function endEditMode() {
+		isAdding = false;
+		isModifying = false;
+		if ($currentlySelectedRoom) {
+			$currentlySelectedRoom.stopEditPolygon();
+		}
+		$currentlySelectedRoom = null;
 	}
 </script>
 
@@ -310,7 +346,7 @@
 					</div>
 					<div class="mt-8 flex flex-col gap-6">
 						<div class="flex gap-4">
-							<button class="btn btn-info w-32" on:click={edit}>Modifer</button>
+							<button class="btn btn-info w-32" on:click={edit}>Modifier</button>
 							<button class="btn btn-error w-32" on:click={del}>Supprimer</button>
 						</div>
 
@@ -323,7 +359,7 @@
 			</div>
 		{:else}
 			<div class="flex justify-center  bg-black bg-opacity-70 p-2" transition:slide>
-				<button class="btn btn-primary" on:click={finishEdition}>Terminer l'édition</button>
+				<button class="btn btn-info" on:click={endEditMode}>Terminer la modification des salles</button>
 			</div>
 		{/if}
 	</div>
