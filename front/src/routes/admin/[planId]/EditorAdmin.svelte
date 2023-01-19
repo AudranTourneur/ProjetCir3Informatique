@@ -25,8 +25,6 @@
 
 	let tabPoint: number[][] = [];
 
-	let idSelectedFloor = 0;
-
 	let points = [];
 
 	let internalRooms = plan.rooms.map((room) => {
@@ -35,7 +33,7 @@
 			points: points,
 			name: room.name,
 			capacity: room.capacity,
-			projecteur: room.projecteur
+			projecteur: room.hasProjector
 		};
 	});
 
@@ -74,9 +72,7 @@
 			.style('background-color', 'lightgrey')
 
 			// @ts-ignore
-			.call(
-				d3
-					.zoom()
+			.call(d3.zoom()
 					.on('zoom', (event) => {
 						svg.attr('transform', event.transform);
 					})

@@ -2,6 +2,8 @@
     import { onMount } from 'svelte';
     import ModalTime from './ModalTime.svelte'
     import * as d3 from 'd3';
+	import { PUBLIC_API_HOST } from '$env/static/public';
+	import type { Plan } from '$lib/types';
 
     export let infoDate;
 
@@ -14,10 +16,8 @@
     let line : d3.Selection<SVGRectElement, unknown, null, undefined> | null = null;
     let svg : d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
 
-    let idHour : number;
-
-    let infoModal1 = new Date(infoDate.year,infoDate.month,infoDate.day);
-    let infoModal2 = new Date(infoDate.year,infoDate.month,infoDate.day);
+    export let infoModal1 = new Date(infoDate.year,infoDate.month,infoDate.day);
+    export let infoModal2 = new Date(infoDate.year,infoDate.month,infoDate.day);
 
     let showModal1 = false;
     let showModal2 = false;
