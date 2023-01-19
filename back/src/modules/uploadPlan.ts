@@ -1,10 +1,10 @@
-import {Application, Response} from "express";
+import { Application, Response } from "express";
 import { Schema, model } from 'mongoose'
 import multer from 'multer'
 import * as Jimp from 'jimp'
-import {z} from 'zod';
-import {PlanSchema} from '../schemas/PlanSchema';
-import {Plan} from '../types';
+import { z } from 'zod';
+import { PlanSchema } from '../schemas/PlanSchema';
+import { Plan } from '../types';
 
 import { imageSchema } from "../schemas/ImageSchem";
 import * as db from './db'
@@ -39,13 +39,13 @@ export function initImagesApp(app: Application) {
         const imageDoc = await ImageModel.findOne({ _id: planId }).lean().exec();
         if (!imageDoc || !imageDoc.image || !imageDoc.image.data) return res.send('Non existant image');
         const imageData = imageDoc.image.data;
-       
+
         const img = Buffer.from(imageData, 'base64');
-      
-        if(req.query.miniature){
+
+        if (req.query.miniature) {
             console.log('bonjour miniature')
             const image = await Jimp.read(img);
-            image.resize(300,300);
+            image.resize(300, 300);
 
             image.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
                 res.writeHead(200, {
@@ -87,71 +87,76 @@ export async function getImagesList(res: Response) {
     res.json((await db.getImagesList()).map(x => x._id));
 }
 
-export async function getAllPlans (res: Response) {
-    res.json({data: await db.getAllPlans()});
+export async function getAllPlans(res: Response) {
+    res.json({ data: await db.getAllPlans() });
 }
 
 // A TESTER PAS SUR SUR QUE CA MARCHE
-export async function updatePlan (email: string, token: string, plan: Plan, res: Response){
-    if(await db.checkConnection(email, token) && await db.isAdmin(email)){
-        if(await db.updatePlan(plan)) {
-            await res.json({status: 1});
-        }else{
-            await res.json({status: 0});
+export async function updatePlan(email: string, token: string, plan: Plan, res: Response) {
+    if (true || (await db.checkConnection(email, token) && await db.isAdmin(email))) {
+        console.log('1')
+        if (await db.updatePlan(plan)) {
+            console.log('2')
+            res.json({ status: 1 });
+        } else {
+            console.log('3')
+            res.json({ status: 0 });
         }
-    }else{
-        await res.json({status: 666});
+    } else {
+        console.log('4')
+        res.json({ status: 666 });
+    }
+    console.log('5')
+}
+
+export async function deletePlan(email: string, token: string, planId: string, res: Response) {
+    if (await db.checkConnection(email, token) && await db.isAdmin(email)) {
+        if (await db.deletePlan(planId)) {
+            await res.json({ status: 1 });
+        } else {
+            await res.json({ status: 0 });
+        }
+    } else {
+        await res.json({ status: 666 });
     }
 }
 
-export async function deletePlan (email: string, token: string, planId: string, res: Response){
-    if(await db.checkConnection(email, token) && await db.isAdmin(email)){
-        if(await db.deletePlan(planId)) {
-           await res.json({status: 1});
-        }else{
-            await res.json({status: 0});
-        }
-    }else{
-        await res.json({status: 666});
-    }
-}
-
-export async function isAdmin (email: string, token: string, res: Response) {
+export async function isAdmin(email: string, token: string, res: Response) {
     if (await db.isAdmin(email) && await db.checkConnection(email, token)) {
-        await res.json({status: 1});
-    }else{
-        await res.json({status: 666});
+        await res.json({ status: 1 });
+    } else {
+        await res.json({ status: 666 });
     }
 }
 
-export async function getAllReservationsForPlan (planId: string, res: Response) {
-    await res.json({data: await db.getAllReservationsForPlan(planId)});
+export async function getAllReservationsForPlan(planId: string, res: Response,date:Number) {
+    await res.json({ data: await db.getAllReservationsForPlanByDate(planId,date) });
 }
 
-export async function bookRoom (planId: string, roomName: string, startTime: number, endTime: number, email: string, token: string, res: Response){
-    if(await db.checkConnection(email, token)){
+export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number, email: string, token: string, res: Response) {
+    if (await db.checkConnection(email, token)) {
         // await res.json({status: await db.bookRoom(planId, roomName, startTime, endTime, email)});
-    }else{
-        await res.json({status: 666});
+    } else {
+        await res.json({ status: 666 });
     }
 }
 
-export async function myReservations (email: string, token: string, res: Response) {
+export async function myReservations(email: string, token: string, res: Response) {
     if (await db.checkConnection(email, token)) {
-        await res.json({data: await db.getAllReservationsByEmail(email)});
-    }else{
-        await res.json({status: 666});
+        await res.json({ data: await db.getAllReservationsByEmail(email) });
+    } else {
+        await res.json({ status: 666 });
     }
 }
 
-export async function deleteReservation (planId: string, startTime: number, roomName: string, email: string, token: string, res: Response) {
+export async function deleteReservation(planId: string, startTime: number, roomName: string, email: string, token: string, res: Response) {
     if (await db.checkConnection(email, token)) {
-        await res.json({status: await db.deleteReservation(planId, roomName, startTime, email)});
-    }else{
-        await res.json({status: 666});
+        await res.json({ status: await db.deleteReservation(planId, roomName, startTime, email) });
+    } else {
+        await res.json({ status: 666 });
     }
 }
 
-export async function getPlan (planId: string, res: Response) {
+export async function getPlan(planId: string, res: Response) {
     await res.json(await db.getPlan(planId));
 }

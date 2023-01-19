@@ -5,7 +5,6 @@ import { UserSchema } from '../schemas/UserSchema';
 import { PlanSchema } from '../schemas/PlanSchema';
 import { reservationSchema } from '../schemas/ReservationsSchema';
 import { imageSchema } from '../schemas/ImageSchem';
-import { roomSchema } from '../schemas/RoomSchema';
 import { Plan } from '../types';
 
 
@@ -14,7 +13,6 @@ const Users=mongoose.model('user',UserSchema);
 const Plans=mongoose.model('plan',PlanSchema);
 const Reservations=mongoose.model('reservations',reservationSchema);
 const Images=mongoose.model('images',imageSchema);
-const Rooms=mongoose.model('rooms',roomSchema);
 
 mongoose.connection.on('connected',()=>console.log("connected to the mongo server"));
 mongoose.connection.on('error', (error)=> console.log("Error:",error));
@@ -110,7 +108,9 @@ export async function createNewPlan(imageId:String,name:String,description:Strin
 }
 //TODO need to finish
 export async function updatePlan(planSchema:Plan){
-	const result=await Plans.findByIdAndUpdate(planSchema.id,{name:planSchema.name},{new:true});
+	console.log('updating db with', planSchema)
+	const result=await Plans.findByIdAndUpdate(planSchema._id,{name:planSchema.name,rooms:planSchema.rooms},{new:true});
+	console.log("UPDATE PLAN :",result);
 	if(!result){
 		return false;
 	}
@@ -139,8 +139,8 @@ export async function getAllReservationsByEmail(email:String){
 }
 
 
-export async function getAllReservationsForPlan(planId:String){
-	const result = await Reservations.find({planId:planId});
+export async function getAllReservationsForPlanByDate(planId:String,date:Number){
+	const result = await Reservations.find({planId:planId,date:date});
 	if(!result)return false;
 	return result;
 }
