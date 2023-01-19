@@ -39,8 +39,7 @@ export class Floor {
 
     delete(room : Room) {
         room.undraw()
-        let foundRoomIndex = this.rooms.findIndex((element) => {element == room});
-        this.rooms.splice(foundRoomIndex,1);
+        this.rooms = this.rooms.filter(e => e !== room)
         this.update();
     }
 
