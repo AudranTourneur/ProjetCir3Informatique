@@ -151,6 +151,12 @@ export async function deleteReservation(planId:String,roomName:String,startTime:
 	}else return 2;
 }
 
+export async function deletePlan(_id:String){
+	const nbPlansDelete=await Plans.deleteOne({_id:_id});
+	const nbReservationsDelete=await Reservations.deleteMany({planId:_id});
+	return {plansDeleted:nbPlansDelete,reservationsDeleted:nbReservationsDelete};
+}
+
 
 //attention mdp admin :1234
 //email admin : Admin@chehpaul
