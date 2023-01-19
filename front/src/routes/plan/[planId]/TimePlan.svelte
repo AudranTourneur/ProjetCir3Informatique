@@ -23,6 +23,8 @@
     let showModal1 = false;
     let showModal2 = false;
 
+    const offsetX = 8
+
     onMount(() => {
         svg = d3.select(time)
         .append("svg")
@@ -40,14 +42,14 @@
 
         let x = d3.scaleLinear()
             .domain([8, 20])
-            .range([ 0, width - 16]);
+            .range([ 0, width - 2 * offsetX ]);
 
         svg.append("g")
             .attr("transform", "translate(8,"+(height-24)+")")
             .call(d3.axisBottom(x));
 
         svg.append('rect')
-            .attr('x', 8)
+            .attr('x', offsetX)
             .attr('y', 8)
             .attr('width', width - 16)
             .attr('height', height - 32)
@@ -118,6 +120,21 @@
 
         let value = {"min" : min, "hour" : hour};
 
+        return value
+    }
+
+    function getXFromHourMin(hour: number, minute: number): number {
+        const startHour = 8;
+        const endHour = 20;
+
+        const rangeHour = endHour - startHour;
+
+        const desiredHour = hour + minute / 60;
+
+        const normalizedRatio = (desiredHour - startHour) / rangeHour;
+
+        const rangePixel = width - 2 * offsetX;
+        const value = normalizedRatio * rangePixel + offsetX;
         return value
     }
 
