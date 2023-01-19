@@ -10,6 +10,7 @@ specifiers:
   autoprefixer: ^10.4.13
   d3: ^7.8.1
   daisyui: ^2.46.1
+  dayjs: ^1.11.7
   eslint: ^8.28.0
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^4.0.0
@@ -33,6 +34,7 @@ dependencies:
   '@trpc/server': 10.9.0
   '@types/d3': 7.4.0
   d3: 7.8.1
+  dayjs: 1.11.7
   konva: 8.4.0
   sass: 1.57.1
   svelte-i18n: 3.6.0_svelte@3.55.1
@@ -1238,7 +1240,6 @@ packages:
 
   /dayjs/1.11.7:
     resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
-    dev: true
 
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
