@@ -145,6 +145,7 @@ export async function getAllReservationsForPlanByDate(planId:String,date:Number)
 	return result;
 }
 
+export async function bookReservation
 
 //Deletes reservation if email in argument is the same as value in reservedBy
 //Returns 1 if reservation succeded, 2 if no resevations found, 0 if nothing got deleted 
