@@ -5,6 +5,7 @@ import { UserSchema } from '../schemas/UserSchema';
 import { PlanSchema } from '../schemas/PlanSchema';
 import { reservationSchema } from '../schemas/ReservationsSchema';
 import { imageSchema } from '../schemas/ImageSchem';
+import { roomSchema } from '../schemas/RoomSchema';
 import { Plan } from '../types';
 
 
@@ -12,7 +13,8 @@ import { Plan } from '../types';
 const Users=mongoose.model('user',UserSchema);
 const Plans=mongoose.model('plan',PlanSchema);
 const Reservations=mongoose.model('reservations',reservationSchema);
-const Images=mongoose.model('images',imageSchema)
+const Images=mongoose.model('images',imageSchema);
+const Rooms=mongoose.model('rooms',roomSchema);
 
 mongoose.connection.on('connected',()=>console.log("connected to the mongo server"));
 mongoose.connection.on('error', (error)=> console.log("Error:",error));
@@ -121,8 +123,21 @@ export async function getImagesList(){
 	
 }
 
-export async function getAllplans(){
+export async function getAllPlans(){
 	return await Plans.find({});
+}
+
+export async function getAllReservationByEmail(email:String){
+	const result= await Reservations.find({email:email});
+	if(!result)return false;
+	return result;
+}
+
+
+
+export async function deleteReservation(planId:String,roomName:String,startTime:Number){
+	const result = await Reservations.deleteOne({planId:planId,roomeName:roomName,startTime:startTime});
+	return result.deletedCount;
 }
 
 //attention mdp admin :1234

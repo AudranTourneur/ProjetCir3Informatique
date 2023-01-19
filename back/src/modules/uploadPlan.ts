@@ -88,7 +88,7 @@ export async function getImagesList(res: Response) {
 }
 
 export async function getAllPlans (res: Response) {
-    // res.json(await db.getAllPlans());
+    res.json(await db.getAllPlans());
 }
 
 export async function updatePlan (email: string, token: string, plan: Plan, res: Response){
