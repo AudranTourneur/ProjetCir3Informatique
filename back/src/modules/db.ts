@@ -85,7 +85,7 @@ export async function resetPassword(email:string,password:string){
 export async function isAdmin(email:string){
 	const result=await Users.findOne({email:email});
 	if(!result){
-		return 'email not found';
+		return false;
 	}
 	return result.admin;
 }

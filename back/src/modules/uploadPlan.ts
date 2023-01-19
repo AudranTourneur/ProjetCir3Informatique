@@ -1,7 +1,10 @@
-import { Application } from "express";
+import {Application, Response} from "express";
 import { Schema, model } from 'mongoose'
 import multer from 'multer'
 import * as Jimp from 'jimp'
+import {z} from 'zod';
+import {PlanSchema} from '../schemas/PlanSchema';
+import {Plan} from '../types';
 
 import { imageSchema } from "../schemas/ImageSchem";
 import * as db from './db'
@@ -66,27 +69,48 @@ export async function dbGetNumberOfFloors() {
     return ImageModel.countDocuments({});
 }
 
-import {z} from 'zod'
-
 const planCreationRequestSchema = z.object({
     name: z.string(),
     imageId: z.string()
-})
+});
 
 export async function uploadPlanData(data: any): Promise<string> {
     console.log('body=', data)
-    const planCreationRequest = planCreationRequestSchema.parse(data)
-
-    const plan = {
-        name: planCreationRequest.name,
-        imageId: planCreationRequest.imageId,
-    }
+    const plan = planCreationRequestSchema.parse(data)
 
     const planId = await db.createNewPlan(plan.imageId, plan.name, '');
     console.log('Uploaded plan ID', planId)
     return planId;
 };
 
-export async function getImagesList(res: any) {
+export async function getImagesList(res: Response) {
     res.json((await db.getImagesList()).map(x => x._id));
+}
+
+export async function getAllPlans (res: Response) {
+    // res.json(await db.getAllPlans());
+}
+
+export async function updatePlan (email: string, token: string, plan: Plan, res: Response){
+    if(await db.checkConnection(email, token) && await db.isAdmin(email)){
+        if(await db.updatePlan(plan)) {
+            await res.json({status: 1});
+        }else{
+            await res.json({status: 0});
+        }
+    }else{
+        await res.json({status: 666});
+    }
+}
+
+export async function deletePlan (email: string, token: string, plan: Plan, res: Response){
+    if(await db.checkConnection(email, token) && await db.isAdmin(email)){
+    //     if(await db.deletePlan(plan)) {
+    //        await res.json({status: 1});
+    //     }else{
+    //         await res.json({status: 0});
+    //     }
+    // }else{
+    //     await res.json({status: 666});
+    }
 }

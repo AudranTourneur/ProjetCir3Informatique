@@ -70,6 +70,22 @@ app.get('/getImagesList', async function (req, res) {
     await uploadPlan.getImagesList(res);
 });
 
+app.get('/getAllPlans', async function (req, res) {
+
+});
+
+app.post('/updatePlan', async function (req, res) {
+    await uploadPlan.updatePlan(req.body.email, req.body.token, req.body.data, res);
+});
+
+app.delete('/deletePlan', async function (req, res) {
+
+});
+
+app.get('/isAdmin', async function (req, res) {
+
+});
+
 app.post('/', async function (req, res) {
     await res.send('Hello World!');
 });
