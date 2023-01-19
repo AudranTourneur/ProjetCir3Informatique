@@ -127,6 +127,10 @@ export async function getAllPlans(){
 	return await Plans.find({});
 }
 
+export async function getPlan(planId:String){
+	return await Plans.findById(planId);
+}
+
 export async function getAllReservationByEmail(email:String){
 	const result= await Reservations.find({email:email});
 	if(!result)return false;
@@ -156,6 +160,8 @@ export async function deletePlan(_id:String){
 	const nbReservationsDelete=await Reservations.deleteMany({planId:_id});
 	return {plansDeleted:nbPlansDelete,reservationsDeleted:nbReservationsDelete};
 }
+
+
 
 
 //attention mdp admin :1234
