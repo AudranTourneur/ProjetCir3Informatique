@@ -1,246 +1,310 @@
 <script lang="ts">
-    import { Floor } from '$lib/Floor';
-    import type { Room } from '$lib/Room'
+	import { Floor } from '$lib/Floor';
+	import type { Room } from '$lib/Room';
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';
 	import { writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
 	import { PUBLIC_API_HOST } from '$env/static/public';
 
-    export let plan;
+	export let plan;
 
-    let isAdding = false;
-    let isModifying = false;
-    let el : HTMLDivElement;
+	console.log('init data with', plan)
 
-    let currentlySelectedRoom: Writable<Room | null> = writable(null)
+	let isAdding = false;
+	let isModifying = false;
+	let el: HTMLDivElement;
 
-    let inputName : string;
-    let inputCapacity : number;
-    let inputProjecteur : boolean;
+	let currentlySelectedRoom: Writable<Room | null> = writable(null);
 
-    let tabPoint : number[][] = [];
+	let inputName: string;
+	let inputCapacity: number;
+	let inputProjecteur: boolean;
 
-    let idSelectedFloor = 0;
+	let tabPoint: number[][] = [];
 
+	let idSelectedFloor = 0;
 
-    let points = []
+	let points = [];
 
-    export let floor = new Floor([], 'Name', currentlySelectedRoom);
-
-	onMount(() => {
-
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-        
-        let svg = d3.select(el)
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .style('background-color', 'lightgrey')
-
-        // @ts-ignore
-        .call(d3.zoom()
-        .on("zoom", (event) => {
-            svg.attr("transform", event.transform)
-        })
-        .scaleExtent([(innerWidth/width)-0.4,4.5])
-        )
-
-        .append("g")
-        .attr("id","main-svg")
-        .on("click", (event) => {
-            if(isAdding) {
-                let pointer = d3.pointer(event);
-                if(tabPoint.length == 0) {
-                    tabPoint.push([pointer[0],pointer[1]]);
-
-                    svg.append("polyline")
-                    .attr("points",tabPoint.toString())
-                    .style("stroke", "blue")      // set the line colour
-                    .style("fill", "none");      // set the fill colour
-
-                    svg.append("circle")
-                    .attr("cx", pointer[0])
-                    .attr("cy", pointer[1])
-                    .attr("r", 10)               // set the radius
-                    .style("stroke", "yellow")      // set the line colour
-                    .style("fill", "yellow")      // set the fill colour
-                    .on("click", () => {
-                        isAdding = false;
-
-                        let data = {
-                            points: tabPoint,
-                            name: "nom"+floor.name,
-                            capacity: 10,
-                            projecteur: true,
-                        };
-                        floor.newRoom(data);
-
-                        console.log(data)
-
-                        tabPoint = [];
-                        svg.selectAll("circle").remove()
-                        svg.selectAll("polyline").remove()
-                    })
-                } else {
-                    tabPoint.push([pointer[0],pointer[1]]);
-
-                    svg.append("circle")
-                    .attr("cx", pointer[0])
-                    .attr("cy", pointer[1])
-                    .attr("r", 4)               // set the radius
-                    .style("stroke", "red")      // set the line colour
-                    .style("fill", "red");      // set the fill colour
-
-                    svg.append("polyline")
-                    .attr("points",tabPoint.toString())
-                    .style("stroke", "blue")      // set the line colour
-                    .style("fill", "none");      // set the fill colour
-                }
-            }
-        })
-
-        let image = svg.append('image')
-        .attr('xlink:href', `${PUBLIC_API_HOST}/images/${plan.imageId}.png}`)
-        .attr("width", width)
-
-        setTimeout(() => {
-            height = image.node()?.getBBox().height!;
-            svg.attr("height", height)
-
-            let roomData = {
-                points: points.map(p => [p[0] * width, p[1] * height]),
-                name: "nom1",
-                capacity: 10,
-                projecteur: true,
-            };
-            floor.update()
-        }, 1)
+	const internalRooms = plan.rooms.map((room) => {
+		points = room.points.map((p) => [p.x, p.y]);
+		return {
+			points: points,
+			name: room.name,
+			capacity: room.capacity,
+			projecteur: room.projecteur
+		};
 	});
 
-    function cancelSelection() {
-        isAdding = false;
-        tabPoint = [];
-        const svg = d3.select('#main-svg')
-        svg.selectAll("circle").remove()
-        svg.selectAll("polyline").remove()
-    }
+	console.log('receiving', internalRooms.map(r => r.points))
 
-    function startDraw() {
-      isAdding = true
-    }
+	export let floor = new Floor(internalRooms, 'Name', currentlySelectedRoom);
 
-    function unselect() {
-        d3.selectAll("#main-svg > polygon").attr('stroke', '#f00');
-        firstTime = false;
-        $currentlySelectedRoom = null
-    }
+		let width = 0;
+		let height = 0;
 
+	onMount(() => {
+		width = window.innerWidth;
+		height = window.innerHeight;
 
-    function saveInput() {
-        $currentlySelectedRoom!.name = inputName;
-        $currentlySelectedRoom!.capacity = inputCapacity;
-        $currentlySelectedRoom!.projecteur = inputProjecteur;
-    }
-    function cancelInput() {
-        inputName = $currentlySelectedRoom!.name;
-        inputCapacity = $currentlySelectedRoom!.capacity;
-        inputProjecteur = $currentlySelectedRoom!.projecteur;
-    }
+		let svg = d3
+			.select(el)
+			.append('svg')
+			.attr('width', width)
+			.attr('height', height)
+			.style('background-color', 'lightgrey')
 
-    function edit() {
-        if (!$currentlySelectedRoom) return;
-        isModifying = true;
-        $currentlySelectedRoom.editPolygon()
-    }
+			// @ts-ignore
+			.call(
+				d3
+					.zoom()
+					.on('zoom', (event) => {
+						svg.attr('transform', event.transform);
+					})
+					.scaleExtent([innerWidth / width - 0.4, 4.5])
+			)
 
-    let firstTime = false;
+			.append('g')
+			.attr('id', 'main-svg')
+			.on('click', (event) => {
+				if (isAdding) {
+					let pointer = d3.pointer(event);
+					if (tabPoint.length == 0) {
+						tabPoint.push([pointer[0], pointer[1]]);
 
-    $: {
-        if ($currentlySelectedRoom && !firstTime) {
-            firstTime = true;
+						svg
+							.append('polyline')
+							.attr('points', tabPoint.toString())
+							.style('stroke', 'blue') // set the line colour
+							.style('fill', 'none'); // set the fill colour
 
-            inputName = $currentlySelectedRoom!.name;
-            inputCapacity = $currentlySelectedRoom!.capacity;
-            inputProjecteur = $currentlySelectedRoom!.projecteur;
-        }
-    }
+						svg
+							.append('circle')
+							.attr('cx', pointer[0])
+							.attr('cy', pointer[1])
+							.attr('r', 10) // set the radius
+							.style('stroke', 'yellow') // set the line colour
+							.style('fill', 'yellow') // set the fill colour
+							.on('click', () => {
+								isAdding = false;
 
-    function del() {
-        if (!$currentlySelectedRoom) return;
-        floor.delete($currentlySelectedRoom);
-        floor.update()
-        unselect();
-    }
+								let data = {
+									points: tabPoint,
+									name: 'nom' + floor.name,
+									capacity: 10,
+									projecteur: true
+								};
+								floor.newRoom(data);
 
-    function finishEdition() {
-        isAdding = false;
-        isModifying = false;
-        if ($currentlySelectedRoom) {
-            $currentlySelectedRoom.stopEditPolygon();
-        }
+								console.log(data);
 
-        console.log('floor = ', floor)
-    }
+								tabPoint = [];
+								svg.selectAll('circle').remove();
+								svg.selectAll('polyline').remove();
+							});
+					} else {
+						tabPoint.push([pointer[0], pointer[1]]);
+
+						svg
+							.append('circle')
+							.attr('cx', pointer[0])
+							.attr('cy', pointer[1])
+							.attr('r', 4) // set the radius
+							.style('stroke', 'red') // set the line colour
+							.style('fill', 'red'); // set the fill colour
+
+						svg
+							.append('polyline')
+							.attr('points', tabPoint.toString())
+							.style('stroke', 'blue') // set the line colour
+							.style('fill', 'none'); // set the fill colour
+					}
+				}
+			});
+
+		let image = svg
+			.append('image')
+			.attr('xlink:href', `${PUBLIC_API_HOST}/images/${plan.imageId}.png}`)
+			.attr('width', width);
+
+		setTimeout(() => {
+			height = image.node()?.getBBox().height!;
+			svg.attr('height', height);
+
+			let roomData = {
+				points: points.map((p) => [p[0] * width, p[1] * height]),
+				name: 'nom1',
+				capacity: 10,
+				projecteur: true
+			};
+			floor.update();
+		}, 1);
+	});
+
+	function cancelSelection() {
+		isAdding = false;
+		tabPoint = [];
+		const svg = d3.select('#main-svg');
+		svg.selectAll('circle').remove();
+		svg.selectAll('polyline').remove();
+	}
+
+	function startDraw() {
+		isAdding = true;
+	}
+
+	function unselect() {
+		d3.selectAll('#main-svg > polygon').attr('stroke', '#f00');
+		firstTime = false;
+		$currentlySelectedRoom = null;
+	}
+
+	function saveInput() {
+		$currentlySelectedRoom!.name = inputName;
+		$currentlySelectedRoom!.capacity = inputCapacity;
+		$currentlySelectedRoom!.projecteur = inputProjecteur;
+	}
+	function cancelInput() {
+		inputName = $currentlySelectedRoom!.name;
+		inputCapacity = $currentlySelectedRoom!.capacity;
+		inputProjecteur = $currentlySelectedRoom!.projecteur;
+	}
+
+	function edit() {
+		if (!$currentlySelectedRoom) return;
+		isModifying = true;
+		$currentlySelectedRoom.editPolygon();
+	}
+
+	let firstTime = false;
+
+	$: {
+		if ($currentlySelectedRoom && !firstTime) {
+			firstTime = true;
+
+			inputName = $currentlySelectedRoom!.name;
+			inputCapacity = $currentlySelectedRoom!.capacity;
+			inputProjecteur = $currentlySelectedRoom!.projecteur;
+		}
+	}
+
+	function del() {
+		if (!$currentlySelectedRoom) return;
+		floor.delete($currentlySelectedRoom);
+		floor.update();
+		unselect();
+	}
+
+	function finishEdition() {
+		isAdding = false;
+		isModifying = false;
+		if ($currentlySelectedRoom) {
+			$currentlySelectedRoom.stopEditPolygon();
+		}
+
+		console.log('floor = ', floor);
+
+		const body = {
+			email: localStorage.getItem('email'),
+			token: localStorage.getItem('token'),
+			plan: {
+				...plan,
+				rooms: floor.rooms.map(r => {
+					return {
+						name: r.name,
+						points: r.points.map(e => ({x: e[0]/width, y: e[1]/height})),
+						capacity: r.capacity,
+						hasProjector: false,
+						hasWhiteboard: false,
+						hasBlackboard: false,
+						description: '',
+					}
+				})
+			},
+			test: 'oui',
+		};
+
+		console.log('body', body);
+
+		fetch(`${PUBLIC_API_HOST}/updatePlan`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(body)
+		});
+
+	console.log('sending', body.plan.rooms.map(r => r.points))
+	}
 </script>
 
-<div class="absolute overflow-hidden" bind:this={el}></div>
-
+<div class="absolute overflow-hidden" bind:this={el} />
 
 <!-- Span bottom edge -->
 <div class="absolute left-0 bottom-0 w-full">
-  <div class="absolute inset-x-0 bottom-0">
-    {#if !$currentlySelectedRoom}
-        <div class="flex justify-center  bg-black bg-opacity-50 p-2 gap-2" transition:slide>
-            {#if !isAdding}
-                <button class="btn btn-primary" on:click={startDraw}>Dessiner des salles</button>
-                <button class="btn btn-success" on:click={finishEdition}>Terminer l'édition</button>
-            {:else}
-                <button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
-            {/if}
-        </div>
-    {:else}
-        {#if !isModifying}
-            <div class="flex justify-center  bg-black bg-opacity-70 p-2 h-[500px]" transition:slide>
-                <div class="flex flex-col gap-2"> 
-                    <div class="form-control w-full max-w-xs">
-                    <label for="input-nom" class="label">
-                        <span class="label-text text-white">Nom de la salle</span>
-                    </label>
-                    <input id="input-nom" bind:value={inputName} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
-                    </div>
+	<div class="absolute inset-x-0 bottom-0">
+		{#if !$currentlySelectedRoom}
+			<div class="flex justify-center  bg-black bg-opacity-50 p-2 gap-2" transition:slide>
+				{#if !isAdding}
+					<button class="btn btn-primary" on:click={startDraw}>Dessiner des salles</button>
+					<button class="btn btn-success" on:click={finishEdition}>Terminer l'édition</button>
+				{:else}
+					<button class="btn btn-warning" on:click={cancelSelection}>Cancel</button>
+				{/if}
+			</div>
+		{:else if !isModifying}
+			<div class="flex justify-center  bg-black bg-opacity-70 p-2 h-[500px]" transition:slide>
+				<div class="flex flex-col gap-2">
+					<div class="form-control w-full max-w-xs">
+						<label for="input-nom" class="label">
+							<span class="label-text text-white">Nom de la salle</span>
+						</label>
+						<input
+							id="input-nom"
+							bind:value={inputName}
+							type="text"
+							placeholder="Type here"
+							class="input input-bordered w-full max-w-xs input-sm input-info"
+						/>
+					</div>
 
-                    <div class="form-control w-full max-w-xs">
-                    <label for="input-capacite" class="label">
-                        <span class="label-text text-white">Capacité de la salle</span>
-                    </label>
-                    <input id="input-capacite" bind:value={inputCapacity} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs input-sm input-info" />
-                    </div>
+					<div class="form-control w-full max-w-xs">
+						<label for="input-capacite" class="label">
+							<span class="label-text text-white">Capacité de la salle</span>
+						</label>
+						<input
+							id="input-capacite"
+							bind:value={inputCapacity}
+							type="text"
+							placeholder="Type here"
+							class="input input-bordered w-full max-w-xs input-sm input-info"
+						/>
+					</div>
 
-                    <div class="text-white">Projecteur :
-                        <input class="toggle toggle-info" type="checkbox" bind:checked={inputProjecteur}/>
-                    </div>
-                    <div>
-                        <button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
-                        <button class="btn btn-success" on:click={saveInput}>Sauvegarder</button>
-                    </div>
-                    <button class="btn btn-info" on:click={edit}>Modifer</button>
-                    <button class="btn btn-error" on:click={del}>Supprimer</button>
-                    <button class="btn btn-primary" on:click={unselect}>OK</button>
-                </div>
-            </div>
-        {:else}
-            <div class="flex justify-center  bg-black bg-opacity-70 p-2" transition:slide>
-                <button class="btn btn-primary" on:click={finishEdition}>Terminer l'édition</button>
-            </div>
-        {/if}
-    {/if}
-  </div>
+					<div class="text-white">
+						Projecteur :
+						<input class="toggle toggle-info" type="checkbox" bind:checked={inputProjecteur} />
+					</div>
+					<div>
+						<button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
+						<button class="btn btn-success" on:click={saveInput}>Sauvegarder</button>
+					</div>
+					<button class="btn btn-info" on:click={edit}>Modifer</button>
+					<button class="btn btn-error" on:click={del}>Supprimer</button>
+					<button class="btn btn-primary" on:click={unselect}>OK</button>
+				</div>
+			</div>
+		{:else}
+			<div class="flex justify-center  bg-black bg-opacity-70 p-2" transition:slide>
+				<button class="btn btn-primary" on:click={finishEdition}>Terminer l'édition</button>
+			</div>
+		{/if}
+	</div>
 </div>
 
 <style>
-    :global(html, body) {
-        overflow: hidden;
-    }
+	:global(html, body) {
+		overflow: hidden;
+	}
 </style>

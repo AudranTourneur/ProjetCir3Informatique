@@ -4,7 +4,7 @@ import type { Writable } from "svelte/store";
 export class Room {
     public polygon : undefined | d3.Selection<SVGPolygonElement, unknown, HTMLElement, any>;
 
-    constructor(private points : number[][], public name : string, public capacity: number, public projecteur: boolean, private globalStore: Writable<Room | null>) {
+    constructor(public points : number[][], public name : string, public capacity: number, public projecteur: boolean, private globalStore: Writable<Room | null>) {
     }
 
     draw() {
