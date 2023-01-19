@@ -133,6 +133,12 @@ export async function getAllReservationByEmail(email:String){
 	return result;
 }
 
+export async function getAllReservationForPlan(planId:String){
+	const result = await Reservations.find({planId:planId});
+	if(!result)return false;
+	return result;
+}
+
 
 
 export async function deleteReservation(planId:String,roomName:String,startTime:Number){
