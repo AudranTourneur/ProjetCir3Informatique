@@ -88,9 +88,10 @@ export async function getImagesList(res: Response) {
 }
 
 export async function getAllPlans (res: Response) {
-    res.json(await db.getAllPlans());
+    res.json({data: await db.getAllPlans()});
 }
 
+// A TESTER PAS SUR SUR QUE CA MARCHE
 export async function updatePlan (email: string, token: string, plan: Plan, res: Response){
     if(await db.checkConnection(email, token) && await db.isAdmin(email)){
         if(await db.updatePlan(plan)) {
@@ -105,13 +106,13 @@ export async function updatePlan (email: string, token: string, plan: Plan, res:
 
 export async function deletePlan (email: string, token: string, planId: string, res: Response){
     if(await db.checkConnection(email, token) && await db.isAdmin(email)){
-    //     if(await db.deletePlan(plan)) {
-    //        await res.json({status: 1});
-    //     }else{
-    //         await res.json({status: 0});
-    //     }
-    // }else{
-    //     await res.json({status: 666});
+        if(await db.deletePlan(planId)) {
+           await res.json({status: 1});
+        }else{
+            await res.json({status: 0});
+        }
+    }else{
+        await res.json({status: 666});
     }
 }
 
@@ -124,28 +125,28 @@ export async function isAdmin (email: string, token: string, res: Response) {
 }
 
 export async function getAllReservationsForPlan (planId: string, res: Response) {
-    // await res.json({data: await db.getAllReservationsForPlan(planId)});
+    await res.json({data: await db.getAllReservationsForPlan(planId)});
 }
 
 export async function bookRoom (planId: string, roomName: string, startTime: number, endTime: number, email: string, token: string, res: Response){
     if(await db.checkConnection(email, token)){
-        // await res.json({status: await db.bookRoom(planId, roomName, startTime, endTime, email)});
+        await res.json({status: await db.bookRoom(planId, roomName, startTime, endTime, email)});
     }else{
         await res.json({status: 666});
     }
 }
 
-export async function getMyReservations (email: string, token: string, res: Response) {
+export async function myReservations (email: string, token: string, res: Response) {
     if (await db.checkConnection(email, token)) {
-        // await res.json({data: await db.getMyReservations(email)});
+        await res.json({data: await db.getAllReservervationsForPlan(email)});
     }else{
         await res.json({status: 666});
     }
 }
 
-export async function deleteReservation (planID: string, startTime: number, roomName: string, email: string, token: string, res: Response) {
+export async function deleteReservation (planId: string, startTime: number, roomName: string, email: string, token: string, res: Response) {
     if (await db.checkConnection(email, token)) {
-        // await res.json({status: await db.deleteReservation(planId, startTime, roomName, email)});
+        await res.json({status: await db.deleteReservation(planId, roomName, startTime, email)});
     }else{
         await res.json({status: 666});
     }
