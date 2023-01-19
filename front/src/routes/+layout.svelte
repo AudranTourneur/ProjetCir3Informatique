@@ -1,7 +1,34 @@
-<script>
+<script lang="ts">
 	import { PUBLIC_API_HOST } from "$env/static/public";
 	import "$style/app.css"
-	import Navbar from "../lib/Navbar.svelte";
+	import { onMount } from "svelte";
+
+	onMount(async () => {
+		const run = async () => {
+			if (location.pathname === '/') return console.log('ignore')
+			const token = localStorage.getItem('token')
+			const email = localStorage.getItem('email')
+
+			const res = await fetch(`${PUBLIC_API_HOST}/checkConnection`, {
+				method: 'POST', 
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({token, email})
+			})
+			const data = await res.json()
+			console.log('data', data)
+			if (data.status == 0) {
+				location.href = '/'
+				localStorage.removeItem('token')
+				localStorage.removeItem('email')
+			}
+		}
+
+		run()
+		setInterval(run, 10_000)
+		
+	})
 </script>
 
 <svelte:head>

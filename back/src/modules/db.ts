@@ -163,7 +163,19 @@ export async function deletePlan(_id:String){
 	return {plansDeleted:nbPlansDelete,reservationsDeleted:nbReservationsDelete};
 }
 
-
+//Ajoute une nouvelle reservation dans la bdd tg paul, renvoit l'_id du nouveau objet ajoute
+export async function bookReservations(reservedBy:String,date:Number,planId:String,roomName:String,startTime:Number,endTime:Number){
+	let reservation = new Reservations({
+		reservedBy:reservedBy,
+		date:date,
+		planId:planId,
+		roomName:roomName,
+		startTime:startTime,
+		endTime:endTime
+	});
+	const result = await reservation.save();
+	return result._id;
+}
 
 
 //attention mdp admin :1234

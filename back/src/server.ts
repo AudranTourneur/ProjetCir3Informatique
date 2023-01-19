@@ -90,7 +90,7 @@ app.delete('/deletePlan', async function (req, res) {
   await uploadPlan.deletePlan(req.body.email, req.body.token, req.body.planId, res);
 });
 
-app.get('/isAdmin', async function (req, res) {
+app.post('/isAdmin', async function (req, res) {
   await uploadPlan.isAdmin(req.body.email, req.body.token, res);
 });
 

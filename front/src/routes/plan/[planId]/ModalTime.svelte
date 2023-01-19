@@ -6,6 +6,12 @@
     export let infoModal;
     export let showModal;
 
+
+
+    let date = infoModal;
+
+    console.log(date);
+
     let options = {
         /* Global colors */
         bgColor: '#2f855a',
@@ -37,7 +43,7 @@
 <Modal bind:isActive={showModal}>
     <div slot="title">Choisir l'Horaire</div>
     <div slot="content" class="flex">
-        <TimePicker {options}
+    <TimePicker {options} {date}
         on:ok={okCallback}
         on:cancel={cancelCallback}
         on:close={closeCallback}

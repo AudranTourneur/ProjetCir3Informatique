@@ -124,7 +124,7 @@ export async function isAdmin(email: string, token: string, res: Response) {
     if (await db.isAdmin(email) && await db.checkConnection(email, token)) {
         await res.json({status: 1});
     } else {
-        await res.json({status: 666});
+        await res.json({status: 0});
     }
 }
 
@@ -141,13 +141,14 @@ function getColorByCoeff(coeff: number){
         return 'red';
     }
 }
- async function getCoeffSupperpositionByRoomByHour(planId: string, startTime: number, endTime: number) {
+ export async function getCoeffSupperpositionByRoomByHour(planId: string, startTime: number, endTime: number, res: Response) {
     let searchingDay = {day: new Date(startTime).getDate(), month: new Date(startTime).getMonth()+1, year: new Date(startTime).getFullYear()};
     let reservations = await db.getAllReservationsForPlanByDate(planId, searchingDay);
     //delete reservations that are not in the time interval
     // @ts-ignore
      reservations = reservations.filter(reservation => reservation.startTime < endTime && reservation.endTime > startTime);
      console.log('reservations', reservations);
+     res.send('ok');
 }
 
 export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number, email: string, token: string, res: Response) {

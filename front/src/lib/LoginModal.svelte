@@ -4,7 +4,6 @@
     import {fade, fly} from 'svelte/transition';
 
     export let isActive: boolean;
-    export let canCancel: boolean = true;
 
     let modal: any;
 
@@ -99,6 +98,7 @@
 							localStorage.setItem("email", user.email)
 						}
 						isLoading = false;
+						gotoToIfNeeded()
 					})
 
 		} else {
@@ -130,7 +130,12 @@
 								}).then((response) => response.json())
 										.then((data) => {
 											console.log(data);
-											location.href = "/"
+											console.log('bonjour register', data)
+											if (data.token) {
+												localStorage.setItem("token", data.token);
+												localStorage.setItem("email", user.email)
+											}
+											gotoToIfNeeded()
 										})
 								break;
 							case 1:
@@ -145,15 +150,42 @@
 								break;
 						}
 
-						if (data.token) {
-							localStorage.setItem("token", data.token);
-							localStorage.setItem("email", user.email)
-						}
+						
+						
 						isLoading = false;
+						//gotoToIfNeeded()
 					})
 		}
 	}
 
+async function gotoToIfNeeded() {
+		const token = localStorage.getItem('token')
+		const email = localStorage.getItem('email')
+
+		const res = await fetch(`${PUBLIC_API_HOST}/checkConnection`, {
+			method: 'POST', 
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({token, email})
+		})
+		const data = await res.json()
+		console.log('data', data)
+		if (data.status == 1) {
+			location.href = '/plan'
+		}
+		else {
+			localStorage.removeItem('token')
+			localStorage.removeItem('email')
+		}
+}
+
+
+function startLoading() {
+	isLoading = true
+	loginErrorOutput = ''
+	registerErrorOutput = ''
+}
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -203,7 +235,7 @@
 					</div>
 
 					<div class="flex justify-end w-full px-8 my-2">
-						<button on:click={() => sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={() => isLoading = true}>Sign in</button>
+						<button on:click={() => sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={startLoading}>Sign in</button>
 					</div>
 
 					<button class="btn btn-link" on:click={()=> changeModal()}>Créer un compte</button>
@@ -257,10 +289,10 @@
 					</div>
 
 					<div class="flex justify-end w-full px-8 my-2">
-						<button on:click={()=> sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={() => isLoading = true}>Register</button>
+						<button on:click={()=> sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={startLoading}>Register</button>
 					</div>
 
-					<button class="btn btn-link" on:click={()=> changeModal()}>Créer un compte</button>
+					<button class="btn btn-link" on:click={()=> changeModal()}>Se connecter</button>
 
 				</div>
 			</div>
