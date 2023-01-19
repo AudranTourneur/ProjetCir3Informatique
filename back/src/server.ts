@@ -94,7 +94,7 @@ app.post('/isAdmin', async function (req, res) {
   await uploadPlan.isAdmin(req.body.email, req.body.token, res);
 });
 
-app.get('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
+app.post('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
   const planId = req.params.planId.split('.')[0];
   await uploadPlan.getAllReservationsForPlanByDate(planId, req.body.displayedDate, res);
 });
