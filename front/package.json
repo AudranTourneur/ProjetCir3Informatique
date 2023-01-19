@@ -36,6 +36,7 @@
 		"konva": "^8.4.0",
 		"sass": "^1.57.1",
 		"svelte-i18n": "^3.6.0",
-		"svelte-preprocess": "^5.0.0"
+		"svelte-preprocess": "^5.0.0",
+		"svelte-time-picker": "^2.0.0"
 	}
 }

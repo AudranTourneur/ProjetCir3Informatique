@@ -6,6 +6,7 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
 	import TimePlan from './TimePlan.svelte';
+    import { Datepicker } from 'svelte-calendar'
 
     let el : HTMLDivElement;
 
@@ -26,6 +27,17 @@
     ]
 
     let idSelectedFloor = 0;
+
+    let date = new Date();
+    let day = date.getDay();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+    
+    let infoDate = {
+        "year": year,
+        "month": month,
+        "day": day
+    }
 
     let tabFloor : Floor[] = [];
 
@@ -84,13 +96,16 @@
     }
 </script>
 
+
+
 <div class="absolute overflow-hidden" bind:this={el}></div>
 
 <!-- Span bottom edge -->
 <div class="absolute left-0 bottom-0 w-full">
-  <div class="absolute inset-x-0 bottom-0">
+    <div class="absolute inset-x-0 bottom-0">
     {#if !$currentlySelectedRoom}
         <div class="flex justify-center  bg-black bg-opacity-50 p-2 gap-2" transition:slide>
+            <div class=""><Datepicker format="DD/MM/YYYY"></Datepicker></div>
             <button class="btn btn-success" on:click={finishEdition}>Terminer l'édition</button>
         </div>
     {:else}
@@ -126,9 +141,9 @@
                 </div>
                 <button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
                 <div class="absolute bottom-2 left-0">
-                    <TimePlan>
+                    <TimePlan bind:infoDate={infoDate}>
 
-                    </TimePlan>
+                    </TimePlan >
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import { PUBLIC_API_HOST } from "$env/static/public";
 	import type { Plan } from "$lib/types";
 	import Modal from "$lib/ui/Modal.svelte";
@@ -86,6 +87,9 @@
             await createWithUploadedImage()
         
         isLoading = false
+
+        goto('/admin/editor')
+        location.reload()
     }
 
     let isButtonDisabled = true;

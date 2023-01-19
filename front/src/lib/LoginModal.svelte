@@ -85,7 +85,6 @@
 								break;
 							case 1:
 								console.info("user connected!", data);
-								//localStorage.setItem("token", data.token);
 								//location.href = "/"
 								break;
 							case 2:
@@ -94,6 +93,10 @@
 								break;
 							default:
 								break;
+						}
+						if (data.token) {
+							localStorage.setItem("token", data.token);
+							localStorage.setItem("email", user.email)
 						}
 						isLoading = false;
 					})
@@ -141,6 +144,11 @@
 							default:
 								break;
 						}
+
+						if (data.token) {
+							localStorage.setItem("token", data.token);
+							localStorage.setItem("email", user.email)
+						}
 						isLoading = false;
 					})
 		}
@@ -184,14 +192,14 @@
 						<label class="label">
 							<span class="label-text"><span> <i class="fa-solid fa-envelope"></i> </span>Email</span>
 						</label>
-						<input on:input={(event) => user.email = event.target.value} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.email} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="form-control w-full max-w-xs">
 						<label class="label">
 							<span class="label-text"><span><i class="fa-solid fa-key"></i></span> Password</span>
 						</label>
-						<input on:input={(event) => user.password = event.target.value} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.password} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="flex justify-end w-full px-8 my-2">
@@ -238,14 +246,14 @@
 						<label class="label">
 							<span class="label-text"><span> <i class="fa-solid fa-envelope"></i> </span>Email</span>
 						</label>
-						<input on:input={(event) => user.email = event.target.value} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.email} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="form-control w-full max-w-xs">
 						<label class="label">
 							<span class="label-text"><span><i class="fa-solid fa-key"></i></span> Password</span>
 						</label>
-						<input on:input={(event) => user.password = event.target.value} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.password} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="flex justify-end w-full px-8 my-2">

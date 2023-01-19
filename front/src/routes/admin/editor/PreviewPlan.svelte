@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_API_HOST } from "$env/static/public";
 	import type { Plan } from "$lib/types";
 
 	export let plan: Plan;
@@ -21,7 +22,7 @@
 <div class="flex flex-col md:flex-row bg-base-200 gap-4 rounded-3xl items-center p-3">
 	<div>
 		<div class="flex justify-center items-center w-56 h-56 p-2">
-            <img src="/Etage_2_clean.png" alt="Plan"/>
+            <img src="{PUBLIC_API_HOST}/images/{plan.imageId}.png" alt="Plan"/>
 			
 		</div>
 	</div>
@@ -63,7 +64,7 @@
 					</div>
 				</div>
 
-				<a href="/admin/editor/{plan.id}">
+				<a href="/admin/editor/{plan._id}">
 					<button class="btn btn-outline btn-info">Modifier</button>
 				</a>
 

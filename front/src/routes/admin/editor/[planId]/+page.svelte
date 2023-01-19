@@ -6,4 +6,4 @@
     const plan = data.plan
 </script> 
 
-<EditorAdmin floor={plan} />
+<EditorAdmin {plan} />
