@@ -130,7 +130,7 @@ export async function getAllReservationsForPlan (planId: string, res: Response) 
 
 export async function bookRoom (planId: string, roomName: string, startTime: number, endTime: number, email: string, token: string, res: Response){
     if(await db.checkConnection(email, token)){
-        await res.json({status: await db.bookRoom(planId, roomName, startTime, endTime, email)});
+        // await res.json({status: await db.bookRoom(planId, roomName, startTime, endTime, email)});
     }else{
         await res.json({status: 666});
     }
@@ -138,7 +138,7 @@ export async function bookRoom (planId: string, roomName: string, startTime: num
 
 export async function myReservations (email: string, token: string, res: Response) {
     if (await db.checkConnection(email, token)) {
-        await res.json({data: await db.getAllReservervationsForPlan(email)});
+        await res.json({data: await db.getAllReservationsByEmail(email)});
     }else{
         await res.json({status: 666});
     }
@@ -153,5 +153,5 @@ export async function deleteReservation (planId: string, startTime: number, room
 }
 
 export async function getPlan (planId: string, res: Response) {
-    // await res.json(await db.getPlan(planId));
+    await res.json(await db.getPlan(planId));
 }
