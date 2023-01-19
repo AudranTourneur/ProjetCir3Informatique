@@ -25,6 +25,7 @@
 			description: '',
 			isPublic: false
 		};
+	}
 
     function logout() {
         localStorage.removeItem('token');
@@ -32,46 +33,35 @@
         window.location.href = '/';
     }
 
-		//fetch('http://localhost:3000/plans', {
-		//    method: 'POST',
-		//    headers: {
-		//        'Content-Type': 'application/json'
-		//    },
-		//    body: JSON.stringify(planInCreation)
-		//})
-
-		
+	function reloadPage() {
+		setTimeout(() => {
+			location.reload()
+		}, 200)
 	}
 
-		function reloadPage() {
-			setTimeout(() => {
-				location.reload()
-			}, 1000)
-		}
-
-		onMount(async () => {
-			const res = await fetch(`${PUBLIC_API_HOST}/isAdmin`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					token: localStorage.getItem('token'),
-					email: localStorage.getItem('email')
-				})
+	onMount(async () => {
+		const res = await fetch(`${PUBLIC_API_HOST}/isAdmin`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				token: localStorage.getItem('token'),
+				email: localStorage.getItem('email')
 			})
-
-			const data = await res.json()
-
-			if (data.status === 0) {
-				localStorage.removeItem('token');
-				localStorage.removeItem('email');
-				setTimeout(() => {
-					location.href = '/';
-					reloadPage()
-				}, 100)
-			}
 		})
+
+		const data = await res.json()
+
+		if (data.status === 0) {
+			localStorage.removeItem('token');
+			localStorage.removeItem('email');
+			setTimeout(() => {
+				location.href = '/';
+				reloadPage()
+			}, 100)
+		}
+	})
 </script>
 
 <div class="m-4 flex flex-col">
