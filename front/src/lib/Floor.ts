@@ -6,7 +6,7 @@ type RoomData = {
     points: number[][],
     name: string,
     capacity: number,
-    projecteur: boolean,
+    hasProjector: boolean,
 };
 
 export class Floor {
@@ -14,7 +14,7 @@ export class Floor {
 
     constructor(data : RoomData[], public name : string, private globalStore: Writable<Room | null>) {  
         data.forEach(element => {
-            let tmp = new Room(element.points,element.name,element.capacity,element.projecteur, globalStore)
+            let tmp = new Room(element.points,element.name,element.capacity,element.hasProjector, globalStore)
             this.rooms.push(tmp);
         });
         console.log(this.rooms);
@@ -32,7 +32,7 @@ export class Floor {
     }
 
     newRoom(data : RoomData) {
-        this.rooms.push(new Room(data.points,data.name,data.capacity,data.projecteur, this.globalStore));
+        this.rooms.push(new Room(data.points,data.name,data.capacity,data.hasProjector, this.globalStore));
         this.unDraw();
         this.update();
     }
