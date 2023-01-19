@@ -163,7 +163,7 @@ export async function deletePlan(_id:String){
 }
 
 //Ajoute une nouvelle reservation dans la bdd tg paul, renvoit l'_id du nouveau objet ajoute
-export async function bookReservations(reservedBy:String,date:Number,planId:String,roomName:String,startTime:Number,endTime:Number){
+export async function bookRoom(reservedBy:String,date:Number,planId:String,roomName:String,startTime:Number,endTime:Number){
 	let reservation = new Reservations({
 		reservedBy:reservedBy,
 		date:date,
