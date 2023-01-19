@@ -284,7 +284,7 @@
 						<label for="input-capacite" class="label">
 							<span class="label-text text-white">Projecteur : </span>
 						</label>
-						{#if $currentlySelectedRoom.projecteur}
+						{#if $currentlySelectedRoom.hasProjector}
 							<span class="label-text text-white">oui</span>
 						{:else}
 							<span class="label-text text-white">non</span>
