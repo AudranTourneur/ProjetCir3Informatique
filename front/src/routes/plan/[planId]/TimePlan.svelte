@@ -18,6 +18,7 @@
 
     export let infoModal1 = new Date(infoDate.year,infoDate.month,infoDate.day);
     export let infoModal2 = new Date(infoDate.year,infoDate.month,infoDate.day);
+    export let dataDay;
 
     let showModal1 = false;
     let showModal2 = false;

@@ -188,3 +188,5 @@ export async function bookRoom(reservedBy:String,date:Number,planId:String,roomN
 //attention mdp admin :1234
 //email admin : Admin@chehpaul
 //pour mettre en admin un utilisateur faire la commande db.user.findOneAndUpdate({email:"lucas@lucas.com"},{$set:{admin:true}}) dans mongosh
+
+//TEST PING PAUL
