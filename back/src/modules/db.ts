@@ -131,14 +131,15 @@ export async function getPlan(planId:String){
 	return await Plans.findById(planId);
 }
 
-export async function getAllReservationByEmail(email:String){
+
+export async function getAllReservationsByEmail(email:String){
 	const result= await Reservations.find({email:email});
 	if(!result)return false;
 	return result;
 }
 
 
-export async function getAllReservationForPlan(planId:String){
+export async function getAllReservationsForPlan(planId:String){
 	const result = await Reservations.find({planId:planId});
 	if(!result)return false;
 	return result;
