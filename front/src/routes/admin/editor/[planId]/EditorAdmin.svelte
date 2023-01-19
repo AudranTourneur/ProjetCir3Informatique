@@ -5,8 +5,9 @@
 	import * as d3 from 'd3';
 	import { writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
+	import { PUBLIC_API_HOST } from '$env/static/public';
 
-
+    export let plan;
 
     let isAdding = false;
     let isModifying = false;
@@ -101,7 +102,7 @@
         })
 
         let image = svg.append('image')
-        .attr('xlink:href', '/Etage_2_clean.png')
+        .attr('xlink:href', `${PUBLIC_API_HOST}/images/${plan.imageId}.png}`)
         .attr("width", width)
 
         setTimeout(() => {
@@ -115,7 +116,7 @@
                 projecteur: true,
             };
             floor.update()
-        }, 1000)
+        }, 1)
 	});
 
     function cancelSelection() {
@@ -176,8 +177,11 @@
     function finishEdition() {
         isAdding = false;
         isModifying = false;
-        if (!$currentlySelectedRoom) return;
-        $currentlySelectedRoom.stopEditPolygon();
+        if ($currentlySelectedRoom) {
+            $currentlySelectedRoom.stopEditPolygon();
+        }
+
+        console.log('floor = ', floor)
     }
 </script>
 

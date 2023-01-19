@@ -7,6 +7,7 @@ export const load = (async ({ params }) => {
         const planId = params.planId;
         const res = await fetch(`${PUBLIC_API_HOST}/getPlan/${planId}`)
         const plan = await res.json()
+        console.log('plan', plan)
         return {
             plan
         };

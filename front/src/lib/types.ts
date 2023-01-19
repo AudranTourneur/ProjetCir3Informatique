@@ -1,5 +1,6 @@
 export type Plan = {
-    id: number,
+    _id: number,
     name: string,
     description: string,
+    imageId: string,
 }
