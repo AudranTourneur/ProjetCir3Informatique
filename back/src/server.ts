@@ -74,20 +74,38 @@ app.get('/getAllPlans', async function (req, res) {
     await uploadPlan.getAllPlans(res);
 });
 
+app.get('/getPlan/:planId', async function (req, res) {
+    const planId = req.params.planId.split('.')[0];
+    await uploadPlan.getPlan(planId, res);
+});
+
 app.post('/updatePlan', async function (req, res) {
     await uploadPlan.updatePlan(req.body.email, req.body.token, req.body.plan, res);
 });
 
 app.delete('/deletePlan', async function (req, res) {
-    await uploadPlan.deletePlan(req.body.email, req.body.token, req.body.plan, res);
+    await uploadPlan.deletePlan(req.body.email, req.body.token, req.body.planId, res);
 });
 
 app.get('/isAdmin', async function (req, res) {
     await uploadPlan.isAdmin(req.body.email,req.body.token, res);
 });
 
-app.get('/getAllReservationsForPlan', async function (req, res) {
+app.get('/getAllReservationsForPlan/:planId', async function (req, res) {
+    const planId = req.params.planId.split('.')[0];
+    await uploadPlan.getAllReservationsForPlan(planId, res);
+});
 
+app.post('/bookRoom', async function (req, res) {
+    await uploadPlan.bookRoom(req.body.planId, req.body.roomName, req.body.startTime, req.body.endTime, req.body.email, req.body.token, res);
+});
+
+app.get('/getMyReservations', async function (req, res) {
+   await uploadPlan.getMyReservations(req.body.email, req.body.token, res);
+});
+
+app.delete('/deleteReservation', async function (req, res) {
+    await uploadPlan.deleteReservation(req.body.planId, req.body.startTime, req.body.roomName, req.body.email, req.body.token, res);
 });
 
 app.post('/', async function (req, res) {
