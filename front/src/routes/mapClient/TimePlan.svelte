@@ -1,6 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import ModalTime from './ModalTime.svelte'
     import * as d3 from 'd3';
+
+    export let infoDate;
 
     let time : HTMLDivElement;
     let width = window.innerWidth;
@@ -10,6 +13,17 @@
     let reservation : d3.Selection<SVGRectElement, unknown, null, undefined> | null = null;
     let line : d3.Selection<SVGRectElement, unknown, null, undefined> | null = null;
     let svg : d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
+
+    infoDate.year
+    infoDate.month
+    infoDate.day
+
+    let infoModal1 = new Date(infoDate.year,infoDate.month,infoDate.day);
+    let infoModal2 = new Date(infoDate.year,infoDate.month,infoDate.day);
+
+    let showModal1 = false;
+    let showModal2 = false;
+
     onMount(() => {
         svg = d3.select(time)
         .append("svg")
@@ -151,12 +165,22 @@
             )
             cursorx1.raise()
         }
-
     }
 </script>
 <div>
     <span class="label-text text-white">Horaires : </span>
+    {#if showModal1 === true}
+        <ModalTime bind:infoModal={infoModal1} bind:showModal={showModal1}/>
+    {:else}
+        <button on:click={()=>{showModal1=true}}>Choisir heure</button>
+    {/if}
+    <span class="label-text text-white">{infoModal1?.getTime()}</span>
+    {#if showModal2 === true}
+        <ModalTime bind:infoModal={infoModal2} bind:showModal={showModal2}/>
+    {:else}
+        <button on:click={()=>{showModal2=true}}>Choisir heure</button>
+    {/if}
+    <span class="label-text text-white">{infoModal2?.getTime()}</span>
     <div bind:this={time}>
-
     </div>
 </div>

@@ -117,6 +117,7 @@
                 capacity: 10,
                 projecteur: true,
             };
+
             tabFloor.push(new Floor([roomData],"bonjour", currentlySelectedRoom));
             tabFloor[idSelectedFloor].update()
         }, 1000)
