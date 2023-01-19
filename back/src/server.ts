@@ -179,6 +179,7 @@ app.use('/trpc',
   }),
 );
 
+
 initDb();
 
 uploadPlan.initImagesApp(app);
@@ -201,4 +202,4 @@ async function runTest() {
   console.log(await isAdmin("lucas@lucas.com"));
 
 }
-runTest()
+//runTest()
