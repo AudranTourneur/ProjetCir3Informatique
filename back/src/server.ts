@@ -71,18 +71,22 @@ app.get('/getImagesList', async function (req, res) {
 });
 
 app.get('/getAllPlans', async function (req, res) {
-
+    await uploadPlan.getAllPlans(res);
 });
 
 app.post('/updatePlan', async function (req, res) {
-    await uploadPlan.updatePlan(req.body.email, req.body.token, req.body.data, res);
+    await uploadPlan.updatePlan(req.body.email, req.body.token, req.body.plan, res);
 });
 
 app.delete('/deletePlan', async function (req, res) {
-
+    await uploadPlan.deletePlan(req.body.email, req.body.token, req.body.plan, res);
 });
 
 app.get('/isAdmin', async function (req, res) {
+    await uploadPlan.isAdmin(req.body.email,req.body.token, res);
+});
+
+app.get('/getAllReservationsForPlan', async function (req, res) {
 
 });
 

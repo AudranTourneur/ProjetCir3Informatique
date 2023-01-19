@@ -103,6 +103,7 @@ export async function createNewPlan(imageId:String,name:String,description:Strin
 		description:description
 	})
 	const dbResponse = await plans.save();
+	//@ts-ignore
 	return dbResponse._id;
 }
 

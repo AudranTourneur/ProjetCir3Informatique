@@ -114,3 +114,19 @@ export async function deletePlan (email: string, token: string, plan: Plan, res:
     //     await res.json({status: 666});
     }
 }
+
+export async function isAdmin (email: string, token: string, res: Response) {
+    if (await db.isAdmin(email) && await db.checkConnection(email, token)) {
+        await res.json({status: 1});
+    }else{
+        await res.json({status: 666});
+    }
+}
+
+export async function getAllReservationsForPlan (planId: string, res: Response) {
+    // await res.json({data: await db.getAllReservationsForPlan(planId)});
+}
+
+export function bookPlan (planId: string, startTime: number, endTime: number, email: string, token: string, res: Response){
+    
+}
