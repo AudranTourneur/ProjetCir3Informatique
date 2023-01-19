@@ -92,17 +92,13 @@ export async function getAllPlans(res: Response) {
 
 // A TESTER PAS SUR SUR QUE CA MARCHE
 export async function updatePlan(email: string, token: string, plan: Plan, res: Response) {
-    if (true || (await db.checkConnection(email, token) && await db.isAdmin(email))) {
-        console.log('1')
+    if (await db.checkConnection(email, token) && await db.isAdmin(email)) {
         if (await db.updatePlan(plan)) {
-            console.log('2')
             res.json({status: 1});
         } else {
-            console.log('3')
             res.json({status: 0});
         }
     } else {
-        console.log('4')
         res.json({status: 666});
     }
     console.log('5')
@@ -143,22 +139,22 @@ function getColorByCoeff(coeff: number){
 }
  export async function getCoeffSupperpositionByRoomByHour(planId: string, startTime: number, endTime: number, res: Response) {
     let searchingDay = {day: new Date(startTime).getDate(), month: new Date(startTime).getMonth()+1, year: new Date(startTime).getFullYear()};
-    let reservations = await db.getAllReservationsForPlanByDate(planId, searchingDay);
+    // let reservations = await db.getAllReservationsForPlanByDate(planId, searchingDay);
     //delete reservations that are not in the time interval
     // @ts-ignore
-     reservations = reservations.filter(reservation => reservation.startTime < endTime && reservation.endTime > startTime);
-     console.log('reservations', reservations);
+    //  reservations = reservations.filter(reservation => reservation.startTime < endTime && reservation.endTime > startTime);
+     // console.log('reservations', reservations);
      res.send('ok');
 }
 
-export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number, email: string, token: string, res: Response) {
+export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number,date: number, email: string, token: string, res: Response) {
     if(startTime>endTime){
         let tmp = startTime;
         startTime = endTime;
         endTime = tmp;
     }
     if (await db.checkConnection(email, token)) {
-        await res.json({status: await db.bookRoom(planId, roomName, startTime, endTime, email)});
+        await res.json({status: await db.bookRoom(email, date,  planId, roomName, startTime, endTime)});
     } else {
         await res.json({status: 666});
     }

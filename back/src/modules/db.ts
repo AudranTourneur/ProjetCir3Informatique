@@ -15,12 +15,19 @@ const Reservations=mongoose.model('reservations',reservationSchema);
 const Images=mongoose.model('images',imageSchema);
 
 mongoose.connection.on('connected',()=>console.log("connected to the mongo server"));
-mongoose.connection.on('error', (error)=> console.log("Error:",error));
-
+mongoose.connection.on('error', (err)=> console.log("Error:",err));
+process.on('SIGINT',()=>{
+	mongoose.connection.close(()=>{
+		console.log('Mongoose conection closed');
+		process.exit(0);
+	})
+})
 //Pour enlever un warning de deprecation
 mongoose.set('strictQuery',true);
-export function initDb(){
-	mongoose.connect(process.env.MONGODB_STRING,{dbName:'app'})
+export async function initDb(){
+	await mongoose.connect('mongodb://127.0.0.1:27017/',{dbName:'app'}).catch((error)=>{
+		console.log("Error :",error);
+	})
 	
 }
 
@@ -141,9 +148,10 @@ export async function getAllReservationsByEmail(email:String){
 
 export async function getAllReservationsForPlanByDate(planId:String,date:Number){
 	const result = await Reservations.find({planId:planId,date:date});
-	if(!result)return [];
+	if(!result)return false;
 	return result;
 }
+
 
 
 //Deletes reservation if email in argument is the same as value in reservedBy
@@ -162,19 +170,7 @@ export async function deletePlan(_id:String){
 	return {plansDeleted:nbPlansDelete,reservationsDeleted:nbReservationsDelete};
 }
 
-//Ajoute une nouvelle reservation dans la bdd tg paul, renvoit l'_id du nouveau objet ajoute
-export async function bookReservations(reservedBy:String,date:Number,planId:String,roomName:String,startTime:Number,endTime:Number){
-	let reservation = new Reservations({
-		reservedBy:reservedBy,
-		date:date,
-		planId:planId,
-		roomName:roomName,
-		startTime:startTime,
-		endTime:endTime
-	});
-	const result = await reservation.save();
-	return result._id;
-}
+
 
 
 //attention mdp admin :1234

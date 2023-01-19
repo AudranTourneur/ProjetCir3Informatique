@@ -80,9 +80,6 @@ app.get('/getPlan/:planId', async function (req, res) {
 });
 
 app.post('/updatePlan', async function (req, res) {
-  console.log('ici')
-  console.log('update plan', req.body)
-  console.log('update plan 2', JSON.stringify(req.body))
   await uploadPlan.updatePlan(req.body.email, req.body.token, req.body.plan, res);
 });
 
@@ -100,11 +97,11 @@ app.post('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
 });
 
 app.get('/getCoeffSupperpositionByRoomByHour', async function (req, res){
-  await uploadPlan.getCoeffSupperpositionByRoomByHour('63c846bcb744a11e2ec06ec9', Date.now(), Date.now(), res);
+  //await uploadPlan.getCoeffSupperpositionByRoomByHour(res);
 });
 
 app.post('/bookRoom', async function (req, res) {
-  await uploadPlan.bookRoom(req.body.planId, req.body.roomName, req.body.startTime, req.body.endTime, req.body.email, req.body.token, res);
+  await uploadPlan.bookRoom(req.body.planId, req.body.roomName, req.body.startTime, req.body.endTime, req.body.date, req.body.email, req.body.token, res);
 });
 
 app.get('/myReservations', async function (req, res) {
@@ -115,7 +112,7 @@ app.delete('/deleteReservation', async function (req, res) {
   await uploadPlan.deleteReservation(req.body.planId, req.body.startTime, req.body.roomName, req.body.email, req.body.token, res);
 });
 
-app.post('/', async function (req, res) {
+app.get('/', async function (req, res) {
   await res.send('Hello World!');
 });
 
@@ -179,6 +176,7 @@ app.use('/trpc',
   }),
 );
 
+
 initDb();
 
 uploadPlan.initImagesApp(app);
@@ -201,4 +199,4 @@ async function runTest() {
   console.log(await isAdmin("lucas@lucas.com"));
 
 }
-runTest()
+//runTest()
