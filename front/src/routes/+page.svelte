@@ -15,9 +15,6 @@
 </script>
 
 <main>
-	<button class="btn" on:click={testBDD}>test bdd</button>
-	<button class="btn" on:click={()=>isLoginModalOpen = true}>toggle modal</button>
-
 	<div class="sideBtn__container">
 		<div class="border">
 			<div class="accountBtn">
