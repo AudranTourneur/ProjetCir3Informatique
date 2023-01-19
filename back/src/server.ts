@@ -100,7 +100,7 @@ app.get('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
 });
 
 app.get('/getCoeffSupperpositionByRoomByHour', async function (req, res){
-  await uploadPlan.getCoeffSupperpositionByRoomByHour(res);
+  //await uploadPlan.getCoeffSupperpositionByRoomByHour(res);
 });
 
 app.post('/bookRoom', async function (req, res) {
@@ -115,7 +115,7 @@ app.delete('/deleteReservation', async function (req, res) {
   await uploadPlan.deleteReservation(req.body.planId, req.body.startTime, req.body.roomName, req.body.email, req.body.token, res);
 });
 
-app.post('/', async function (req, res) {
+app.get('/', async function (req, res) {
   await res.send('Hello World!');
 });
 

@@ -141,11 +141,11 @@ export async function getAllReservationsByEmail(email:String){
 
 export async function getAllReservationsForPlanByDate(planId:String,date:Number){
 	const result = await Reservations.find({planId:planId,date:date});
-	if(!result)return [];
+	if(!result)return false;
 	return result;
 }
 
-export async function bookReservation
+export async function bookReservation(){};
 
 //Deletes reservation if email in argument is the same as value in reservedBy
 //Returns 1 if reservation succeded, 2 if no resevations found, 0 if nothing got deleted 
