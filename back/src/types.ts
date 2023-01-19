@@ -16,7 +16,7 @@ export type Room ={
 }
 
 export type Plan = {
-    id: string,
+    _id: string,
     imageId:string,
     name: string,
     description: string,
