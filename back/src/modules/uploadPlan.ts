@@ -146,7 +146,8 @@ function getColorByCoeff(coeff: number){
      res.send('ok');
 }
 
-async function canBookRoom(planId: string, startTime: number, date: number, endTime: number) {
+async function canBookRoom(planId: string, startTime: number, date: string, endTime: number) {
+
     let reservations = await db.getAllReservationsForPlanByDate(planId, date);
     let canBook = true;
     for (let i = 0; i < reservations.length; i++) {//Inshallah ça marche mashallah
@@ -169,7 +170,7 @@ async function canBookRoom(planId: string, startTime: number, date: number, endT
     return canBook;
 }
 
-export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number,date: number, email: string, token: string, res: Response) {
+export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number,date: string, email: string, token: string, res: Response) {
     if (await db.checkConnection(email, token)) {
         if(startTime>endTime){
             let tmp = startTime;
