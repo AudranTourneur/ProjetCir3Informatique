@@ -101,6 +101,7 @@ app.get('/getCoeffSupperpositionByRoomByHour', async function (req, res){
 });
 
 app.post('/bookRoom', async function (req, res) {
+  console.log(req.body)
   await uploadPlan.bookRoom(req.body.planId, req.body.roomName, req.body.startTime, req.body.endTime, req.body.date, req.body.email, req.body.token, res);
 });
 

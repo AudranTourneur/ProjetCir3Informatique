@@ -117,7 +117,7 @@
         let url = PUBLIC_API_HOST + "/getAllReservationsForPlanByDate/" + plan._id;
         let displayedDate = $dateStore.selected.getTime();
 
-        await fetch(url, {
+        const res = await fetch(url, {
 				method: "POST",
 				mode: "cors",
 				headers: {
@@ -125,23 +125,24 @@
 				},
 				body: JSON.stringify({displayedDate})
 			})
-            .then((res) => res.json())
-            .then((data) => {
-                dataDay = data.data;
-            });
+
+		dataDay = (await res.json()).data;
+		console.log('dataDay', dataDay)
     }
     
     async function saveInput() {
         let url = PUBLIC_API_HOST + "/bookRoom";
         let displayedDate = {
+            planId: plan._id,
             email: localStorage.getItem('email'),
             date: infoModal1.getTime(),
             startTime: infoModal1.getTime(),
             endTime: infoModal2.getTime(),
             roomName: $currentlySelectedRoom?.name,
-            planId: plan._id,
             token: localStorage.getItem('token'),
         };
+
+		console.log('display', displayedDate)
 
         await fetch(url, {
 				method: "POST",
@@ -176,6 +177,8 @@
             infoDate.year = $dateStore.selected.getFullYear()
             infoDate.month = $dateStore.selected.getMonth()
             infoDate.year = $dateStore.selected.getDay()
+
+			initDay();
 		}
 	}
 
