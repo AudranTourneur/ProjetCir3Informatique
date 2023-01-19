@@ -21,11 +21,9 @@
 
 	let inputName: string;
 	let inputCapacity: number;
-	let inputProjecteur: boolean;
+	let inputProjector: boolean;
 
 	let tabPoint: number[][] = [];
-
-	let idSelectedFloor = 0;
 
 	let points = [];
 
@@ -35,7 +33,7 @@
 			points: points,
 			name: room.name,
 			capacity: room.capacity,
-			projecteur: room.projecteur
+			hasProjector: room.hasProjector
 		};
 	});
 
@@ -47,13 +45,13 @@
 	);
 
 	function getUnusedRoomName(): string {
-		const allRoomNames: string[] = plan.rooms.map((room) => room.name);
+		if (!floor) return '';
+		const allRoomNames: string[] = floor.rooms.map((room) => room.name);
 		console.log('All names', allRoomNames)
 		let nameCandidate = 'Unnamed room'
 
-		let i = 1
 		while (allRoomNames.includes(nameCandidate)) {
-			nameCandidate = nameCandidate + ` (${i++})`;
+			nameCandidate = 'New '+ nameCandidate;
 		}
 
 		return nameCandidate;
@@ -74,9 +72,7 @@
 			.style('background-color', 'lightgrey')
 
 			// @ts-ignore
-			.call(
-				d3
-					.zoom()
+			.call(d3.zoom()
 					.on('zoom', (event) => {
 						svg.attr('transform', event.transform);
 					})
@@ -111,7 +107,7 @@
 									points: tabPoint,
 									name: getUnusedRoomName(),
 									capacity: 10,
-									projecteur: true
+									hasProjector: false,
 								};
 								floor.newRoom(data);
 
@@ -123,6 +119,12 @@
 							});
 					} else {
 						tabPoint.push([pointer[0], pointer[1]]);
+						
+						svg
+							.append('polyline')
+							.attr('points', tabPoint.toString())
+							.style('stroke', 'blue') // set the line colour
+							.style('fill', 'none'); // set the fill colour
 
 						svg
 							.append('circle')
@@ -132,11 +134,7 @@
 							.style('stroke', 'red') // set the line colour
 							.style('fill', 'red'); // set the fill colour
 
-						svg
-							.append('polyline')
-							.attr('points', tabPoint.toString())
-							.style('stroke', 'blue') // set the line colour
-							.style('fill', 'none'); // set the fill colour
+					
 					}
 				}
 			});
@@ -163,7 +161,7 @@
 					points: r.points.map((p) => [p[0] * width, p[1] * height]),
 					name: r.name,
 					capacity: r.capacity,
-					projecteur: r.projecteur
+					hasProjector: r.hasProjector
 				};
 			});
 
@@ -192,7 +190,8 @@
 
 		inputName = $currentlySelectedRoom.name;
 		inputCapacity = $currentlySelectedRoom.capacity;
-		inputProjecteur = $currentlySelectedRoom.projecteur;
+		inputProjector = $currentlySelectedRoom.hasProjector;
+		isNameInvalid = false;
 	}
 
 	function unselect() {
@@ -203,14 +202,20 @@
 
 	function saveInput() {
 		if (!$currentlySelectedRoom) return;
-		updateInputs()
+
+		$currentlySelectedRoom.name = inputName;
+		$currentlySelectedRoom.capacity = inputCapacity;
+		$currentlySelectedRoom.hasProjector = inputProjector;
+
 		unselect();
 	}
 	function cancelInput() {
+		console.log('cancel')
+		unselect();
 		if (!$currentlySelectedRoom) return;
 		inputName = $currentlySelectedRoom.name;
 		inputCapacity = $currentlySelectedRoom.capacity;
-		inputProjecteur = $currentlySelectedRoom.projecteur;
+		inputProjector = $currentlySelectedRoom.hasProjector;
 	}
 
 	function edit() {
@@ -222,13 +227,17 @@
 	let firstTime = false;
 
 	$: {
-		if ($currentlySelectedRoom && !firstTime) {
-			firstTime = true;
-
-			inputName = $currentlySelectedRoom!.name;
-			inputCapacity = $currentlySelectedRoom!.capacity;
-			inputProjecteur = $currentlySelectedRoom!.projecteur;
+		if ($currentlySelectedRoom) {
+			console.log('yo')
+			updateInputs()
 		}
+		//if ($currentlySelectedRoom && !firstTime) {
+		//	firstTime = true;
+//
+		//	inputName = $currentlySelectedRoom!.name;
+		//	inputCapacity = $currentlySelectedRoom!.capacity;
+		//	inputProjecteur = $currentlySelectedRoom!.projecteur;
+		//}
 	}
 
 	function del() {
@@ -257,7 +266,7 @@
 						name: r.name,
 						points: r.points.map((e) => ({ x: e[0] / width, y: e[1] / height })),
 						capacity: r.capacity,
-						hasProjector: false,
+						hasProjector: r.hasProjector,
 						hasWhiteboard: false,
 						hasBlackboard: false,
 						description: ''
@@ -295,7 +304,22 @@
 		}
 		$currentlySelectedRoom = null;
 	}
+
+	let isNameInvalid = false;
+
+	function checkNameValidity() {
+		if (!$currentlySelectedRoom || !floor) return;
+		const allRoomNames: string[] = floor.rooms.map((room) => room.name);
+		isNameInvalid = allRoomNames.includes(inputName)
+		console.log('check', inputName, 'vs', allRoomNames, isNameInvalid)
+	}
+
+	function manageResize() {
+		console.log('resize')
+	}
 </script>
+
+<svelte:window on:resize={manageResize} />
 
 <div class="absolute overflow-hidden" bind:this={el} />
 
@@ -321,10 +345,14 @@
 						<input
 							id="input-nom"
 							bind:value={inputName}
+							on:input={checkNameValidity}
 							type="text"
 							placeholder="Type here"
 							class="input input-bordered w-full max-w-xs input-sm input-info"
 						/>
+						{#if isNameInvalid}
+							<div class="text-red-500">Ce nom est déjà utilisé</div>
+						{/if}
 					</div>
 
 					<div class="form-control w-full max-w-xs">
@@ -342,7 +370,7 @@
 
 					<div class="text-white">
 						Projecteur :
-						<input class="toggle toggle-info" type="checkbox" bind:checked={inputProjecteur} />
+						<input class="toggle toggle-info" type="checkbox" bind:checked={inputProjector} />
 					</div>
 					<div class="mt-8 flex flex-col gap-6">
 						<div class="flex gap-4">
@@ -352,7 +380,7 @@
 
 						<div class="flex gap-4">
 							<button class="btn btn-warning btn-outline w-32" on:click={cancelInput}>Annuler</button>
-							<button class="btn btn-success w-32" on:click={saveInput}>OK</button>
+							<button class="btn btn-success w-32" on:click={saveInput} disabled={isNameInvalid}>OK</button>
 						</div>
 					</div>	
 				</div>

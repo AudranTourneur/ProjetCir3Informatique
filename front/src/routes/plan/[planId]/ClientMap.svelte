@@ -10,6 +10,7 @@
 	import { Datepicker } from 'svelte-calendar';
 	import type { Plan } from '../../../../../back/src/types';
 	import dayjs from 'dayjs';
+	import { PUBLIC_API_HOST } from '$env/static/public';
 
 	export let plan: Plan;
 
@@ -17,23 +18,28 @@
 
 	let el: HTMLDivElement;
 
+    let dataDay : any = [];
+
 	let currentlySelectedRoom: Writable<Room | null> = writable(null);
 
-	//let points = [
-	//    [50, 50],
-	//    [50, 150],
-	//    [150, 150],
-	//    [150, 50],
-	//    [100, 100],
-	//].map((p) => [p[0] + 100, p[1] + 300])
+    let infoModal1 : Date;
+    let infoModal2 : Date;
 
-	let points = [
+    let points = [
 		[0, 0],
 		[0.5, 0.5],
 		[0, 1]
 	];
 
-	let idSelectedFloor = 0;
+    let internalRooms = plan.rooms.map((room) => {
+		points = room.points.map((p) => [p.x, p.y]);
+		return {
+			points: points,
+			name: room.name,
+			capacity: room.capacity,
+			projecteur: room.hasProjector
+		};
+	});
 
 	let date = new Date();
 	let day = date.getDay();
@@ -46,7 +52,8 @@
 		day: day
 	};
 
-	let tabFloor: Floor[] = [];
+    
+	let floor: null | Floor = null;
 
 	onMount(() => {
 		let width = window.innerWidth;
@@ -59,9 +66,7 @@
 			.attr('height', height)
 			.style('background-color', 'lightgrey')
 			// @ts-ignore
-			.call(
-				d3
-					.zoom()
+			.call(d3.zoom()
 					.on('zoom', (event) => {
 						svg.attr('transform', event.transform);
 					})
@@ -71,19 +76,33 @@
 			.attr('id', 'main-svg');
 		let image = svg.append('image').attr('xlink:href', '/Etage_2_clean.png').attr('width', width);
 
-		setTimeout(() => {
+		const updateHeight = () => {
 			height = image.node()?.getBBox().height!;
+			console.log('la height vaut', height);
+			console.log(svg.node());
+			if (height === 0) {
+				console.log('not loaded yet, retrying in 10ms');
+				setTimeout(updateHeight, 10);
+				return;
+			}
+
 			svg.attr('height', height);
 
-			let roomData = {
-				points: points.map((p) => [p[0] * width, p[1] * height]),
-				name: 'nom1',
-				capacity: 10,
-				projecteur: true
-			};
-			tabFloor.push(new Floor([roomData], 'bonjour', currentlySelectedRoom));
-			tabFloor[idSelectedFloor].update();
-		}, 1000);
+			internalRooms = internalRooms.map((r) => {
+				return {
+					points: r.points.map((p) => [p[0] * width, p[1] * height]),
+					name: r.name,
+					capacity: r.capacity,
+					projecteur: r.projecteur
+				};
+			});
+
+			floor = new Floor(internalRooms, 'Name', currentlySelectedRoom);
+
+			floor.update();
+		};
+
+		setTimeout(updateHeight, 1);
 	});
 
 	function unselect() {
@@ -91,7 +110,51 @@
 		$currentlySelectedRoom = null;
 	}
 
-	function saveInput() {}
+    async function initDay() {
+        let url = PUBLIC_API_HOST + "/getAllReservationsForPlanByDate/" + plan._id;
+        let displayedDate = $dateStore.selected.getTime();
+
+        await fetch(url, {
+				method: "POST",
+				mode: "cors",
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({displayedDate})
+			})
+            .then((res) => res.json())
+            .then((data) => {
+                dataDay = data.data;
+            });
+    }
+    
+    async function saveInput() {
+        let url = PUBLIC_API_HOST + "/bookRoom";
+        let displayedDate = {
+            email: localStorage.getItem('email'),
+            date: infoModal1,
+            startTime: infoModal1,
+            endTime: infoModal2,
+            roomName: $currentlySelectedRoom?.name,
+            planId: plan._id,
+            token: localStorage.getItem('token'),
+        };
+
+        await fetch(url, {
+				method: "POST",
+				mode: "cors",
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(displayedDate)
+			})
+            .then((res) => res.json())
+            .then((data) => {
+                dataDay = data.data;
+            });    
+        }
+
+
 	function cancelInput() {}
 
 	function finishEdition() {
@@ -106,8 +169,13 @@
 		if ($dateStore) {
 			console.log('state update', $dateStore)
 			datePickerOpen = $dateStore.open
+
+            infoDate.year = $dateStore.selected.getFullYear()
+            infoDate.month = $dateStore.selected.getMonth()
+            infoDate.year = $dateStore.selected.getDay()
 		}
 	}
+
 
 </script>
 
@@ -213,7 +281,7 @@
 						<label for="input-capacite" class="label">
 							<span class="label-text text-white">Projecteur : </span>
 						</label>
-						{#if $currentlySelectedRoom.projecteur}
+						{#if $currentlySelectedRoom.hasProjector}
 							<span class="label-text text-white">oui</span>
 						{:else}
 							<span class="label-text text-white">non</span>
@@ -221,11 +289,11 @@
 					</div>
 					<div>
 						<button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
-						<button class="btn btn-success" on:click={saveInput}>Sauvegarder</button>
+						<button class="btn btn-success" on:click={saveInput}>Réserver</button>
 					</div>
 					<button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
 					<div class="absolute bottom-2 left-0">
-						<TimePlan bind:infoDate />
+						<TimePlan bind:infoDate bind:infoModal1={infoModal1} bind:infoModal2={infoModal2}/>
 					</div>
 				</div>
 			</div>
