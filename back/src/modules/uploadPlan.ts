@@ -124,7 +124,7 @@ export async function isAdmin(email: string, token: string, res: Response) {
     }
 }
 
-export async function getAllReservationsForPlanByDate(planId: string, displayedDate: number, res: Response) {
+export async function getAllReservationsForPlanByDate(planId: string, displayedDate: string, res: Response) {
     res.json({data: await db.getAllReservationsForPlanByDate(planId, displayedDate)});
 }
 
@@ -138,10 +138,10 @@ function getColorByCoeff(coeff: number){
     }
 }
  export async function getCoeffSupperpositionByRoomByHour(planId: string, startTime: number, endTime: number, res: Response) {
-    let searchingDay = new Date(startTime).getTime();
-    let reservations = await db.getAllReservationsForPlanByDate(planId, searchingDay);
-     // @ts-ignore
-     reservations = reservations.filter(reservation => reservation.startTime < endTime && reservation.endTime > startTime);
+    // let searchingDay = new Date(startTime).getTime();
+    // let reservations = await db.getAllReservationsForPlanByDate(planId, searchingDay);
+    //  // @ts-ignore
+    //  reservations = reservations.filter(reservation => reservation.startTime < endTime && reservation.endTime > startTime);
 
      res.send('ok');
 }
