@@ -92,6 +92,7 @@ app.post('/isAdmin', async function (req, res) {
 });
 
 app.post('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
+  console.log(req.body)
   const planId = req.params.planId;
   await uploadPlan.getAllReservationsForPlanByDate(planId, req.body.displayedDate, res);
 });
