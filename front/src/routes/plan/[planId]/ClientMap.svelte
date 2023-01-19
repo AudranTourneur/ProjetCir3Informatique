@@ -142,6 +142,7 @@
             token: localStorage.getItem('token'),
         };
 
+		console.log(infoModal1, infoModal2)
 		console.log('display', displayedDate)
 
         await fetch(url, {
@@ -174,9 +175,18 @@
 			console.log('state update', $dateStore)
 			datePickerOpen = $dateStore.open
 
+			console.log($dateStore.selected)
+			console.log(typeof $dateStore.selected)
+
+			console.log('year', $dateStore.selected.getFullYear())
+			console.log('month', $dateStore.selected.getMonth())
+			console.log('day', $dateStore.selected.getDate())
+
             infoDate.year = $dateStore.selected.getFullYear()
             infoDate.month = $dateStore.selected.getMonth()
-            infoDate.year = $dateStore.selected.getDay()
+            infoDate.day = $dateStore.selected.getDate()
+
+			console.log('info', infoDate)
 
 			initDay();
 		}
