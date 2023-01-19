@@ -170,9 +170,8 @@ export async function deletePlan(_id:String){
 	return {plansDeleted:nbPlansDelete,reservationsDeleted:nbReservationsDelete};
 }
 
-
-
-
 //attention mdp admin :1234
 //email admin : Admin@chehpaul
 //pour mettre en admin un utilisateur faire la commande db.user.findOneAndUpdate({email:"lucas@lucas.com"},{$set:{admin:true}}) dans mongosh
+
+//TEST PING NATHAN

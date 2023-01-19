@@ -148,12 +148,12 @@ function getColorByCoeff(coeff: number){
 }
 
 export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number,date: number, email: string, token: string, res: Response) {
-    if(startTime>endTime){
-        let tmp = startTime;
-        startTime = endTime;
-        endTime = tmp;
-    }
     if (await db.checkConnection(email, token)) {
+        if(startTime>endTime){
+            let tmp = startTime;
+            startTime = endTime;
+            endTime = tmp;
+        }
         await res.json({status: await db.bookRoom(email, date,  planId, roomName, startTime, endTime)});
     } else {
         await res.json({status: 666});
