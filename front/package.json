@@ -37,6 +37,7 @@
 		"sass": "^1.57.1",
 		"svelte-i18n": "^3.6.0",
 		"svelte-preprocess": "^5.0.0",
-		"svelte-time-picker": "^2.0.0"
+		"svelte-time-picker": "^2.0.0",
+		"tw-elements": "^1.0.0-alpha13"
 	}
 }

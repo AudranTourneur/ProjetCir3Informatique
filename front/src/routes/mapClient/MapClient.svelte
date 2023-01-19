@@ -105,7 +105,6 @@
     <div class="absolute inset-x-0 bottom-0">
     {#if !$currentlySelectedRoom}
         <div class="flex justify-center  bg-black bg-opacity-50 p-2 gap-2" transition:slide>
-            <div class=""><Datepicker format="DD/MM/YYYY"></Datepicker></div>
             <button class="btn btn-success" on:click={finishEdition}>Terminer l'édition</button>
         </div>
     {:else}
