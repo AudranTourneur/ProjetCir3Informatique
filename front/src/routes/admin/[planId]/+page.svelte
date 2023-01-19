@@ -6,4 +6,8 @@
     const plan = data.plan
 </script> 
 
-<EditorAdmin {plan} />
+{#if plan}
+    <EditorAdmin {plan} />
+    {:else}
+    <p>Plan not found</p>
+{/if}

@@ -94,9 +94,13 @@ app.get('/isAdmin', async function (req, res) {
   await uploadPlan.isAdmin(req.body.email, req.body.token, res);
 });
 
-app.get('/getAllReservationsForPlan/:planId', async function (req, res) {
+app.get('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
   const planId = req.params.planId.split('.')[0];
-  //await uploadPlan.getAllReservationsForPlan(planId, res);
+  await uploadPlan.getAllReservationsForPlanByDate(planId, req.body.displayedDate, res);
+});
+
+app.get('/getCoeffSupperpositionByRoomByHour', async function (req, res){
+  await uploadPlan.getCoeffSupperpositionByRoomByHour(res);
 });
 
 app.post('/bookRoom', async function (req, res) {

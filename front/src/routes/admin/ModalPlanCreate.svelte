@@ -88,7 +88,7 @@
         
         isLoading = false
 
-        goto('/admin/editor')
+        goto('/admin')
         location.reload()
     }
 

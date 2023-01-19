@@ -10,9 +10,9 @@ type RoomData = {
 };
 
 export class Floor {
-    private rooms: Array<Room> = [];
+    public rooms: Array<Room> = [];
 
-    constructor(data : [RoomData], public name : string, private globalStore: Writable<Room | null>) {  
+    constructor(data : RoomData[], public name : string, private globalStore: Writable<Room | null>) {  
         data.forEach(element => {
             let tmp = new Room(element.points,element.name,element.capacity,element.projecteur, globalStore)
             this.rooms.push(tmp);
@@ -39,8 +39,7 @@ export class Floor {
 
     delete(room : Room) {
         room.undraw()
-        let foundRoomIndex = this.rooms.findIndex((element) => {element == room});
-        this.rooms.splice(foundRoomIndex,1);
+        this.rooms = this.rooms.filter(e => e !== room)
         this.update();
     }
 
