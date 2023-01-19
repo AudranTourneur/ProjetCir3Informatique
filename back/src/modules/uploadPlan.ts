@@ -125,6 +125,7 @@ export async function isAdmin(email: string, token: string, res: Response) {
 }
 
 export async function getAllReservationsForPlanByDate(planId: string, displayedDate: string, res: Response) {
+    console.log(await db.getAllReservationsForPlanByDate(planId, displayedDate));
     res.json({data: await db.getAllReservationsForPlanByDate(planId, displayedDate)});
 }
 
