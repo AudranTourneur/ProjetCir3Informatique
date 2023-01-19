@@ -100,7 +100,7 @@ app.get('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
 });
 
 app.get('/getCoeffSupperpositionByRoomByHour', async function (req, res){
-  await uploadPlan.getCoeffSupperpositionByRoomByHour(res);
+  await uploadPlan.getCoeffSupperpositionByRoomByHour('63c846bcb744a11e2ec06ec9', Date.now(), Date.now(), res);
 });
 
 app.post('/bookRoom', async function (req, res) {
