@@ -74,7 +74,10 @@
 			)
 			.append('g')
 			.attr('id', 'main-svg');
-		let image = svg.append('image').attr('xlink:href', '/Etage_2_clean.png').attr('width', width);
+		let image = svg
+            .append('image')
+            .attr('xlink:href', `${PUBLIC_API_HOST}/images/${plan.imageId}.png}`)
+            .attr('width', width);
 
 		const updateHeight = () => {
 			height = image.node()?.getBBox().height!;
