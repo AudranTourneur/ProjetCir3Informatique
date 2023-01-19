@@ -5,6 +5,7 @@ import { UserSchema } from '../schemas/UserSchema';
 import { PlanSchema } from '../schemas/PlanSchema';
 import { reservationSchema } from '../schemas/ReservationsSchema';
 import { imageSchema } from '../schemas/ImageSchem';
+import { roomSchema } from '../schemas/RoomSchema';
 import { Plan } from '../types';
 
 
@@ -12,7 +13,8 @@ import { Plan } from '../types';
 const Users=mongoose.model('user',UserSchema);
 const Plans=mongoose.model('plan',PlanSchema);
 const Reservations=mongoose.model('reservations',reservationSchema);
-const Images=mongoose.model('images',imageSchema)
+const Images=mongoose.model('images',imageSchema);
+const Rooms=mongoose.model('rooms',roomSchema);
 
 mongoose.connection.on('connected',()=>console.log("connected to the mongo server"));
 mongoose.connection.on('error', (error)=> console.log("Error:",error));
@@ -85,7 +87,7 @@ export async function resetPassword(email:string,password:string){
 export async function isAdmin(email:string){
 	const result=await Users.findOne({email:email});
 	if(!result){
-		return 'email not found';
+		return false;
 	}
 	return result.admin;
 }
@@ -103,9 +105,10 @@ export async function createNewPlan(imageId:String,name:String,description:Strin
 		description:description
 	})
 	const dbResponse = await plans.save();
+	//@ts-ignore
 	return dbResponse._id;
 }
-
+//TODO need to finish
 export async function updatePlan(planSchema:Plan){
 	const result=await Plans.findByIdAndUpdate(planSchema.id,{name:planSchema.name},{new:true});
 	if(!result){
@@ -116,10 +119,51 @@ export async function updatePlan(planSchema:Plan){
 }
 
 export async function getImagesList(){
-	const result = await Images.find({},'_id');
-	console.log(result);
+	return await Images.find({},'_id');
+	
+}
+
+export async function getAllPlans(){
+	return await Plans.find({});
+}
+
+export async function getPlan(planId:String){
+	return await Plans.findById(planId);
+}
+
+
+export async function getAllReservationsByEmail(email:String){
+	const result= await Reservations.find({email:email});
+	if(!result)return false;
 	return result;
 }
+
+
+export async function getAllReservationsForPlan(planId:String){
+	const result = await Reservations.find({planId:planId});
+	if(!result)return false;
+	return result;
+}
+
+
+//Deletes reservation if email in argument is the same as value in reservedBy
+//Returns 1 if reservation succeded, 2 if no resevations found, 0 if nothing got deleted 
+export async function deleteReservation(planId:String,roomName:String,startTime:Number,email:String){
+	const result = await Reservations.findOne({planId:planId,roomName:roomName,startTime:startTime});
+	if(result?.reservedBy==email){
+		const success=await Reservations.deleteOne({_id:result._id});
+		return  success;	//Renvoit nbre de documents supprimr
+	}else return 2;
+}
+
+export async function deletePlan(_id:String){
+	const nbPlansDelete=await Plans.deleteOne({_id:_id});
+	const nbReservationsDelete=await Reservations.deleteMany({planId:_id});
+	return {plansDeleted:nbPlansDelete,reservationsDeleted:nbReservationsDelete};
+}
+
+
+
 
 //attention mdp admin :1234
 //email admin : Admin@chehpaul

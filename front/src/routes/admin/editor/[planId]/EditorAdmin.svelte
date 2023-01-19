@@ -5,20 +5,15 @@
 	import * as d3 from 'd3';
 	import { writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
+	import { PUBLIC_API_HOST } from '$env/static/public';
 
-
+    export let plan;
 
     let isAdding = false;
     let isModifying = false;
     let el : HTMLDivElement;
 
     let currentlySelectedRoom: Writable<Room | null> = writable(null)
-
-    let points = [
-        [0, 0],
-        [0.5, 0.5],
-        [0, 1]
-    ]
 
     let inputName : string;
     let inputCapacity : number;
@@ -28,7 +23,10 @@
 
     let idSelectedFloor = 0;
 
-    let tabFloor : Floor[] = [];
+
+    let points = []
+
+    export let floor = new Floor([], 'Name', currentlySelectedRoom);
 
 	onMount(() => {
 
@@ -73,11 +71,11 @@
 
                         let data = {
                             points: tabPoint,
-                            name: "nom"+tabFloor[idSelectedFloor],
+                            name: "nom"+floor.name,
                             capacity: 10,
                             projecteur: true,
                         };
-                        tabFloor[idSelectedFloor].newRoom(data);
+                        floor.newRoom(data);
 
                         console.log(data)
 
@@ -104,7 +102,7 @@
         })
 
         let image = svg.append('image')
-        .attr('xlink:href', '/Etage_2_clean.png')
+        .attr('xlink:href', `${PUBLIC_API_HOST}/images/${plan.imageId}.png}`)
         .attr("width", width)
 
         setTimeout(() => {
@@ -117,10 +115,8 @@
                 capacity: 10,
                 projecteur: true,
             };
-
-            tabFloor.push(new Floor([roomData],"bonjour", currentlySelectedRoom));
-            tabFloor[idSelectedFloor].update()
-        }, 1000)
+            floor.update()
+        }, 1)
 	});
 
     function cancelSelection() {
@@ -173,16 +169,19 @@
 
     function del() {
         if (!$currentlySelectedRoom) return;
-        tabFloor[idSelectedFloor].delete($currentlySelectedRoom);
-        tabFloor[idSelectedFloor].update()
+        floor.delete($currentlySelectedRoom);
+        floor.update()
         unselect();
     }
 
     function finishEdition() {
         isAdding = false;
         isModifying = false;
-        if (!$currentlySelectedRoom) return;
-        $currentlySelectedRoom.stopEditPolygon();
+        if ($currentlySelectedRoom) {
+            $currentlySelectedRoom.stopEditPolygon();
+        }
+
+        console.log('floor = ', floor)
     }
 </script>
 

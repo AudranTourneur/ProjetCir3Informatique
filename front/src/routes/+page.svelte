@@ -2,22 +2,10 @@
 	import LoginModal from '$lib/LoginModal.svelte';
 	import FilterBar from '$lib/FilterBar.svelte';
 
-	function testBDD() {
-		// fetch('http://localhost:8080/testBDD')
-		// 	.then((response) => response.json())
-		// 	.then((data) => {
-		// 		res = JSON.stringify(data)
-		// 	})
-		console.log('nop');
-	}
-
 	let isLoginModalOpen = false;
 </script>
 
 <main>
-	<button class="btn" on:click={testBDD}>test bdd</button>
-	<button class="btn" on:click={()=>isLoginModalOpen = true}>toggle modal</button>
-
 	<div class="sideBtn__container">
 		<div class="border">
 			<div class="accountBtn">

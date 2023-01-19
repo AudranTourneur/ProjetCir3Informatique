@@ -7,5 +7,5 @@ export const reservationSchema = new mongoose.Schema({
     startTime:Number,
     endTime:Number,
     roomName:String,
-    planId:Number
+    planId:String       //_id mongodb d'un plan
 },{collection:"reservations"})

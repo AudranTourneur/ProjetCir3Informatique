@@ -9,4 +9,4 @@ export const roomSchema=new mongoose.Schema({
     hasWhiteboard:Boolean,
     hasBlackboard:Boolean,
     description:String
-})
+},{collection:"rooms"})

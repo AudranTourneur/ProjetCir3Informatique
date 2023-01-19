@@ -3,8 +3,8 @@ import { roomSchema } from "./RoomSchema";
 
 export const  PlanSchema= new mongoose.Schema ({
 name:String,
-imageId:String,
+imageId:String,     //mongodb _id
 isPublic:Boolean,
-rooms:[roomSchema],
+room:[roomSchema],
 description:String
 },{collection:"plans"})
