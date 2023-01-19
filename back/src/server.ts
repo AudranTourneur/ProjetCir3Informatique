@@ -100,8 +100,8 @@ app.post('/bookRoom', async function (req, res) {
     await uploadPlan.bookRoom(req.body.planId, req.body.roomName, req.body.startTime, req.body.endTime, req.body.email, req.body.token, res);
 });
 
-app.get('/getMyReservations', async function (req, res) {
-   await uploadPlan.getMyReservations(req.body.email, req.body.token, res);
+app.get('/myReservations', async function (req, res) {
+   await uploadPlan.myReservations(req.body.email, req.body.token, res);
 });
 
 app.delete('/deleteReservation', async function (req, res) {
