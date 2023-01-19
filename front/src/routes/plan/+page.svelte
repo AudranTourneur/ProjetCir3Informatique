@@ -5,7 +5,7 @@
 	import * as d3 from 'd3';
 	import { writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
-	import TimePlan from './TimePlan.svelte';
+	import TimePlan from '../plan/TimePlan.svelte';
     import { Datepicker } from 'svelte-calendar'
 
     let el : HTMLDivElement;
