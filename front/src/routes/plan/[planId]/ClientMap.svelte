@@ -179,14 +179,20 @@
 		}
 	}
 
-
+	function reloadPage() {
+		setTimeout(() => {
+			location.reload()
+		}, 500)
+	}
 </script>
 
 <div class="absolute overflow-hidden" bind:this={el} />
 
 <!-- Floor input -->
-<div class="flex flex-col absolute p-[15px] m-0 gap-[15px] z-10">
-    <a href="/plan" class="btn">Back</a>
+<div class="flex absolute p-[15px] m-0 gap-[15px] z-10 text-xl">
+    <a href="/plan" class="btn" on:click={reloadPage}><span class="mr-2">
+		<i class="fa-solid fa-door-open"></i>
+	</span> Back</a>
 </div>
 
 <!-- Filter DATEPICKER -->
@@ -234,7 +240,7 @@
 
 <LoginModal bind:isActive={isLoginModalOpen} />
 
-<!-- Aside btn (Compte / dark mode ...) -->
+<!--
 <div class="flex flex-col absolute right-0 p-[25px] m-0 gap-[15px] z-10">
 	<div class="btn__container">
 		<div class="p-[10px]">
@@ -248,13 +254,13 @@
 
 	<a href="/admin" class="btn__container">
 		<div class="p-[10px]">
-			<!--<i class='bx bxs-user' on:click={() => isLoginModalOpen = true}></i>-->
 			<span>
 				<i class="bx bx-crown" />
 			</span>
 		</div>
 	</a>
 </div>
+-->
 
 <!-- Span bottom edge -->
 <div class="absolute left-0 bottom-0 w-full">
