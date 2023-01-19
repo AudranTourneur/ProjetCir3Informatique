@@ -5,9 +5,12 @@
 	import * as d3 from 'd3';
 	import { writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
-	import TimePlan from '../plan/TimePlan.svelte';
+	import TimePlan from './TimePlan.svelte';
     import LoginModal from '$lib/LoginModal.svelte';
 	import { Datepicker } from 'svelte-calendar';
+	import type { Plan } from '../../../../../back/src/types';
+
+    export let plan: Plan;
 	
 	let isLoginModalOpen = false;
 
