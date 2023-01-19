@@ -108,7 +108,7 @@ export async function createNewPlan(imageId:String,name:String,description:Strin
 	//@ts-ignore
 	return dbResponse._id;
 }
-
+//TODO need to finish
 export async function updatePlan(planSchema:Plan){
 	const result=await Plans.findByIdAndUpdate(planSchema.id,{name:planSchema.name},{new:true});
 	if(!result){
@@ -133,6 +133,7 @@ export async function getAllReservationByEmail(email:String){
 	return result;
 }
 
+
 export async function getAllReservationForPlan(planId:String){
 	const result = await Reservations.find({planId:planId});
 	if(!result)return false;
@@ -140,11 +141,16 @@ export async function getAllReservationForPlan(planId:String){
 }
 
 
-
-export async function deleteReservation(planId:String,roomName:String,startTime:Number){
-	const result = await Reservations.deleteOne({planId:planId,roomeName:roomName,startTime:startTime});
-	return result.deletedCount;
+//Deletes reservation if email in argument is the same as value in reservedBy
+//Returns 1 if reservation succeded, 2 if no resevations found, 0 if nothing got deleted 
+export async function deleteReservation(planId:String,roomName:String,startTime:Number,email:String){
+	const result = await Reservations.findOne({planId:planId,roomName:roomName,startTime:startTime});
+	if(result?.reservedBy==email){
+		const success=await Reservations.deleteOne({_id:result._id});
+		return  success;	//Renvoit nbre de documents supprimr
+	}else return 2;
 }
+
 
 //attention mdp admin :1234
 //email admin : Admin@chehpaul
