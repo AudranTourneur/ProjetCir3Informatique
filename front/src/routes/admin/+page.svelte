@@ -1,8 +1,10 @@
 <script lang="ts">
 	import ModalPlanDelete from './ModalPlanDelete.svelte';
-	import PreviewPlan from './PreviewPlan.svelte';
+	import PreviewPlan from '$lib/PreviewPlan.svelte';
 	import ModalPlanCreate from './ModalPlanCreate.svelte';
 	import type { Plan } from '../../../../../back/src/types';
+	import { PUBLIC_API_HOST } from '$env/static/public';
+	import { onMount } from 'svelte';
 
 	export let data;
 
@@ -23,23 +25,60 @@
 			description: '',
 			isPublic: false
 		};
-
-		//fetch('http://localhost:3000/plans', {
-		//    method: 'POST',
-		//    headers: {
-		//        'Content-Type': 'application/json'
-		//    },
-		//    body: JSON.stringify(planInCreation)
-		//})
 	}
+
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        window.location.href = '/';
+    }
+
+	function reloadPage() {
+		setTimeout(() => {
+			location.reload()
+		}, 200)
+	}
+
+	onMount(async () => {
+		const res = await fetch(`${PUBLIC_API_HOST}/isAdmin`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				token: localStorage.getItem('token'),
+				email: localStorage.getItem('email')
+			})
+		})
+
+		const data = await res.json()
+
+		if (data.status === 0) {
+			localStorage.removeItem('token');
+			localStorage.removeItem('email');
+			setTimeout(() => {
+				location.href = '/';
+				reloadPage()
+			}, 100)
+		}
+	})
 </script>
 
 <div class="m-4 flex flex-col">
+	  <div class="flex justify-between m-2">
+        <a href="/plan" on:click={reloadPage} class="text-lg sm:text-xl md:text-2xl lg:text-3xl">
+			<span><i class="fa-solid fa-repeat"></i></span>
+			 Page utilisateur
+        </a>
+        <button on:click={logout} class="text-error text-2xl hover:cursor-pointer">
+            <span><i class="fa-solid fa-right-from-bracket"></i></span>
+            <span class="hidden sm:inline">Se déconnecter</span> </button>
+    </div>
 	<div>Mes plans :</div>
 	<div class="grid grid-cols-1 xl:grid-cols-2">
 		{#each plans as plan}
 			<div class="m-2">
-				<PreviewPlan {plan} bind:toDelete={planToDelete} />
+				<PreviewPlan {plan} bind:toDelete={planToDelete} mode='admin' />
 			</div>
 		{/each}
 	</div>
