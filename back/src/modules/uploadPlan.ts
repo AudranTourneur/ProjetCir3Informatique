@@ -124,7 +124,7 @@ export async function isAdmin(email: string, token: string, res: Response) {
     if (await db.isAdmin(email) && await db.checkConnection(email, token)) {
         await res.json({status: 1});
     } else {
-        await res.json({status: 666});
+        await res.json({status: 0});
     }
 }
 
