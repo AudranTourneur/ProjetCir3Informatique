@@ -14,12 +14,6 @@
 
     let currentlySelectedRoom: Writable<Room | null> = writable(null)
 
-    let points = [
-        [0, 0],
-        [0.5, 0.5],
-        [0, 1]
-    ]
-
     let inputName : string;
     let inputCapacity : number;
     let inputProjecteur : boolean;
@@ -28,7 +22,10 @@
 
     let idSelectedFloor = 0;
 
-    let tabFloor : Floor[] = [];
+
+    let points = []
+
+    export let floor = new Floor([], 'Name', currentlySelectedRoom);
 
 	onMount(() => {
 
@@ -73,11 +70,11 @@
 
                         let data = {
                             points: tabPoint,
-                            name: "nom"+tabFloor[idSelectedFloor],
+                            name: "nom"+floor.name,
                             capacity: 10,
                             projecteur: true,
                         };
-                        tabFloor[idSelectedFloor].newRoom(data);
+                        floor.newRoom(data);
 
                         console.log(data)
 
@@ -117,8 +114,7 @@
                 capacity: 10,
                 projecteur: true,
             };
-            tabFloor.push(new Floor([roomData],"bonjour", currentlySelectedRoom));
-            tabFloor[idSelectedFloor].update()
+            floor.update()
         }, 1000)
 	});
 
@@ -172,8 +168,8 @@
 
     function del() {
         if (!$currentlySelectedRoom) return;
-        tabFloor[idSelectedFloor].delete($currentlySelectedRoom);
-        tabFloor[idSelectedFloor].update()
+        floor.delete($currentlySelectedRoom);
+        floor.update()
         unselect();
     }
 
