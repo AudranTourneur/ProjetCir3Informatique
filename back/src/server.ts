@@ -91,10 +91,9 @@ app.post('/isAdmin', async function (req, res) {
   await uploadPlan.isAdmin(req.body.email, req.body.token, res);
 });
 
-app.post('/getAllReservationsForPlanByDate/:planId', async function (req, res) {
-  console.log(req.body)
+app.get('/getAllReservationsForPlan/:planId', async function (req, res) {
   const planId = req.params.planId;
-  await uploadPlan.getAllReservationsForPlanByDate(planId, req.body.displayedDate, res);
+  await uploadPlan.getAllReservationsForPlan(planId, res);
 });
 
 app.get('/getCoeffSupperpositionByRoomByHour', async function (req, res){

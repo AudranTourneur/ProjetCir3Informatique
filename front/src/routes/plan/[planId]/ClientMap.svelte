@@ -55,29 +55,34 @@
     
 	let floor: null | Floor = null;
 
-	async function getReservations() {
+
+	let allReservationsForTheDay: Array<any> = [];
+
+	async function getPlanReservation(): Promise<Array<any>> {
 		if (!$dateStore || !$dateStore.selected) return;
-		console
 		const displayedDate =  $dateStore.selected.toISOString().split('T')[0];
 
 		console.log('sending', plan._id, displayedDate)
 
-		const res = await fetch(`${PUBLIC_API_HOST}/getAllReservationsForPlanByDate/${plan._id}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				displayedDate,
-				test: 'bonjour',
-			})
-		})
+		const res = await fetch(`${PUBLIC_API_HOST}/getAllReservationsForPlan/${plan._id}`)
 		const data = await res.json()
-		console.log('reservations ICI !!!!!', data.data)	
-		
+		const reservations = data.data
+		console.log('received reservations', data.data)	
+
+		return reservations
 	}
 
-	onMount(() => {
+	function getReservationsForRoom(roomName: string): Array<any> {
+		const roomReservations = allReservationsForTheDay.filter((r) => r.roomName === roomName)
+		console.log('reservations for room', roomName, '=', roomReservations)
+		return roomReservations
+	}
+
+	
+
+
+
+	onMount(async () => {
 		let width = window.innerWidth;
 		let height = window.innerHeight;
 
@@ -129,7 +134,8 @@
 
 		setTimeout(updateHeight, 1);
 
-		getReservations()
+		allReservationsForTheDay = await getPlanReservation()
+		initDay()
 	});
 
 	function unselect() {
@@ -137,21 +143,25 @@
 		$currentlySelectedRoom = null;
 	}
 
+	function padNumber(n: number) {
+		return n < 10 ? '0' + n : n;
+	}
+
+	function buildKey(date: Date): string {
+		const year = date.getFullYear()
+		const month = date.getMonth() + 1
+		const day = date.getDate()
+		return `${year}-${padNumber(month)}-${padNumber(day)}`
+	}
+
     async function initDay() {
-        let url = PUBLIC_API_HOST + "/getAllReservationsForPlanByDate/" + plan._id;
-        let displayedDate = $dateStore.selected.getTime();
+		//const key = $dateStore.selected.toISOString().split('T')[0];
+		const key = buildKey($dateStore.selected)
+		dataDay = allReservationsForTheDay.filter(e => e.date === key);
+		//console.log('dataDay', key, dataDay, $dateStore.selected, $dateStore.selected.toISOString(), $dateStore.selected.getDate())
+		console.log('======================', key)
+		console.log('============================', dataDay)
 
-        const res = await fetch(url, {
-				method: "POST",
-				mode: "cors",
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({displayedDate})
-			})
-
-		dataDay = (await res.json()).data;
-		console.log('dataDay', dataDay)
     }
     
     async function saveInput() {
@@ -159,7 +169,7 @@
         let displayedDate = {
             planId: plan._id,
             email: localStorage.getItem('email'),
-            date: (new Date().toISOString().split('T')[0]),
+            date: buildKey($dateStore.selected),
             startTime: infoModal1.getTime(),
             endTime: infoModal2.getTime(),
             roomName: $currentlySelectedRoom?.name,
@@ -180,6 +190,7 @@
             .then((res) => res.json())
             .then((data) => {
                 dataDay = data.data;
+				location.reload()
             });    
         }
 
@@ -353,7 +364,7 @@
 					</div>
 					<button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
 					<div class="absolute bottom-2 left-0">
-						<TimePlan bind:dataDay bind:infoDate bind:infoModal1={infoModal1} bind:infoModal2={infoModal2}/>
+						<TimePlan bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForRoom($currentlySelectedRoom.name)}/>
 					</div>
 				</div>
 			</div>

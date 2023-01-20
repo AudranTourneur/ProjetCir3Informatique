@@ -146,9 +146,8 @@ export async function getAllReservationsByEmail(email:String){
 }
 
 
-export async function getAllReservationsForPlanByDate(planId:String,date:String){
-	console.log('searching with', planId, date)
-	const result = await Reservations.find({planId,date});
+export async function getAllReservationsForPlan(planId:String) {
+	const result = await Reservations.find({planId});
 	console.log('res', result)
 	if(!result)return [];
 	return result;

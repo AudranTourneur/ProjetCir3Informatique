@@ -5,25 +5,36 @@
 	import { PUBLIC_API_HOST } from '$env/static/public';
 	import type { Plan } from '$lib/types';
 
+
+    export let reservations: Array<any>
+
     export let infoDate;
 
     let time : HTMLDivElement;
     let width = window.innerWidth;
     let height = 96;
+
     let cursorx1 : d3.Selection<SVGRectElement, unknown, null, undefined> | null = null;
     let cursorx2 : d3.Selection<SVGRectElement, unknown, null, undefined> | null = null;
+
+    let numberX1: number = 0;
+    let numberX2: number = 0;
+
     let reservation : d3.Selection<SVGRectElement, unknown, null, undefined> | null = null;
     let line : d3.Selection<SVGRectElement, unknown, null, undefined> | null = null;
     let svg : d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
 
-    export let infoModal1 = new Date(infoDate.year,infoDate.month,infoDate.day);
-    export let infoModal2 = new Date(infoDate.year,infoDate.month,infoDate.day);
+    export let selectedDate1 = new Date(infoDate.year,infoDate.month,infoDate.day);
+    export let selectedDate2 = new Date(infoDate.year,infoDate.month,infoDate.day);
     export let dataDay;
 
     let showModal1 = false;
     let showModal2 = false;
 
     const offsetX = 8
+    const offsetY = 9
+
+    const cursorWidth = 5
 
     onMount(() => {
         svg = d3.select(time)
@@ -32,6 +43,7 @@
             .attr("height", height)
         .append("g")
 
+        // green
         svg.append('rect')
             .attr('x', 0)
             .attr('y', 0)
@@ -48,6 +60,7 @@
             .attr("transform", "translate(8,"+(height-24)+")")
             .call(d3.axisBottom(x));
 
+
         svg.append('rect')
             .attr('x', offsetX)
             .attr('y', 8)
@@ -61,9 +74,9 @@
                     line?.remove()
 
                     line = svg!.append('rect')
-                    .attr('x', getNearest(pointer[0])-1.5)
+                    .attr('x', getNearest(pointer[0])-(cursorWidth/2))
                     .attr('y', 9)
-                    .attr('width', 3)
+                    .attr('width', cursorWidth)
                     .attr('height', height - 33)
                     .attr('stroke', 'black')
                     .attr('fill', 'black')
@@ -75,6 +88,14 @@
             .on("click",(event) => {
                 handleRect(event);
             })
+
+
+            for (const reservation of reservations) {
+                const startDate = new Date(reservation.startTime);
+                const endDate = new Date(reservation.endTime);
+
+                createRect(startDate.getHours(), startDate.getMinutes(), endDate.getHours(), endDate.getMinutes());
+            }
     })
 
     function getNearest(x : number) {
@@ -96,6 +117,20 @@
         
         return value
     }
+
+    function createRect(hourA: number, minuteA: number, hourB: number, minuteB: number) {
+        const xA = getXFromHourMin(hourA, minuteA);
+        const xB = getXFromHourMin(hourB, minuteB);
+
+        svg.append('rect')
+            .attr('x', xA)
+            .attr('y', offsetY)
+            .attr('width', xB-xA)
+            .attr('height', height-32)
+            .attr('stroke', 'black')
+            .attr('fill', 'red');
+    }
+
 
     function getHourMin(x : number) {
         let tab : number[] = [];
@@ -144,12 +179,12 @@
             line?.remove();
 
             let hourMin = getHourMin(getNearest(pointer[0]));
-            infoModal2 = new Date(infoDate.year, infoDate.month, infoDate.day, hourMin.hour, hourMin.min);
+            selectedDate2 = new Date(infoDate.year, infoDate.month, infoDate.day, hourMin.hour, hourMin.min);
 
             cursorx2 = svg!.append('rect')
-            .attr('x', getNearest(pointer[0]) - 1.5)
+            .attr('x', getNearest(pointer[0]) - cursorWidth/2)
             .attr('y', 9)
-            .attr('width', 3)
+            .attr('width', cursorWidth)
             .attr('height', height - 34)
             .attr('stroke', 'darkgrey')
             .attr('fill', 'darkgrey')
@@ -161,7 +196,7 @@
                 })
                 .on("drag", (event)=>{
                     let hourmin = getHourMin(getNearest(event.x));
-                    infoModal2 = new Date(infoDate.year, infoDate.month, infoDate.day, hourmin.hour, hourmin.min);
+                    selectedDate2 = new Date(infoDate.year, infoDate.month, infoDate.day, hourmin.hour, hourmin.min);
 
                     cursorx2?.attr("x", getNearest(event.x))
                     //@ts-ignore
@@ -190,12 +225,12 @@
             cursorx2.raise()
         } else if (!cursorx1 && !cursorx2) {
             let hourMin = getHourMin(getNearest(pointer[0]));
-            infoModal1 = new Date(infoDate.year, infoDate.month, infoDate.day, hourMin.hour, hourMin.min);
+            selectedDate1 = new Date(infoDate.year, infoDate.month, infoDate.day, hourMin.hour, hourMin.min);
 
             cursorx1 = svg!.append('rect')
-            .attr('x', getNearest(pointer[0]) - 1.5)
+            .attr('x', getNearest(pointer[0]) - cursorWidth/2)
             .attr('y', 9)
-            .attr('width', 3)
+            .attr('width', cursorWidth)
             .attr('height', height - 34)
             .attr('stroke', 'darkgrey')
             .attr('fill', 'darkgrey')
@@ -207,7 +242,7 @@
                 })
                 .on("drag", (event)=>{
                     let hourmin = getHourMin(getNearest(event.x));
-                    infoModal1 = new Date(infoDate.year, infoDate.month, infoDate.day, hourmin.hour, hourmin.min);
+                    selectedDate1 = new Date(infoDate.year, infoDate.month, infoDate.day, hourmin.hour, hourmin.min);
 
                     cursorx1?.attr("x", getNearest(event.x))
                     //@ts-ignore
@@ -221,35 +256,95 @@
             )
             cursorx1.raise()
         }
+
+        checkIsReservationPossible();
     }
+
+    function checkIsReservationPossible(date1: Date, date2: Date): boolean {
+
+        if (!date1 || !date2) {
+            return false
+        }
+
+        //console.log('x1', cursorx1)
+        //console.log('x2', cursorx2)
+        console.log(selectedDate1, selectedDate2)
+
+        //let ts1 = selectedDate1.getTime();
+        //let ts2 = selectedDate2.getTime();
+
+        let ts1 = date1.getTime();
+        let ts2 = date2.getTime();
+
+        if (ts2 < ts1) {
+            let tmp = ts1;
+            ts1 = ts2;
+            ts2 = tmp;
+        }
+
+        const startTime = ts1;
+        const endTime = ts2;
+
+        console.log('candidate', startTime, endTime)
+
+        if (startTime === endTime) {
+            return false
+        }
+
+
+        let canBook = true;
+        for (const reservation of reservations) {
+            console.log('reservation', reservation.startTime, reservation.endTime)
+            let case1 = reservation.endTime>startTime && reservation.endTime<endTime;
+            let case2 = reservation.startTime>startTime && reservation.startTime<endTime;
+            if(case1 && !case2){
+                return false
+            }else if (!case1 && case2){
+                return false
+            }else if (case1 && case2){
+                return false
+            }
+
+            if (reservation.endTime === startTime && reservation.startTime === endTime) {
+                return false
+            }
+        }
+
+        return canBook
+    }
+
+    export let isReservationPossible: boolean
+    $: isReservationPossible = checkIsReservationPossible(selectedDate1, selectedDate2)
+
 </script>
 
 <div>
-    <span class="label-text text-white">Horaires : </span>
-    {#if showModal1 === true}
-        <ModalTime bind:infoModal={infoModal1} bind:showModal={showModal1}/>
-    {:else}
-        <button on:click={()=>{showModal1=true}}>Choisir heure</button>
-    {/if}
-
-    {#if (infoModal1.getHours()+(infoModal1.getMinutes()/60))<(infoModal2.getHours()+(infoModal2.getMinutes()/60))}
-        <span class="label-text text-white">{infoModal1.getHours()}:{infoModal1.getMinutes()}</span>
-    {:else}
-        <span class="label-text text-white">{infoModal2.getHours()}:{infoModal2.getMinutes()}</span>
-    {/if}
-
-    {#if showModal2 === true}
-        <ModalTime bind:infoModal={infoModal2} bind:showModal={showModal2}/>
-    {:else}
-        <button on:click={()=>{showModal2=true}}>Choisir heure</button>
-    {/if}
-
-    {#if (infoModal1.getHours()+(infoModal1.getMinutes()/60))<(infoModal2.getHours()+(infoModal2.getMinutes()/60))}
-        <span class="label-text text-white">{infoModal2.getHours()}:{infoModal2.getMinutes()}</span>
-    {:else}
-        <span class="label-text text-white">{infoModal1.getHours()}:{infoModal1.getMinutes()}</span>
-    {/if}
-
-    <div bind:this={time}>
+    <div class="text-green-500 text-2xl">
+        isPossible = {isReservationPossible}
     </div>
+    <span class="label-text text-white">Horaires : </span>
+   
+    <div class="flex justify-evenly">
+        <div class="flex flex-col items-center">
+            <span class="text-white">Heure de début</span>    
+            {#if (selectedDate1.getHours()+(selectedDate1.getMinutes()/60))<(selectedDate2.getHours()+(selectedDate2.getMinutes()/60))}
+                <span class="label-text text-white">{selectedDate1.getHours()}:{selectedDate1.getMinutes()}</span>
+            {:else}
+                <span class="label-text text-white">{selectedDate2.getHours()}:{selectedDate2.getMinutes()}</span>
+            {/if}
+        </div>
+
+   
+
+        <div class="flex flex-col items-center">
+            <div class="text-white">Heure de fin</div>
+            {#if (selectedDate1.getHours()+(selectedDate1.getMinutes()/60))<(selectedDate2.getHours()+(selectedDate2.getMinutes()/60))}
+                <span class="label-text text-white">{selectedDate2.getHours()}:{selectedDate2.getMinutes()}</span>
+            {:else}
+                <span class="label-text text-white">{selectedDate1.getHours()}:{selectedDate1.getMinutes()}</span>
+            {/if}
+        </div>
+    </div>
+
+    <div bind:this={time} />
 </div>

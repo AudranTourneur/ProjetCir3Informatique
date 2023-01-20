@@ -124,9 +124,8 @@ export async function isAdmin(email: string, token: string, res: Response) {
     }
 }
 
-export async function getAllReservationsForPlanByDate(planId: string, displayedDate: string, res: Response) {
-    console.log(await db.getAllReservationsForPlanByDate(planId, displayedDate));
-    res.json({data: await db.getAllReservationsForPlanByDate(planId, displayedDate)});
+export async function getAllReservationsForPlan(planId: string, res: Response) {
+    res.json({data: await db.getAllReservationsForPlan(planId)});
 }
 
 function getColorByCoeff(coeff: number){
@@ -148,8 +147,9 @@ function getColorByCoeff(coeff: number){
 }
 
 async function canBookRoom(planId: string, startTime: number, date: string, endTime: number) {
+    const allReservations = await db.getAllReservationsForPlan(planId);
+    const reservations = allReservations.filter(reservation => reservation.date === date);
 
-    let reservations = await db.getAllReservationsForPlanByDate(planId, date);
     let canBook = true;
     for (let i = 0; i < reservations.length; i++) {//Inshallah ça marche mashallah
         // @ts-ignore
