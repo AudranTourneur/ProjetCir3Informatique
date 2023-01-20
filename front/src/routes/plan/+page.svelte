@@ -2,7 +2,8 @@
 	import { PUBLIC_API_HOST } from "$env/static/public";
 	import PreviewPlan from "$lib/PreviewPlan.svelte";
 	import { onMount } from "svelte";
-	import type { Plan } from "../../../../back/src/types";
+	import ModalPlanCreate from "../admin/ModalPlanCreate.svelte";
+	import ModalPlanDelete from "../admin/ModalPlanDelete.svelte";
 
 
     export let data;
@@ -14,12 +15,6 @@
         localStorage.removeItem('email');
         window.location.href = '/';
     }
-
-    function reloadPage() {
-		setTimeout(() => {
-			location.reload()
-		}, 200)
-	}
 
     let isAdmin = false
     let email = ''
@@ -43,6 +38,26 @@
             isAdmin = true
         }
     })
+
+	const images = data.images;
+
+	let planToDelete: any = null;
+
+	let planInCreation: any = null;
+
+	function createNewPlan() {
+		console.log('create new plan');
+		planInCreation = {
+			_id: '',
+			name: 'Plan sans nom',
+			imageId: '',
+			rooms: [],
+			description: '',
+			isPublic: false
+		};
+	}
+
+
 </script>  
 
 <div class="m-4 flex-flex-col gap-8">
@@ -63,8 +78,27 @@
         {#if !isAdmin}
             <PreviewPlan {plan} mode='user' />
         {:else}
-           <PreviewPlan {plan} mode='admin' />
+           <PreviewPlan {plan} bind:toDelete={planToDelete} mode='admin' />
         {/if}
     </div> 
     {/each}
 </div>
+
+
+{#if isAdmin}
+    <div class="m-4 flex-flex-col gap-8">
+        <button class="btn btn-info gap-2" on:click={createNewPlan}>
+            <span><i class="fa-solid fa-plus" /></span>
+            Créer un nouveau plan
+        </button>
+    </div>
+{/if}
+
+{#if planToDelete}
+	<ModalPlanDelete bind:toDelete={planToDelete} />
+{/if}
+
+{#if planInCreation}
+	<ModalPlanCreate bind:toCreate={planInCreation} {images} />
+{/if}
+

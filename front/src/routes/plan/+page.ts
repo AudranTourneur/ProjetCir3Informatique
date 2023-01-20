@@ -1,17 +1,18 @@
 import type { PageLoad } from './$types';
 import { PUBLIC_API_HOST } from '$env/static/public';
 
-export const load = (async ({ params }) => {
+export async function load() {
+    let images;
+    let plans;
+
     try {
-        const res = await fetch(`${PUBLIC_API_HOST}/getAllPlans`)
-        const plans = (await res.json()).data
-        console.log('plan', plans)
-        return {
-            plans
-        };
+        const imagesRes = await fetch(`${PUBLIC_API_HOST}/getImagesList`)
+        images = await imagesRes.json()
+
+        plans = (await (await fetch(`${PUBLIC_API_HOST}/getAllPlans`)).json()).data
     } catch (e) {
-        return {
-            plans: []
-        }
+        console.error(e)
     }
-}) satisfies PageLoad;
+
+    return { images, plans }
+}
