@@ -21,6 +21,8 @@
     let dataDay : any = [];
 
 	let currentlySelectedRoom: Writable<Room | null> = writable(null);
+	
+	let isReservationPossible : boolean;
 
     let infoModal1 : Date;
     let infoModal2 : Date;
@@ -78,10 +80,6 @@
 		console.log('reservations for date AND room', dateKey, roomName, '=>', roomReservations)
 		return roomReservations
 	}
-
-	
-
-
 
 	onMount(async () => {
 		let width = window.innerWidth;
@@ -372,12 +370,17 @@
 					</div>
 					<div>
 						<button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
-						<button class="btn btn-success" on:click={saveInput}>Réserver</button>
+						{#if isReservationPossible}
+							<button class="btn btn-success" on:click={saveInput}>Réserver</button>							
+						{:else}
+							<button class="btn btn-failure">Réserver</button>							
+						{/if}
+
 					</div>
 					<button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
 					<div class="absolute bottom-2 left-0">
 							{#key timePlanKey}
-								<TimePlan bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForDateAndRoom($dateStore.selected, $currentlySelectedRoom.name)}/>
+								<TimePlan bind:isReservationPossible={isReservationPossible} bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForDateAndRoom($dateStore.selected, $currentlySelectedRoom.name)}/>
 							{/key}
 					</div>
 				</div>

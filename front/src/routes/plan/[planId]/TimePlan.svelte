@@ -266,7 +266,7 @@
 
     function checkIsReservationPossible(date1: Date, date2: Date): boolean {
 
-        if (!date1 || !date2) {
+        if (!cursorx1 || !cursorx2) {
             return false
         }
 
@@ -323,11 +323,7 @@
 </script>
 
 <div>
-    <div class="text-green-500 text-2xl">
-        isPossible = {isReservationPossible}
-    </div>
     <span class="label-text text-white">Horaires : </span>
-   
     <div class="flex justify-evenly">
         <div class="flex flex-col items-center">
             <span class="text-white">Heure de début</span>    
