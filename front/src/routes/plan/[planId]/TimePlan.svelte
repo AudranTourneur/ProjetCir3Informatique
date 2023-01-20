@@ -179,10 +179,12 @@
 
     function handleRect(event : any) {
         let pointer = d3.pointer(event);
+        console.log("curseur ======================================>",cursorx1?.node()?.getBBox(),cursorx2?.node()?.getBBox())
         if(cursorx1 && !cursorx2) {
             line?.remove();
 
             let hourMin = getHourMin(getNearest(pointer[0]));
+            console.log("hourmin ==========================================================>",hourMin)
             selectedDate2 = new Date(infoDate.year, infoDate.month, infoDate.day, hourMin.hour, hourMin.min);
 
             cursorx2 = svg!.append('rect')
@@ -229,6 +231,7 @@
             cursorx2.raise()
         } else if (!cursorx1 && !cursorx2) {
             let hourMin = getHourMin(getNearest(pointer[0]));
+            console.log("hourmin ==========================================================>",hourMin)
             selectedDate1 = new Date(infoDate.year, infoDate.month, infoDate.day, hourMin.hour, hourMin.min);
 
             cursorx1 = svg!.append('rect')
@@ -280,6 +283,9 @@
         let ts1 = date1.getTime();
         let ts2 = date2.getTime();
 
+        console.log("date1,2",date1,date2)
+        console.log("ts1,2",ts1,ts2)
+
         if (ts2 < ts1) {
             let tmp = ts1;
             ts1 = ts2;
@@ -306,6 +312,10 @@
             }else if (!case1 && case2){
                 return false
             }else if (case1 && case2){
+                return false
+            }
+
+            if (reservation.endTime === endTime && reservation.startTime === startTime) {
                 return false
             }
 
