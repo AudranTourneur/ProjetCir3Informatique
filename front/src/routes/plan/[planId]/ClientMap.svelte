@@ -72,9 +72,10 @@
 		return reservations
 	}
 
-	function getReservationsForRoom(roomName: string): Array<any> {
-		const roomReservations = allReservationsForTheDay.filter((r) => r.roomName === roomName)
-		console.log('reservations for room', roomName, '=', roomReservations)
+	function getReservationsForDateAndRoom(date: Date, roomName: string): Array<any> {
+		const dateKey = buildKey(date)
+		const roomReservations = allReservationsForTheDay.filter((r) => r.roomName === roomName && r.date === buildKey(date))
+		console.log('reservations for date AND room', dateKey, roomName, '=>', roomReservations)
 		return roomReservations
 	}
 
@@ -205,6 +206,8 @@
 
 	let dateStore;
 
+	let currentDateKey = ''
+
 	$: {
 		if ($dateStore) {
 			console.log('state update', $dateStore)
@@ -222,6 +225,8 @@
             infoDate.day = $dateStore.selected.getDate()
 
 			console.log('info', infoDate)
+
+			currentDateKey = buildKey($dateStore.selected)
 
 			initDay();
 		}
@@ -245,6 +250,13 @@
 		}, 500)
 	}
 
+
+	let timePlanKey: string = ''
+	$: timePlanKey = `${currentDateKey}/${$currentlySelectedRoom?.name}`
+
+	$: {
+		console.log('--------------------------------> key=', timePlanKey)
+	}
 
 </script>
 
@@ -364,7 +376,9 @@
 					</div>
 					<button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
 					<div class="absolute bottom-2 left-0">
-						<TimePlan bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForRoom($currentlySelectedRoom.name)}/>
+							{#key timePlanKey}
+								<TimePlan bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForDateAndRoom($dateStore.selected, $currentlySelectedRoom.name)}/>
+							{/key}
 					</div>
 				</div>
 			</div>

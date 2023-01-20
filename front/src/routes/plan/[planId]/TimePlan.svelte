@@ -10,6 +10,10 @@
 
     export let infoDate;
 
+    $: {
+        console.log('modif infoDate', infoDate)
+    }
+
     let time : HTMLDivElement;
     let width = window.innerWidth;
     let height = 96;
