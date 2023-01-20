@@ -25,7 +25,7 @@ process.on('SIGINT',()=>{
 //Pour enlever un warning de deprecation
 mongoose.set('strictQuery',true);
 export async function initDb(){
-	await mongoose.connect('mongodb://127.0.0.1:27017/',{dbName:'app'}).catch((error)=>{
+	await mongoose.connect(process.env.MONGODB_STRING,{dbName:'app'}).catch((error)=>{
 		console.log("Error :",error);
 	})
 	
