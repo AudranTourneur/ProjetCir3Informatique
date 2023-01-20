@@ -373,7 +373,6 @@
 					</div>
 					<div>
 						<div class="flex">
-						<button class="btn btn-warning btn-outline w-32" on:click={cancelInput}>Annuler</button>
 						{#if isReservationPossible}
 							<button class="btn btn-success w-32" on:click={saveInput}>Réserver</button>							
 						{:else}
