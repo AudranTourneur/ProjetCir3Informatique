@@ -88,8 +88,10 @@
         
         isLoading = false
 
-        goto('/admin')
-        location.reload()
+        goto('/plan')
+        setTimeout(() => {
+            location.reload()
+        }, 200)
     }
 
     let isButtonDisabled = true;

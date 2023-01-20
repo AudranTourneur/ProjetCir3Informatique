@@ -4,7 +4,7 @@
 	import { fade, fly } from 'svelte/transition';
 
 	export let isActive: boolean;
-	export let canCancel: boolean = true;
+	export let canCancel: boolean = false;
 
 	let modal: any;
 

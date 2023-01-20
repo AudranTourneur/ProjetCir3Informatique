@@ -46,7 +46,7 @@
 								>Supprimer</button
 							>
 
-				<a href="/admin/{plan._id}">
+				<a href="/plan/{plan._id}">
 					<button class="btn btn-outline btn-info">Modifier</button>
 				</a>
 				{/if}

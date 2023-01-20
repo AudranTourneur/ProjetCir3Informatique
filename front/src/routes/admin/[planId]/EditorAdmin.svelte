@@ -291,7 +291,7 @@
 			body.plan.rooms.map((r) => r.points)
 		);
 
-		goto('/admin')
+		goto('/plan')
 		setTimeout(() => {
 			location.reload()
 		}, 300)

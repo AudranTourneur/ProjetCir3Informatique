@@ -265,7 +265,7 @@
 	*/
 
 	function switchToAdmin() {
-		goto('/admin')
+		goto('/plan')
 		setTimeout(() => {
 			location.reload()
 		}, 500)

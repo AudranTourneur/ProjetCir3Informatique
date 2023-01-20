@@ -22,13 +22,13 @@
 </script>
 
 <div class="flex flex-col justify-center items-center">
-	<h1>Upload Image</h1>
+	<h1>Téléverser </h1>
   
         {#if imageUrl}
             <img class="avatar" src="{imageUrl}" alt="d" />
         {/if}
 				<img class="upload" src="https://static.thenounproject.com/png/625182-200.png" alt="" on:click={()=>{fileinput.click();}} />
-        <div class="chan" on:click={()=>{fileinput.click();}}>Choose Image</div>
+        <div class="chan" on:click={()=>{fileinput.click();}}>PNG seulement</div>
         <input style="display:none" type="file" accept=".png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
 </div>
 
