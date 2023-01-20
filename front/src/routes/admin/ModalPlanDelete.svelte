@@ -1,11 +1,32 @@
 <script lang="ts">
+	import { PUBLIC_API_HOST } from '$env/static/public';
 	import type { Plan } from '$lib/types';
 	import Modal from '$lib/ui/Modal.svelte';
 
 	export let toDelete: Plan|null = null;
     
-    function confirmDelete() {
+    async function confirmDelete() {
         console.log('confirm delete', toDelete);
+
+		const toSend = {
+			email: localStorage.getItem('email'),
+			token: localStorage.getItem('token'),
+			planId: toDelete?._id,
+		}
+
+		console.log(toSend)
+
+		await fetch(`${PUBLIC_API_HOST}/deletePlan`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(toSend),
+			}
+		)
+
+		location.reload()
+
         toDelete=null
     }
 

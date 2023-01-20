@@ -148,7 +148,6 @@ export async function getAllReservationsByEmail(email:String){
 
 export async function getAllReservationsForPlan(planId:String) {
 	const result = await Reservations.find({planId});
-	console.log('res', result)
 	if(!result)return [];
 	return result;
 }

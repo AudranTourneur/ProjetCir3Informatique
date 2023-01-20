@@ -203,12 +203,8 @@ function startLoading() {
 
 			<div class="flex justify-center items-center h-full">
 				<div class="flex flex-col items-center w-[380px] h-[460px] bg-base-200 rounded-xl px-4 gap-3">
-					<div class="flex justify-between items-center w-full my-4">
-						<div />
-						<h1 class="text-3xl font-bold">Sign in</h1>
-						<button on:click={() => isActive = false}>
-							<span class="m-2 text-xl"><i class="fa-solid fa-xmark"></i></span>
-						</button>
+					<div class="flex justify-center items-center w-full my-4">	
+						<h1 class="text-3xl font-bold">Se connecter</h1>
 					</div>
 
 					{#if loginErrorOutput}
@@ -224,18 +220,18 @@ function startLoading() {
 						<label class="label">
 							<span class="label-text"><span> <i class="fa-solid fa-envelope"></i> </span>Email</span>
 						</label>
-						<input bind:value={user.email} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.email} type="text" placeholder="écrivez ici" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="form-control w-full max-w-xs">
 						<label class="label">
-							<span class="label-text"><span><i class="fa-solid fa-key"></i></span> Password</span>
+							<span class="label-text"><span><i class="fa-solid fa-key"></i></span> Mot de passe</span>
 						</label>
-						<input bind:value={user.password} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.password} type="text" placeholder="écrivez ici" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="flex justify-end w-full px-8 my-2">
-						<button on:click={() => sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={startLoading}>Sign in</button>
+						<button on:click={() => sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={startLoading}>Connexion</button>
 					</div>
 
 					<button class="btn btn-link" on:click={()=> changeModal()}>Créer un compte</button>
@@ -256,13 +252,10 @@ function startLoading() {
 
 			<div class="flex justify-center items-center h-full">
 				<div class="flex flex-col items-center w-[380px] h-[460px] bg-base-200 rounded-xl px-4 gap-3">
-					<div class="flex justify-between items-center w-full my-4">
-						<div />
-						<h1 class="text-3xl font-bold">Create an account</h1>
-						<button on:click={() => isActive = false}>
-							<span class="m-2 text-xl"><i class="fa-solid fa-xmark"></i></span>
-						</button>
-					</div>
+					<div class="flex justify-center items-center w-full my-4">
+						
+							<h1 class="text-3xl font-bold">Créer un compte</h1>
+						</div>
 
 					{#if registerErrorOutput}
 						
@@ -278,18 +271,18 @@ function startLoading() {
 						<label class="label">
 							<span class="label-text"><span> <i class="fa-solid fa-envelope"></i> </span>Email</span>
 						</label>
-						<input bind:value={user.email} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.email} type="text" placeholder="écrivez ici" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="form-control w-full max-w-xs">
 						<label class="label">
-							<span class="label-text"><span><i class="fa-solid fa-key"></i></span> Password</span>
+							<span class="label-text"><span><i class="fa-solid fa-key"></i></span> Mot de passe</span>
 						</label>
-						<input bind:value={user.password} type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+						<input bind:value={user.password} type="text" placeholder="écrivez ici" class="input input-bordered w-full max-w-xs" />
 					</div>
 
 					<div class="flex justify-end w-full px-8 my-2">
-						<button on:click={()=> sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={startLoading}>Register</button>
+						<button on:click={()=> sendData()} class="btn btn-md btn-success" class:loading={isLoading} on:click={startLoading}>Créer</button>
 					</div>
 
 					<button class="btn btn-link" on:click={()=> changeModal()}>Se connecter</button>

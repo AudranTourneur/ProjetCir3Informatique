@@ -21,6 +21,8 @@
     let dataDay : any = [];
 
 	let currentlySelectedRoom: Writable<Room | null> = writable(null);
+	
+	let isReservationPossible : boolean;
 
     let infoModal1 : Date;
     let infoModal2 : Date;
@@ -72,15 +74,12 @@
 		return reservations
 	}
 
-	function getReservationsForRoom(roomName: string): Array<any> {
-		const roomReservations = allReservationsForTheDay.filter((r) => r.roomName === roomName)
-		console.log('reservations for room', roomName, '=', roomReservations)
+	function getReservationsForDateAndRoom(date: Date, roomName: string): Array<any> {
+		const dateKey = buildKey(date)
+		const roomReservations = allReservationsForTheDay.filter((r) => r.roomName === roomName && r.date === buildKey(date))
+		console.log('reservations for date AND room', dateKey, roomName, '=>', roomReservations)
 		return roomReservations
 	}
-
-	
-
-
 
 	onMount(async () => {
 		let width = window.innerWidth;
@@ -190,7 +189,10 @@
             .then((res) => res.json())
             .then((data) => {
                 dataDay = data.data;
-				location.reload()
+				console.log('Registered', displayedDate.date, displayedDate.roomName)
+				setTimeout(() => {
+					location.reload()
+				}, 500)
             });    
         }
 
@@ -204,6 +206,8 @@
 	let datePickerOpen = false;
 
 	let dateStore;
+
+	let currentDateKey = ''
 
 	$: {
 		if ($dateStore) {
@@ -222,6 +226,8 @@
             infoDate.day = $dateStore.selected.getDate()
 
 			console.log('info', infoDate)
+
+			currentDateKey = buildKey($dateStore.selected)
 
 			initDay();
 		}
@@ -245,6 +251,13 @@
 		}, 500)
 	}
 
+
+	let timePlanKey: string = ''
+	$: timePlanKey = `${currentDateKey}/${$currentlySelectedRoom?.name}`
+
+	$: {
+		console.log('--------------------------------> key=', timePlanKey)
+	}
 
 </script>
 
@@ -360,11 +373,18 @@
 					</div>
 					<div>
 						<button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
-						<button class="btn btn-success" on:click={saveInput}>Réserver</button>
+						{#if isReservationPossible}
+							<button class="btn btn-success" on:click={saveInput}>Réserver</button>							
+						{:else}
+							<button class="btn btn-failure">Réserver</button>							
+						{/if}
+
 					</div>
 					<button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
 					<div class="absolute bottom-2 left-0">
-						<TimePlan bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForRoom($currentlySelectedRoom.name)}/>
+							{#key timePlanKey}
+								<TimePlan bind:isReservationPossible={isReservationPossible} bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForDateAndRoom($dateStore.selected, $currentlySelectedRoom.name)}/>
+							{/key}
 					</div>
 				</div>
 			</div>
