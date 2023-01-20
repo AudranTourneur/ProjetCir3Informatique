@@ -21,6 +21,10 @@
     let dataDay : any = [];
 
 	let currentlySelectedRoom: Writable<Room | null> = writable(null);
+
+	$: {
+		console.log('room', currentlySelectedRoom)
+	}
 	
 	let isReservationPossible : boolean;
 
@@ -340,11 +344,7 @@
 <!-- Span bottom edge -->
 <div class="absolute left-0 bottom-0 w-full">
 	<div class="absolute inset-x-0 bottom-0">
-		{#if !$currentlySelectedRoom}
-			<div class="flex justify-center  bg-black bg-opacity-50 p-2 gap-2" transition:slide>
-				<button class="btn btn-success" on:click={finishEdition}>Terminer l'édition</button>
-			</div>
-		{:else}
+		{#if $currentlySelectedRoom}
 			<div class="flex justify-center  bg-black bg-opacity-70 p-2 h-[500px]" transition:slide>
 				<div class="flex flex-col gap-2">
 					<div class="form-control w-full max-w-xs">
@@ -372,19 +372,22 @@
 						{/if}
 					</div>
 					<div>
-						<button class="btn btn-warning btn-outline" on:click={cancelInput}>Annuler</button>
+						<div class="flex">
+						<button class="btn btn-warning btn-outline w-32" on:click={cancelInput}>Annuler</button>
 						{#if isReservationPossible}
-							<button class="btn btn-success" on:click={saveInput}>Réserver</button>							
+							<button class="btn btn-success w-32" on:click={saveInput}>Réserver</button>							
 						{:else}
-							<button class="btn btn-failure">Réserver</button>							
+							<button class="btn btn-failure w-32">Réserver</button>							
 						{/if}
-
 					</div>
-					<button class="btn btn-primary w-[400px]" on:click={unselect}>OK</button>
+					</div>
+					<button class="btn btn-primary w-64" on:click={unselect}>OK</button>
 					<div class="absolute bottom-2 left-0">
+						{#if $currentlySelectedRoom}
 							{#key timePlanKey}
 								<TimePlan bind:isReservationPossible={isReservationPossible} bind:dataDay bind:infoDate bind:selectedDate1={infoModal1} bind:selectedDate2={infoModal2} reservations={getReservationsForDateAndRoom($dateStore.selected, $currentlySelectedRoom.name)}/>
 							{/key}
+						{/if}
 					</div>
 				</div>
 			</div>
