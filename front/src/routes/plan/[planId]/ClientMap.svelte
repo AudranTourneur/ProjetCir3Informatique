@@ -23,7 +23,7 @@
 	let currentlySelectedRoom: Writable<Room | null> = writable(null);
 
 	$: {
-		console.log('room', currentlySelectedRoom)
+		console.log('room sel', $currentlySelectedRoom)
 	}
 	
 	let isReservationPossible : boolean;
@@ -43,7 +43,7 @@
 			points: points,
 			name: room.name,
 			capacity: room.capacity,
-			projecteur: room.hasProjector
+			hasProjector: room.hasProjector
 		};
 	});
 
@@ -126,7 +126,7 @@
 					points: r.points.map((p) => [p[0] * width, p[1] * height]),
 					name: r.name,
 					capacity: r.capacity,
-					projecteur: r.projecteur
+					hasProjector: r.hasProjector
 				};
 			});
 
@@ -346,7 +346,7 @@
 	<div class="absolute inset-x-0 bottom-0">
 		{#if $currentlySelectedRoom}
 			<div class="flex justify-center  bg-black bg-opacity-70 p-2 h-[500px]" transition:slide>
-				<div class="flex flex-col gap-2">
+				<div class="flex flex-col gap-1">
 					<div class="form-control w-full max-w-xs">
 						<label for="input-nom" class="label">
 							<span class="label-text text-white">Nom de la salle : </span>
@@ -363,13 +363,15 @@
 
 					<div class="text-white">
 						<label for="input-capacite" class="label">
-							<span class="label-text text-white">Projecteur : </span>
+							<span class="label-text text-white">Projecteur :
+								{#if $currentlySelectedRoom.hasProjector}
+									<span class="label-text text-white">Oui</span>
+								{:else}
+									<span class="label-text text-white">Non</span>
+								{/if}	
+							</span>
 						</label>
-						{#if $currentlySelectedRoom.hasProjector}
-							<span class="label-text text-white">oui</span>
-						{:else}
-							<span class="label-text text-white">non</span>
-						{/if}
+						
 					</div>
 					<div>
 						<div class="flex">

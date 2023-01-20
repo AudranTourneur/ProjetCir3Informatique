@@ -29,18 +29,13 @@
 		</div>
 	</div>
 	<div class="flex flex-col flex-1 justify-around h-full mx-4 flex-shrink">
-		<div>
+		<div class="flex justify-center mb-2">
 			{#if plan.name}
-				{plan.name}
+				<span class="text-xl font-bold">
+					{plan.name}
+				</span>	
 			{:else}
 				<i>Unnamed plan</i>
-			{/if}
-		</div>
-		<div>
-			{#if plan.description}
-				{plan.description}
-			{:else}
-				<i>No description set</i>
 			{/if}
 		</div>
 		<div class="flex justify-between items-end">
