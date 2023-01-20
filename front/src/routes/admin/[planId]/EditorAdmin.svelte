@@ -293,7 +293,8 @@
 
 		setTimeout(() => {
 			goto('/admin')
-		})
+			location.reload()
+		}, 300)
 	}
 
 	function endEditMode() {
