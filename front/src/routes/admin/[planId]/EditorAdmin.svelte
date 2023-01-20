@@ -291,9 +291,10 @@
 			body.plan.rooms.map((r) => r.points)
 		);
 
+		goto('/admin')
 		setTimeout(() => {
-			goto('/admin')
-		})
+			location.reload()
+		}, 300)
 	}
 
 	function endEditMode() {

@@ -146,25 +146,26 @@ function getColorByCoeff(coeff: number){
      res.send('ok');
 }
 
-async function canBookRoom(planId: string, startTime: number, date: string, endTime: number) {
-    const allReservations = await db.getAllReservationsForPlan(planId);
-    const reservations = allReservations.filter(reservation => reservation.date === date);
+async function canBookRoom(planId: string, room: string, startTime: number, date: string, endTime: number) {
+    const planReservations = await db.getAllReservationsForPlan(planId);
+    const dateAndRoomReservations = planReservations.filter(reservation =>  reservation.date === date && reservation.roomName === room);
 
     let canBook = true;
-    for (let i = 0; i < reservations.length; i++) {//Inshallah ça marche mashallah
-        // @ts-ignore
-        let case1 = reservations[i].endTime>startTime && reservations[i].endTime<endTime;
-        // @ts-ignore
-        let case2 = reservations[i].startTime>startTime && reservations[i].startTime<endTime;
-        // @ts-ignore
+    for (const reservation of dateAndRoomReservations) {//Inshallah ça marche mashallah
+        if (!reservation || !reservation.startTime || !reservation.endTime) {
+            console.log('pas censé arriver')
+            continue;
+        }
+        let case1 = reservation.endTime>startTime && reservation.endTime<endTime;
+        let case2 = reservation.startTime>startTime && reservation.startTime<endTime;
         if(case1 && !case2){
-            // @ts-ignore
+            console.log('échec cas 1')
             canBook = false;
         }else if (!case1 && case2){
-            // @ts-ignore
+            console.log('échec cas 2')
             canBook = false;
         }else if (case1 && case2){
-            // @ts-ignore
+            console.log('échec cas 3')
             canBook = false;
         }
     }
@@ -173,17 +174,20 @@ async function canBookRoom(planId: string, startTime: number, date: string, endT
 
 export async function bookRoom(planId: string, roomName: string, startTime: number, endTime: number,date: string, email: string, token: string, res: Response) {
     if (await db.checkConnection(email, token)) {
-        if(startTime>endTime){
+        if(startTime>endTime){ // swap si inversé
             let tmp = startTime;
             startTime = endTime;
             endTime = tmp;
         }
-        if(await canBookRoom(planId, startTime, date, endTime)) {
+        if(await canBookRoom(planId, roomName, startTime, date, endTime)) {
+            console.log('ouais on peut')
             res.json({status: await db.bookRoom(email, date, planId, roomName, startTime, endTime)});
         }else{
+            console.log('nan')
             res.json({status: 0});
         }
     } else {
+        console.log('auth refusé')
         res.json({status: 666});
     }
 }
