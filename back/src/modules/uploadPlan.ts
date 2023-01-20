@@ -158,6 +158,9 @@ async function canBookRoom(planId: string, room: string, startTime: number, date
         }
         let case1 = reservation.endTime>startTime && reservation.endTime<endTime;
         let case2 = reservation.startTime>startTime && reservation.startTime<endTime;
+        if((reservation.startTime===startTime && reservation.endTime===endTime)||(reservation.endTime===startTime && reservation.startTime===endTime)){
+            canBook = false;
+        }
         if(case1 && !case2){
             console.log('échec cas 1')
             canBook = false;
