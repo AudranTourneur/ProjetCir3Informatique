@@ -191,7 +191,10 @@
             .then((res) => res.json())
             .then((data) => {
                 dataDay = data.data;
-				location.reload()
+				console.log('Registered', displayedDate.date, displayedDate.roomName)
+				setTimeout(() => {
+					location.reload()
+				}, 500)
             });    
         }
 
