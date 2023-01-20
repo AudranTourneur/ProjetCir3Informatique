@@ -5,6 +5,7 @@
 	import type { Plan } from '../../../../../back/src/types';
 	import { PUBLIC_API_HOST } from '$env/static/public';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let data;
 
@@ -33,10 +34,11 @@
         window.location.href = '/';
     }
 
-	function reloadPage() {
+	function switchToPlan() {
+		goto('/plan')
 		setTimeout(() => {
 			location.reload()
-		}, 200)
+		}, 700)
 	}
 
 	onMount(async () => {
@@ -58,15 +60,15 @@
 			localStorage.removeItem('email');
 			setTimeout(() => {
 				location.href = '/';
-				reloadPage()
-			}, 100)
+				switchToPlan()
+			}, 500)
 		}
 	})
 </script>
 
 <div class="m-4 flex flex-col">
 	  <div class="flex justify-between m-2">
-        <a href="/plan" on:click={reloadPage} class="text-lg sm:text-xl md:text-2xl lg:text-3xl">
+        <a href="/plan" on:click={switchToPlan} class="text-lg sm:text-xl md:text-2xl lg:text-3xl">
 			<span><i class="fa-solid fa-repeat"></i></span>
 			 Page utilisateur
         </a>

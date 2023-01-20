@@ -11,6 +11,7 @@
 	import type { Plan } from '../../../../../back/src/types';
 	import dayjs from 'dayjs';
 	import { PUBLIC_API_HOST } from '$env/static/public';
+	import { goto } from '$app/navigation';
 
 	export let plan: Plan;
 
@@ -62,7 +63,7 @@
 	let floor: null | Floor = null;
 
 
-	let allReservationsForTheDay: Array<any> = [];
+	let allReservationForPlan: Array<any> = [];
 
 	async function getPlanReservation(): Promise<Array<any>> {
 		if (!$dateStore || !$dateStore.selected) return;
@@ -80,9 +81,15 @@
 
 	function getReservationsForDateAndRoom(date: Date, roomName: string): Array<any> {
 		const dateKey = buildKey(date)
-		const roomReservations = allReservationsForTheDay.filter((r) => r.roomName === roomName && r.date === buildKey(date))
+		const roomReservations = allReservationForPlan.filter((r) => r.roomName === roomName && r.date === buildKey(date))
 		console.log('reservations for date AND room', dateKey, roomName, '=>', roomReservations)
 		return roomReservations
+	}
+
+	function getCurrentRoomColor(): string {	
+		const reservations = getReservationsForDateAndRoom($dateStore.selected, $currentlySelectedRoom.name)
+		if (reservations.length === 0) return '#00cc00'
+		return '#aa0000'
 	}
 
 	onMount(async () => {
@@ -137,13 +144,21 @@
 
 		setTimeout(updateHeight, 1);
 
-		allReservationsForTheDay = await getPlanReservation()
+		allReservationForPlan = await getPlanReservation()
 		initDay()
 	});
 
 	function unselect() {
 		d3.selectAll('#main-svg > polygon').attr('stroke', '#f00');
 		$currentlySelectedRoom = null;
+	}
+
+	function updatePolygons() {
+		if (!$currentlySelectedRoom) return;
+		d3.selectAll('#main-svg > polygon').attr('stroke', '#f00');
+		d3.selectAll('#main-svg > polygon')
+			.filter((d) => d.name === $currentlySelectedRoom.name)
+			.attr('stroke', '#00f');
 	}
 
 	function padNumber(n: number) {
@@ -160,7 +175,7 @@
     async function initDay() {
 		//const key = $dateStore.selected.toISOString().split('T')[0];
 		const key = buildKey($dateStore.selected)
-		dataDay = allReservationsForTheDay.filter(e => e.date === key);
+		dataDay = allReservationForPlan.filter(e => e.date === key);
 		//console.log('dataDay', key, dataDay, $dateStore.selected, $dateStore.selected.toISOString(), $dateStore.selected.getDate())
 		console.log('======================', key)
 		console.log('============================', dataDay)
@@ -249,12 +264,12 @@
 	]
 	*/
 
-	function reloadPage() {
+	function switchToAdmin() {
+		goto('/admin')
 		setTimeout(() => {
 			location.reload()
 		}, 500)
 	}
-
 
 	let timePlanKey: string = ''
 	$: timePlanKey = `${currentDateKey}/${$currentlySelectedRoom?.name}`
@@ -269,7 +284,7 @@
 
 <!-- Floor input -->
 <div class="flex absolute p-[15px] m-0 gap-[15px] z-10 text-xl">
-    <a href="/plan" class="btn" on:click={reloadPage}><span class="mr-2">
+    <a href="/plan" class="btn" on:click={switchToAdmin}><span class="mr-2">
 		<i class="fa-solid fa-door-open"></i>
 	</span> Back</a>
 </div>

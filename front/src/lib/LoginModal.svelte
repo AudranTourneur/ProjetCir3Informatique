@@ -186,6 +186,12 @@ function startLoading() {
 	loginErrorOutput = ''
 	registerErrorOutput = ''
 }
+
+	let isPasswordVisible = false;
+
+	function showOrHidePassword() {
+		isPasswordVisible = !isPasswordVisible
+	}
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
